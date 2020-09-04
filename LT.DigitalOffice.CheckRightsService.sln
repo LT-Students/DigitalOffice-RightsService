@@ -25,13 +25,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Validati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Broker.UnitTests", "test\CheckRightsService.Broker.UnitTests\CheckRightsService.Broker.UnitTests.csproj", "{5F754142-5542-4AFD-9244-BC69A48012D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Business.UnitTests", "CheckRightsService.Business.UnitTests\CheckRightsService.Business.UnitTests.csproj", "{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Mappers.UnitTests", "test\CheckRightsService.Mappers.UnitTests\CheckRightsService.Mappers.UnitTests.csproj", "{523F68B4-748F-48A5-B590-5925F8744F0D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Data.UnitTests", "test\CheckRightsService.Data.UnitTests\CheckRightsService.Data.UnitTests.csproj", "{D0D88AE2-7A07-44D6-A6DC-67BCDDACF1CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Validation.UnitTests", "test\CheckRightsService.Validation.UnitTests\CheckRightsService.Validation.UnitTests.csproj", "{2E20D03E-8D44-44F6-A6D0-373A2E25D94D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Business.UnitTests", "test\CheckRightsService.Business.UnitTests\CheckRightsService.Business.UnitTests.csproj", "{84B0DFE9-94DC-48D7-888E-FED3F7040CC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +75,6 @@ Global
 		{5F754142-5542-4AFD-9244-BC69A48012D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F754142-5542-4AFD-9244-BC69A48012D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F754142-5542-4AFD-9244-BC69A48012D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{523F68B4-748F-48A5-B590-5925F8744F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{523F68B4-748F-48A5-B590-5925F8744F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{523F68B4-748F-48A5-B590-5925F8744F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,6 +87,10 @@ Global
 		{2E20D03E-8D44-44F6-A6D0-373A2E25D94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E20D03E-8D44-44F6-A6D0-373A2E25D94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E20D03E-8D44-44F6-A6D0-373A2E25D94D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,10 +105,10 @@ Global
 		{1F726389-4CBD-4924-9676-11D12D5B383B} = {735061E5-F7DE-48F7-93D9-E88407660EEC}
 		{F26B5C5D-732E-4C13-874E-360EFC3F565A} = {735061E5-F7DE-48F7-93D9-E88407660EEC}
 		{5F754142-5542-4AFD-9244-BC69A48012D1} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
-		{5E8A1FC9-E22B-4A0C-BCF9-248E33A8173C} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 		{523F68B4-748F-48A5-B590-5925F8744F0D} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 		{D0D88AE2-7A07-44D6-A6DC-67BCDDACF1CC} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 		{2E20D03E-8D44-44F6-A6D0-373A2E25D94D} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
+		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7881E658-6BBD-435C-A423-986571E01AE5}
