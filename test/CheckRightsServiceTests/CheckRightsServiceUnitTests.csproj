@@ -20,6 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\CheckRightsService\CheckRightsService.csproj" />
+    <ProjectReference Include="..\..\src\CheckRightsService\CheckRightsService.csproj" />
   </ItemGroup>
 </Project>
