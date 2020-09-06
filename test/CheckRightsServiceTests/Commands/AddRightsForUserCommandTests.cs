@@ -42,6 +42,7 @@ namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
                 .Returns(true);
 
+            // Rework
             var task = new Task<bool>(() => true);
             task.RunSynchronously();
 
