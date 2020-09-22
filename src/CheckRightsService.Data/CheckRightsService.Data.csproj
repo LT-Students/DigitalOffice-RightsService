@@ -1,7 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>LT.DigitalOffice.CheckRightsService.Data</AssemblyName>
+    <RootNamespace>LT.DigitalOffice.CheckRightsService.Data</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CheckRightsService.Data.Provider\CheckRightsService.Data.Provider.csproj" />
+    <ProjectReference Include="..\CheckRightsService.Models.Db\CheckRightsService.Models.Db.csproj" />
+    <ProjectReference Include="..\CheckRightsService.Models.Dto\CheckRightsService.Models.Dto.csproj" />
+  </ItemGroup>
 
 </Project>

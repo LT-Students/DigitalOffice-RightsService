@@ -1,3 +1,4 @@
+using LT.DigitalOffice.CheckRightsService.Data.Provider;
 using LT.DigitalOffice.CheckRightsService.Database;
 using LT.DigitalOffice.CheckRightsService.Database.Entities;
 using LT.DigitalOffice.CheckRightsService.Models;
@@ -12,35 +13,35 @@ namespace LT.DigitalOffice.CheckRightsService.Repositories
 {
     public class CheckRightsRepository : ICheckRightsRepository
     {
-        private readonly CheckRightsServiceDbContext dbContext;
+        private readonly IDataProvider provider;
 
-        public CheckRightsRepository(CheckRightsServiceDbContext dbContext)
+        public CheckRightsRepository(IDataProvider _provider)
         {
-            this.dbContext = dbContext;
+            provider = _provider;
         }
 
         public List<DbRight> GetRightsList()
         {
-            return dbContext.Rights.ToList();
+            return provider.Rights.ToList();
         }
 
         public void AddRightsToUser(AddRightsForUserRequest request)
         {
             foreach (var rightId in request.RightsIds)
             {
-                var dbRight = dbContext.Rights.FirstOrDefault(right => right.Id == rightId);
+                var dbRight = provider.Rights.FirstOrDefault(right => right.Id == rightId);
 
                 if (dbRight == null)
                 {
                     throw new BadRequestException("Right doesn't exist.");
                 }
 
-                var dbRightUser = dbContext.RightUsers.FirstOrDefault(rightUser =>
+                var dbRightUser = provider.RightUsers.FirstOrDefault(rightUser =>
                     rightUser.RightId == rightId && rightUser.UserId == request.UserId);
 
                 if (dbRightUser == null)
                 {
-                    dbContext.RightUsers.Add(new DbRightUser
+                    provider.RightUsers.Add(new DbRightUser
                     {
                         UserId = request.UserId,
                         Right = dbRight,
@@ -48,22 +49,22 @@ namespace LT.DigitalOffice.CheckRightsService.Repositories
                     });
                 }
             }
-            dbContext.SaveChanges();
+            provider.SaveChanges();
         }
 
         public void RemoveRightsFromUser(RemoveRightsFromUserRequest request)
         {
-            var userRights = dbContext.RightUsers.Where(ru =>
+            var userRights = provider.RightUsers.Where(ru =>
                 ru.UserId == request.UserId && request.RightIds.Contains(ru.RightId));
 
-            dbContext.RightUsers.RemoveRange(userRights);
+            provider.RightUsers.RemoveRange(userRights);
 
-            dbContext.SaveChanges();
+            provider.SaveChanges();
         }
 
         public bool CheckIfUserHasRight(Guid userId, int rightId)
         {
-            var rights = dbContext.Rights
+            var rights = provider.Rights
                 .AsNoTracking()
                 .Include(r => r.RightUsers);
 

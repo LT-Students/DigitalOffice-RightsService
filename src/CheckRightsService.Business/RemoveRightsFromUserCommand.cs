@@ -5,6 +5,7 @@ using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace LT.DigitalOffice.CheckRightsService.Commands
 {
@@ -26,9 +27,17 @@ namespace LT.DigitalOffice.CheckRightsService.Commands
 
         public void Execute(RemoveRightsFromUserRequest request)
         {
-            validator.ValidateAndThrow(request);
+            var validationResult = validator.Validate(request);
 
-            if(!accessValidator.IsAdmin().Result)
+            if (validationResult != null && !validationResult.IsValid)
+            {
+                var messages = validationResult.Errors.Select(x => x.ErrorMessage);
+                string message = messages.Aggregate((x, y) => x + "\n" + y);
+
+                throw new ValidationException(message);
+            }
+
+            if (!accessValidator.IsAdmin())
             {
                 throw new ForbiddenException("You need to be an admin to remove rights.");
             }

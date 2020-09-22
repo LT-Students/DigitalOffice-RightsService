@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using LT.DigitalOffice.CheckRightsService.Commands;
 using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models;
@@ -42,12 +43,9 @@ namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
                 .Returns(true);
 
-            var task = new Task<bool>(() => true);
-            task.RunSynchronously();
-
             accessValidator
                 .Setup(x => x.IsAdmin())
-                .Returns(task);
+                .Returns(true);
 
             repositoryMock
                 .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));
@@ -68,12 +66,9 @@ namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
                 .Returns(true);
 
-            var task = new Task<bool>(() => false);
-            task.RunSynchronously();
-
             accessValidator
                 .Setup(x => x.IsAdmin())
-                .Returns(task);
+                .Returns(false);
 
             repositoryMock
                 .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));
@@ -88,15 +83,16 @@ namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
             var badRequest = new RemoveRightsFromUserRequest();
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(false);
-
-            var task = new Task<bool>(() => true);
-            task.RunSynchronously();
+                .Setup(x => x.Validate(It.IsAny<RemoveRightsFromUserRequest>()))
+                .Returns(new ValidationResult(
+                    new List<ValidationFailure>
+                    {
+                        new ValidationFailure("test", "something", null)
+                    }));
 
             accessValidator
                 .Setup(x => x.IsAdmin())
-                .Returns(task);
+                .Returns(true);
 
             repositoryMock
                 .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));

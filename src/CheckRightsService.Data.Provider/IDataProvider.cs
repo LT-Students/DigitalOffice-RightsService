@@ -1,11 +1,12 @@
 ﻿using LT.DigitalOffice.CheckRightsService.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace TimeManagementService.Data.Provider
+namespace LT.DigitalOffice.CheckRightsService.Data.Provider
 {
     public interface IDataProvider
     {
         DbSet<DbRight> Rights { get; set; }
+        DbSet<DbRightUser> RightUsers { get; set; }
 
         void SaveChanges();
         object MakeEntityDetached(object obj);
