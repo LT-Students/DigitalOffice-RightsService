@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
-using LT.DigitalOffice.CheckRightsService.Commands;
-using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
-namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
+namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
 {
     public class AddRightsForUserCommandTests
     {

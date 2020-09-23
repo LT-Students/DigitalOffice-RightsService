@@ -1,6 +1,6 @@
-﻿using LT.DigitalOffice.CheckRightsService.Models;
+﻿using LT.DigitalOffice.CheckRightsService.Models.Dto;
 
-namespace LT.DigitalOffice.CheckRightsService.Commands.Interfaces
+namespace LT.DigitalOffice.CheckRightsService.Business.Interfaces
 {
     /// <summary>
     /// Add rights for user.

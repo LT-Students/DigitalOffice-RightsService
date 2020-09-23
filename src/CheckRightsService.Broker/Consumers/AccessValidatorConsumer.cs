@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+﻿using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidator.Requests;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;

@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.CheckRightsService.Database.Entities;
+﻿using LT.DigitalOffice.CheckRightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.CheckRightsService.Data.Provider

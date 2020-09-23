@@ -1,19 +1,18 @@
-﻿using LT.DigitalOffice.CheckRightsService.Database;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
+﻿using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Provider;
+using LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Exceptions;
-using Moq;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LT.DigitalOffice.CheckRightsService.Data.Provider;
 
-namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Repositories
+namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
 {
     public class CheckRightsRepositoryTests
     {

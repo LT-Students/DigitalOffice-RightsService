@@ -1,9 +1,8 @@
-﻿using LT.DigitalOffice.CheckRightsService.Data.Provider;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
+﻿using LT.DigitalOffice.CheckRightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace LT.DigitalOffice.CheckRightsService.Database
+namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef
 {
     /// <summary>
     /// A class that defines the tables and its properties in the database of CheckRightsService.

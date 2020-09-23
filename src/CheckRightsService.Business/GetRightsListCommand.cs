@@ -1,13 +1,13 @@
-﻿using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
+﻿using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LT.DigitalOffice.CheckRightsService.Commands
+namespace LT.DigitalOffice.CheckRightsService.Business
 {
     public class GetRightsListCommand : IGetRightsListCommand
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LT.DigitalOffice.CheckRightsService.Models;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 
-namespace LT.DigitalOffice.CheckRightsService.Validators
+namespace LT.DigitalOffice.CheckRightsService.Validation
 {
     public class AddRightsForUserValidator : AbstractValidator<AddRightsForUserRequest>
     {

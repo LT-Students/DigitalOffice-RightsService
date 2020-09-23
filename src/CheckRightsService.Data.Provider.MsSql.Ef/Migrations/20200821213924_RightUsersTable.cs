@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LT.DigitalOffice.CheckRightsService.Database.Migrations
+namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef.Migrations
 {
     public partial class RightUsersTable : Migration
     {

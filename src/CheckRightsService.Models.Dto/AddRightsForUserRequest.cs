@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.CheckRightsService.Models
+namespace LT.DigitalOffice.CheckRightsService.Models.Dto
 {
     public class AddRightsForUserRequest
     {

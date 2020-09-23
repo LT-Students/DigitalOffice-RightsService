@@ -1,9 +1,9 @@
-﻿using System;
+﻿using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
+using System;
 using System.Collections.Generic;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
-using LT.DigitalOffice.CheckRightsService.Models;
 
-namespace LT.DigitalOffice.CheckRightsService.Repositories.Interfaces
+namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
 {
     /// <summary>
     /// Represents interface of repository in repository pattern.

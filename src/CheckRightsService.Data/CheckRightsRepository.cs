@@ -1,15 +1,14 @@
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Provider;
-using LT.DigitalOffice.CheckRightsService.Database;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LT.DigitalOffice.CheckRightsService.Repositories
+namespace LT.DigitalOffice.CheckRightsService.Data
 {
     public class CheckRightsRepository : ICheckRightsRepository
     {

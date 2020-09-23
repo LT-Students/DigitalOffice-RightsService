@@ -1,15 +1,14 @@
-using LT.DigitalOffice.CheckRightsService.Commands;
-using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Database.Entities;
+using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Commands
+namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
 {
     public class GetRightsListCommandTests
     {

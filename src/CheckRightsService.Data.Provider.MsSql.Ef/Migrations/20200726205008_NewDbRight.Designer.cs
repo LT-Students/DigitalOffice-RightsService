@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LT.DigitalOffice.CheckRightsService.Database.Migrations
+namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef.Migrations
 {
     [DbContext(typeof(CheckRightsServiceDbContext))]
     [Migration("20200726205008_NewDbRight")]

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace LT.DigitalOffice.CheckRightsService.Database.Entities
+namespace LT.DigitalOffice.CheckRightsService.Models.Db
 {
     public class DbRight
     {

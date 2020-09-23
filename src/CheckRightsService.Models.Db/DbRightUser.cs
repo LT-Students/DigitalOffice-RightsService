@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LT.DigitalOffice.CheckRightsService.Database.Entities
+namespace LT.DigitalOffice.CheckRightsService.Models.Db
 {
     public class DbRightUser
     {

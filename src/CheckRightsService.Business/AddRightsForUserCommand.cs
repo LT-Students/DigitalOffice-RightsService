@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
-using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
-namespace LT.DigitalOffice.CheckRightsService.Commands
+namespace LT.DigitalOffice.CheckRightsService.Business
 {
     public class AddRightsForUserCommand : IAddRightsForUserCommand
     {
