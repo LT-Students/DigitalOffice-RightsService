@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Models;
 
-namespace LT.DigitalOffice.CheckRightsService.Validators
+namespace LT.DigitalOffice.CheckRightsService.Validator
 {
     public class RemoveRightsFromUserValidator : AbstractValidator<RemoveRightsFromUserRequest>
     {

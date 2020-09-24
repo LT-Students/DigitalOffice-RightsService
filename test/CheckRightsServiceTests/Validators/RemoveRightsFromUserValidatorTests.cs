@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.CheckRightsService.Models;
-using LT.DigitalOffice.CheckRightsService.Validators;
+using LT.DigitalOffice.CheckRightsService.Validator;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
