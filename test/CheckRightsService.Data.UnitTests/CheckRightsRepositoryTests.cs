@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
                 Description = "Allows you everything",
                 RightUsers = new List<DbRightUser>()
             };
-            dbRight1InDb.RightUsers.Add(
+            provider.RightUsers.Add(
                 new DbRightUser
                 {
                     RightId = dbRight1InDb.Id,
@@ -55,7 +55,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
                 Description = "Allows you update everything",
                 RightUsers = new List<DbRightUser>()
             };
-            dbRight1InDb.RightUsers.Add(
+            provider.RightUsers.Add(
                 new DbRightUser
                 {
                     RightId = dbRight2InDb.Id,
