@@ -2,11 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>LT.DigitalOffice.CheckRightsService.Broker.UnitTests</AssemblyName>
-
     <RootNamespace>LT.DigitalOffice.CheckRightsService.Broker.UnitTests</RootNamespace>
   </PropertyGroup>
 

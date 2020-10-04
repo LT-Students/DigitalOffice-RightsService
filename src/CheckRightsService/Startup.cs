@@ -4,6 +4,7 @@ using LT.DigitalOffice.CheckRightsService.Business;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Data.Provider;
 using LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.CheckRightsService.Mappers;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
@@ -115,6 +116,7 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureRepositories(IServiceCollection services)
         {
+            services.AddTransient<IDataProvider, CheckRightsServiceDbContext>();
             services.AddTransient<ICheckRightsRepository, CheckRightsRepository>();
         }
 
@@ -125,6 +127,7 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureValidators(IServiceCollection services)
         {
+            services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
             services.AddTransient<IValidator<RemoveRightsFromUserRequest>, RemoveRightsFromUserValidator>();
         }
     }
