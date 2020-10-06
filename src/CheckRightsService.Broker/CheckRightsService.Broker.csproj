@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>LT.DigitalOffice.CheckRightsService.Broker</AssemblyName>
+    <RootNamespace>LT.DigitalOffice.CheckRightsService.Broker</RootNamespace>
   </PropertyGroup>
 
 </Project>
