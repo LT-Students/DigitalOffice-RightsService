@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
 {
-    public class AccessValidatorConsumer : IConsumer<IAccessValidatorRequest>
+    public class AccessValidatorConsumer : IConsumer<IAccessValidatorCheckRightsServiceRequest>
     {
         private readonly ICheckRightsRepository repository;
 
@@ -16,13 +16,13 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
             this.repository = repository;
         }
 
-        public async Task Consume(ConsumeContext<IAccessValidatorRequest> context)
+        public async Task Consume(ConsumeContext<IAccessValidatorCheckRightsServiceRequest> context)
         {
             var response = OperationResultWrapper.CreateResponse(HasRights, context.Message);
             await context.RespondAsync<IOperationResult<bool>>(response);
         }
 
-        private object HasRights(IAccessValidatorRequest request)
+        private object HasRights(IAccessValidatorCheckRightsServiceRequest request)
         {
             return repository.CheckIfUserHasRight(request.UserId, request.RightId);
         }

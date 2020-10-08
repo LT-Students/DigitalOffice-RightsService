@@ -43,7 +43,7 @@ namespace LT.DigitalOffice.CheckRightsService
                 options.UseSqlServer(Configuration.GetConnectionString("SQLConnectionString"));
             });
 
-            services.AddKernelExtensions(Configuration);
+            services.AddKernelExtensions();
 
             ConfigureMassTransit(services);
             ConfigureCommands(services);
