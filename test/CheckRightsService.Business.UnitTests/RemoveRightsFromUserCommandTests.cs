@@ -81,7 +81,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             var badRequest = new RemoveRightsFromUserRequest();
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<RemoveRightsFromUserRequest>()))
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
                 .Returns(new ValidationResult(
                     new List<ValidationFailure>
                     {

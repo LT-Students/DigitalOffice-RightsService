@@ -83,7 +83,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             };
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<AddRightsForUserRequest>()))
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
                 .Returns(new ValidationResult(
                     new List<ValidationFailure>
                     {
