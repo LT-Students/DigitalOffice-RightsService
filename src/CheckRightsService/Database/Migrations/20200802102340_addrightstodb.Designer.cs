@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.CheckRightsService.Database.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Add/Edit/Remove message template"
+                            Name = "Add/Edit/Remove email template"
                         });
                 });
 #pragma warning restore 612, 618

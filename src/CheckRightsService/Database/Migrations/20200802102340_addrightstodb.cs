@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.CheckRightsService.Database.Migrations
             migrationBuilder.InsertData(
                 table: "Rights",
                 columns: new[] { "Id", "Description", "Name" },
-                values: new object[] { 3, null, "Add/Edit/Remove message template" });
+                values: new object[] { 3, null, "Add/Edit/Remove email template" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
