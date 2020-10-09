@@ -9,7 +9,7 @@ using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models;
 using LT.DigitalOffice.CheckRightsService.Repositories;
 using LT.DigitalOffice.CheckRightsService.Repositories.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Validator;
+using LT.DigitalOffice.CheckRightsService.Validators;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
@@ -54,6 +54,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseHealthChecks("/api/healthcheck");
+
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);
@@ -127,6 +129,7 @@ namespace LT.DigitalOffice.CheckRightsService
         private void ConfigureValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<RemoveRightsFromUserRequest>, RemoveRightsFromUserValidator>();
+            services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
         }
     }
 }
