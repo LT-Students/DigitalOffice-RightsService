@@ -43,13 +43,13 @@ namespace LT.DigitalOffice.CheckRightsService
                 options.UseSqlServer(Configuration.GetConnectionString("SQLConnectionString"));
             });
 
-            services.AddKernelExtensions();
-
-            ConfigureMassTransit(services);
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
+            ConfigureMassTransit(services);
             ConfigureValidators(services);
+
+            services.AddKernelExtensions();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -81,9 +81,11 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            string appSettingSection = "RabbitMQ";
-            string serviceName = Configuration.GetSection(appSettingSection)["Username"];
-            string servicePassword = Configuration.GetSection(appSettingSection)["Password"];
+            string serviceName = Configuration.GetSection(RabbitMQOptions.RabbitMQ)["Username"];
+            string servicePassword = Configuration.GetSection(RabbitMQOptions.RabbitMQ)["Password"];
+            var rabbitMQOptions = new RabbitMQOptions();
+            Configuration.GetSection(RabbitMQOptions.RabbitMQ).Bind(rabbitMQOptions);
+
 
             services.AddMassTransit(o =>
             {
@@ -96,12 +98,9 @@ namespace LT.DigitalOffice.CheckRightsService
                         host.Username($"{serviceName}_{servicePassword}");
                         host.Password(servicePassword);
                     });
-
-                    cfg.ReceiveEndpoint("CheckRightsService", e =>
-                    {
-                        e.ConfigureConsumer<AccessValidatorConsumer>(context);
-                    });
                 });
+
+                o.ConfigureKernelMassTransit(rabbitMQOptions);
             });
 
             services.AddMassTransitHostedService();

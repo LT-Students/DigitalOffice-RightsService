@@ -4,6 +4,7 @@ using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -27,12 +28,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business
 
         public void Execute(AddRightsForUserRequest request)
         {
-            var validationResult = validator.Validate(request);
-
-            if (validationResult != null && !validationResult.IsValid)
-            {
-                throw new BadRequestException(validationResult.Errors.Select(x => x.ErrorMessage));
-            }
+            validator.ValidateAndThrowCustom(request);
 
             if (!accessValidator.IsAdmin())
             {
