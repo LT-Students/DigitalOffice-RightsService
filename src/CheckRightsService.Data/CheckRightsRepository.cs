@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace LT.DigitalOffice.CheckRightsService.Data
 {
+    /// <inheritdoc cref="ICheckRightsRepository"/>
     public class CheckRightsRepository : ICheckRightsRepository
     {
         private readonly IDataProvider provider;

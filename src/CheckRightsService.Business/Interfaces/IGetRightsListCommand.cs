@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace LT.DigitalOffice.CheckRightsService.Business.Interfaces
 {
     /// <summary>
-    /// Represents interface for a command in command pattern.
-    /// Provides method for getting all added rights.
+    /// Represents the command pattern.
+    /// Provides a method for getting all added rights.
     /// </summary>
     public interface IGetRightsListCommand
     {

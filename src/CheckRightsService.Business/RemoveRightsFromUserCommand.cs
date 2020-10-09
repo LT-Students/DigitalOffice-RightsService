@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.CheckRightsService.Business
 {
+    /// <inheritdoc cref="IRemoveRightsFromUserCommand"/>
     public class RemoveRightsFromUserCommand : IRemoveRightsFromUserCommand
     {
         private readonly ICheckRightsRepository repository;

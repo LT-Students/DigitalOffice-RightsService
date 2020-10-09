@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace LT.DigitalOffice.CheckRightsService.Business
 {
+    /// <inheritdoc cref="IGetRightsListCommand"/>
     public class GetRightsListCommand : IGetRightsListCommand
     {
         private readonly ICheckRightsRepository repository;
