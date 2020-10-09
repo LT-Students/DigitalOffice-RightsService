@@ -48,6 +48,11 @@ namespace LT.DigitalOffice.CheckRightsService.Database.Migrations
                         {
                             Id = 2,
                             Name = "Add/Edit/Remove project"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Add/Edit/Remove email template"
                         });
                 });
 #pragma warning restore 612, 618
