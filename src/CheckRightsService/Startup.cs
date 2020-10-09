@@ -54,6 +54,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseHealthChecks("/api/healthcheck");
+
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);
@@ -128,6 +130,7 @@ namespace LT.DigitalOffice.CheckRightsService
         {
             services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
             services.AddTransient<IValidator<RemoveRightsFromUserRequest>, RemoveRightsFromUserValidator>();
+            services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
         }
     }
 }
