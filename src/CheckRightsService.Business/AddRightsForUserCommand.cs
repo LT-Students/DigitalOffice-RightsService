@@ -28,12 +28,12 @@ namespace LT.DigitalOffice.CheckRightsService.Business
 
         public void Execute(AddRightsForUserRequest request)
         {
-            validator.ValidateAndThrowCustom(request);
-
             if (!accessValidator.IsAdmin())
             {
                 throw new ForbiddenException("You need to be an admin to add rights.");
             }
+
+            validator.ValidateAndThrowCustom(request);
 
             repository.AddRightsToUser(request);
         }
