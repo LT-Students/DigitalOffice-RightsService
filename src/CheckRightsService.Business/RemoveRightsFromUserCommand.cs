@@ -6,7 +6,6 @@ using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace LT.DigitalOffice.CheckRightsService.Business
 {
