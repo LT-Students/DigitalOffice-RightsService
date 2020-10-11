@@ -15,6 +15,11 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef.Migrations
                 table: "Rights",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[] { 2, null, "Add/Edit/Remove project" });
+
+            migrationBuilder.InsertData(
+                table: "Rights",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 3, null, "Add/Edit/Remove email template" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -28,6 +33,11 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef.Migrations
                 table: "Rights",
                 keyColumn: "Id",
                 keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Rights",
+                keyColumn: "Id",
+                keyValue: 3);
         }
     }
 }
