@@ -1,21 +1,20 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
-using LT.DigitalOffice.CheckRightsService.Validation;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Validators
+namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
 {
-    public class RemoveRightsFromUserValidatorTests
+    public class AddRightsForUserValidatorTests
     {
-        private IValidator<RemoveRightsFromUserRequest> validator;
+        private IValidator<AddRightsForUserRequest> validator;
 
         [SetUp]
         public void SetUp()
         {
-            validator = new RemoveRightsFromUserValidator();
+            validator = new AddRightsForUserValidator();
         }
 
         [Test]
@@ -27,7 +26,7 @@ namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Validators
         [Test]
         public void ShouldThrowValidationExceptionWhenRightsIdIsNull()
         {
-            validator.ShouldHaveValidationErrorFor(x => x.RightIds, null as List<int>);
+            validator.ShouldHaveValidationErrorFor(x => x.RightsIds, null as List<int>);
         }
     }
 }

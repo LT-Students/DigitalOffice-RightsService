@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>LT.DigitalOffice.CheckRightsService.Validation</AssemblyName>
+    <RootNamespace>LT.DigitalOffice.CheckRightsService.Validation</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="9.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CheckRightsService.Models.Dto\CheckRightsService.Models.Dto.csproj" />
+  </ItemGroup>
 
 </Project>

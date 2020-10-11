@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
-using LT.DigitalOffice.CheckRightsService.Validation;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.CheckRightsServiceUnitTests.Validators
+namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
 {
     public class RemoveRightsFromUserValidatorTests
     {

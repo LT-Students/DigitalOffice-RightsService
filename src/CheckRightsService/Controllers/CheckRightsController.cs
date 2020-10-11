@@ -1,5 +1,5 @@
-﻿using LT.DigitalOffice.CheckRightsService.Commands.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models;
+﻿using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
