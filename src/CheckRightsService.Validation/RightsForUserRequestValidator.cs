@@ -3,9 +3,9 @@ using LT.DigitalOffice.CheckRightsService.Models.Dto;
 
 namespace LT.DigitalOffice.CheckRightsService.Validation
 {
-    public class AddRightsForUserValidator : AbstractValidator<AddRightsForUserRequest>
+    public class RightsForUserValidator : AbstractValidator<RightsForUserRequest>
     {
-        public AddRightsForUserValidator()
+        public RightsForUserValidator()
         {
             RuleFor(rights => rights.UserId)
                 .NotEmpty()

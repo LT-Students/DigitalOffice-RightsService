@@ -37,9 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService.Data.Pro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService", "src\CheckRightsService\CheckRightsService.csproj", "{4CD0A595-D803-4673-A690-90F1EC459D2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsServiceUnitTests", "test\CheckRightsServiceTests\CheckRightsServiceUnitTests.csproj", "{04EC1658-492F-4055-9F27-3F77D796E10F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckRightsService.Models.BrokerRequest", "src\CheckRightsService.Models.BrokerRequest\CheckRightsService.Models.BrokerRequest.csproj", "{DADF5598-476D-4F92-B0F5-BAB160B7E02A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService.Models.BrokerRequest", "src\CheckRightsService.Models.BrokerRequest\CheckRightsService.Models.BrokerRequest.csproj", "{DADF5598-476D-4F92-B0F5-BAB160B7E02A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,10 +105,6 @@ Global
 		{4CD0A595-D803-4673-A690-90F1EC459D2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CD0A595-D803-4673-A690-90F1EC459D2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD0A595-D803-4673-A690-90F1EC459D2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04EC1658-492F-4055-9F27-3F77D796E10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04EC1658-492F-4055-9F27-3F77D796E10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04EC1658-492F-4055-9F27-3F77D796E10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04EC1658-492F-4055-9F27-3F77D796E10F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DADF5598-476D-4F92-B0F5-BAB160B7E02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DADF5598-476D-4F92-B0F5-BAB160B7E02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DADF5598-476D-4F92-B0F5-BAB160B7E02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -135,7 +129,6 @@ Global
 		{84B0DFE9-94DC-48D7-888E-FED3F7040CC8} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 		{73F641BD-AEF8-429F-89A0-086EB0129047} = {735061E5-F7DE-48F7-93D9-E88407660EEC}
 		{4CD0A595-D803-4673-A690-90F1EC459D2C} = {735061E5-F7DE-48F7-93D9-E88407660EEC}
-		{04EC1658-492F-4055-9F27-3F77D796E10F} = {4A7969F2-7088-4EF6-A3F6-7EAF62B42E64}
 		{DADF5598-476D-4F92-B0F5-BAB160B7E02A} = {735061E5-F7DE-48F7-93D9-E88407660EEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

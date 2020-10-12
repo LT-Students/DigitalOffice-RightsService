@@ -15,88 +15,48 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
     public class RemoveRightsFromUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IValidator<RemoveRightsFromUserRequest>> validatorMock;
         private IRemoveRightsFromUserCommand command;
         private Mock<IAccessValidator> accessValidator;
+
+        private Guid userId;
+        private List<int> rightIds;
 
         [SetUp]
         public void SetUp()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
-            validatorMock = new Mock<IValidator<RemoveRightsFromUserRequest>>();
             accessValidator = new Mock<IAccessValidator>();
-            command = new RemoveRightsFromUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
+            command = new RemoveRightsFromUserCommand(repositoryMock.Object, accessValidator.Object);
+
+            userId = Guid.NewGuid();
+            rightIds = new List<int>() { 0, 1 };
         }
 
         [Test]
         public void ShouldRemoveRightsFromUser()
         {
-            var goodRequest = new RemoveRightsFromUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightIds = new List<int>() { 0, 1 }
-            };
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
-
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(true);
 
             repositoryMock
-                .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));
+                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()));
 
-            command.Execute(goodRequest);
+            command.Execute(userId, rightIds);
         }
 
         [Test]
         public void ShouldThrowValidationExceptionWhenUserIsNotAdmin()
         {
-            var badRequest = new RemoveRightsFromUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightIds = new List<int>() { 0, 1 }
-            };
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
-
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(false);
 
             repositoryMock
-                .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));
+                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()));
 
-            Assert.Throws<ForbiddenException>(() => command.Execute(badRequest));
-            repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()), Times.Never);
-        }
-
-        [Test]
-        public void ShouldThrowValidationExceptionWhenValidatorThrowException()
-        {
-            var badRequest = new RemoveRightsFromUserRequest();
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(new ValidationResult(
-                    new List<ValidationFailure>
-                    {
-                        new ValidationFailure("test", "something", null)
-                    }));
-
-            accessValidator
-                .Setup(x => x.IsAdmin())
-                .Returns(true);
-
-            repositoryMock
-                .Setup(x => x.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()));
-
-            Assert.Throws<ValidationException>(() => command.Execute(badRequest));
-            repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<RemoveRightsFromUserRequest>()), Times.Never);
+            Assert.Throws<ForbiddenException>(() => command.Execute(userId, rightIds));
+            repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()), Times.Never);
         }
     }
 }

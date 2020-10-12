@@ -13,12 +13,12 @@ namespace LT.DigitalOffice.CheckRightsService.Business
     public class AddRightsForUserCommand : IAddRightsForUserCommand
     {
         private readonly ICheckRightsRepository repository;
-        private readonly IValidator<AddRightsForUserRequest> validator;
+        private readonly IValidator<RightsForUserRequest> validator;
         private readonly IAccessValidator accessValidator;
 
         public AddRightsForUserCommand(
             [FromServices] ICheckRightsRepository repository,
-            [FromServices] IValidator<AddRightsForUserRequest> validator,
+            [FromServices] IValidator<RightsForUserRequest> validator,
             IAccessValidator accessValidator)
         {
             this.repository = repository;
@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business
             this.accessValidator = accessValidator;
         }
 
-        public void Execute(AddRightsForUserRequest request)
+        public void Execute(RightsForUserRequest request)
         {
             if (!accessValidator.IsAdmin())
             {

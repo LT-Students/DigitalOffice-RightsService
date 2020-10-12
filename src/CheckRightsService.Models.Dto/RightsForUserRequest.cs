@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService.Models.Dto
 {
-    public class AddRightsForUserRequest
+    public class RightsForUserRequest
     {
         public Guid UserId { get; set; }
         public IEnumerable<int> RightsIds { get; set; }

@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Exceptions;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService.Business.Interfaces
 {
@@ -13,9 +16,10 @@ namespace LT.DigitalOffice.CheckRightsService.Business.Interfaces
         /// <summary>
         /// Remove rights from user.
         /// </summary>
-        /// <param name="request">Request with rights and user id.</param>
+        /// <param name="userId">User id.</param>
+        /// <param name="rightIds">List of rights.</param>
         /// <exception cref="ValidationException">Thrown when user data is incorrect.</exception>
         /// <exception cref="ForbiddenException">Thrown when user does not have the necessary rights.</exception>
-        void Execute(RemoveRightsFromUserRequest request);
+        void Execute(Guid userId, List<int> rightIds);
     }
 }
