@@ -1,7 +1,6 @@
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Provider;
 using LT.DigitalOffice.CheckRightsService.Models.Db;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,9 +24,9 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             return provider.Rights.ToList();
         }
 
-        public void AddRightsToUser(RightsForUserRequest request)
+        public void AddRightsToUser(Guid userId, IEnumerable<int> rightsIds)
         {
-            foreach (var rightId in request.RightsIds)
+            foreach (var rightId in rightsIds)
             {
                 var dbRight = provider.Rights.FirstOrDefault(right => right.Id == rightId);
 
@@ -37,13 +36,13 @@ namespace LT.DigitalOffice.CheckRightsService.Data
                 }
 
                 var dbRightUser = provider.RightUsers.FirstOrDefault(rightUser =>
-                    rightUser.RightId == rightId && rightUser.UserId == request.UserId);
+                    rightUser.RightId == rightId && rightUser.UserId == userId);
 
                 if (dbRightUser == null)
                 {
                     provider.RightUsers.Add(new DbRightUser
                     {
-                        UserId = request.UserId,
+                        UserId = userId,
                         Right = dbRight,
                         RightId = rightId,
                     });

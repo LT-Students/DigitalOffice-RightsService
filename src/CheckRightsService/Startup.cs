@@ -1,4 +1,3 @@
-using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Broker.Consumers;
 using LT.DigitalOffice.CheckRightsService.Business;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
@@ -10,7 +9,6 @@ using LT.DigitalOffice.CheckRightsService.Mappers;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models.Db;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
-using LT.DigitalOffice.CheckRightsService.Validation;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
@@ -47,7 +45,6 @@ namespace LT.DigitalOffice.CheckRightsService
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
-            ConfigureValidators(services);
 
             services.AddKernelExtensions();
         }
@@ -124,11 +121,6 @@ namespace LT.DigitalOffice.CheckRightsService
         private void ConfigureMappers(IServiceCollection services)
         {
             services.AddTransient<IMapper<DbRight, Right>, RightsMapper>();
-        }
-
-        private void ConfigureValidators(IServiceCollection services)
-        {
-            services.AddTransient<IValidator<RightsForUserRequest>, RightsForUserValidator>();
         }
     }
 }

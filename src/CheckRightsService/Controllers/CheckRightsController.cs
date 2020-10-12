@@ -19,9 +19,10 @@ namespace LT.DigitalOffice.CheckRightsService.Controllers
         [HttpPost("addRightsForUser")]
         public void AddRightsForUser(
             [FromServices] IAddRightsForUserCommand command,
-            [FromBody] RightsForUserRequest request)
+            [FromQuery] Guid userId,
+            [FromQuery] IEnumerable<int> rightsIds)
         {
-            command.Execute(request);
+            command.Execute(userId, rightsIds);
         }
 
         [HttpDelete("removeRightsFromUser")]

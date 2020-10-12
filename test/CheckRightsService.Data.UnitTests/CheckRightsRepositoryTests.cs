@@ -103,20 +103,17 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         public void ShouldAddRightsForUser()
         {
             var rightId = dbRight1InDb.Id;
-            var request = new RightsForUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightsIds = new List<int> { rightId }
-            };
+            userId = Guid.NewGuid();
+            rightsIds = new List<int> { rightId };
 
             var rightsBeforeRequest = provider.Rights.ToList();
             var rightUsersBeforeRequest = provider.RightUsers.ToList();
             Assert.IsNotNull(rightsBeforeRequest.FirstOrDefault(
                 x => x.Id == rightId));
             Assert.IsNull(rightUsersBeforeRequest.FirstOrDefault(
-                x => x.UserId == request.UserId && x.RightId == rightId));
+                x => x.UserId == userId && x.RightId == rightId));
 
-            repository.AddRightsToUser(request);
+            repository.AddRightsToUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var rightUsersAfterRequest = provider.RightUsers.ToList();
@@ -125,20 +122,17 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
                 Assert.IsTrue(rightsAfterRequest.Contains(right));
             }
             Assert.IsNotNull(rightUsersAfterRequest.FirstOrDefault(
-                x => x.UserId == request.UserId && x.RightId == rightId));
+                x => x.UserId == userId && x.RightId == rightId));
             Assert.AreEqual(rightUsersBeforeRequest.Count + 1, rightUsersAfterRequest.Count);
         }
 
         [Test]
         public void ShouldThrowExceptionWhenRightIdIsNoFound()
         {
-            var request = new RightsForUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightsIds = new List<int> { int.MaxValue, 0 }
-            };
+            userId = Guid.NewGuid();
+            rightsIds = new List<int> { int.MaxValue, 0 };
 
-            Assert.Throws<BadRequestException>(() => repository.AddRightsToUser(request));
+            Assert.Throws<BadRequestException>(() => repository.AddRightsToUser(userId, rightsIds));
         }
         #endregion
 
