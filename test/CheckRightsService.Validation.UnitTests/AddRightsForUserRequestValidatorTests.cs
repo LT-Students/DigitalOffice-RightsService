@@ -9,12 +9,12 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
 {
     public class AddRightsForUserValidatorTests
     {
-        private IValidator<AddRightsForUserRequest> validator;
+        private IValidator<RightsForUserRequest> validator;
 
         [SetUp]
         public void SetUp()
         {
-            validator = new AddRightsForUserValidator();
+            validator = new RightsForUserValidator();
         }
 
         [Test]

@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
     public class AddRightsForUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IValidator<AddRightsForUserRequest>> validatorMock;
+        private Mock<IValidator<RightsForUserRequest>> validatorMock;
         private Mock<IAccessValidator> accessValidator;
         private IAddRightsForUserCommand command;
 
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
         public void Setup()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
-            validatorMock = new Mock<IValidator<AddRightsForUserRequest>>();
+            validatorMock = new Mock<IValidator<RightsForUserRequest>>();
             accessValidator = new Mock<IAccessValidator>();
             command = new AddRightsForUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
         }
@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
         [Test]
         public void ShouldAddRightsForUser()
         {
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 UserId = Guid.NewGuid(),
                 RightsIds = new List<int>() { 0, 1 }
@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(true);
 
             repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<AddRightsForUserRequest>()));
+                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()));
 
             command.Execute(request);
         }
@@ -54,7 +54,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
         [Test]
         public void ShouldThrowForbiddenExceptionWhenAccessValidatorThrowFalse()
         {
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 UserId = Guid.NewGuid(),
                 RightsIds = new List<int>() { 0, 1 }
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(false);
 
             repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<AddRightsForUserRequest>()));
+                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()));
 
             Assert.Throws<ForbiddenException>(() => command.Execute(request));
         }
@@ -77,7 +77,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
         [Test]
         public void ShouldThrowValidationExceptionWheValidatorThrowException()
         {
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 RightsIds = new List<int>() { 0, 1 }
             };
@@ -95,13 +95,13 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(true);
 
             Assert.Throws<ValidationException>(() => command.Execute(request));
-            repositoryMock.Verify(repository => repository.AddRightsToUser(It.IsAny<AddRightsForUserRequest>()), Times.Never);
+            repositoryMock.Verify(repository => repository.AddRightsToUser(It.IsAny<RightsForUserRequest>()), Times.Never);
         }
 
         [Test]
         public void ShouldThrowBadRequestExceptionWhenRepositoryThrowException()
         {
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 RightsIds = new List<int>() { 1 }
             };
@@ -115,7 +115,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(true);
 
             repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<AddRightsForUserRequest>()))
+                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()))
                 .Throws(new BadRequestException());
 
             Assert.Throws<BadRequestException>(() => command.Execute(request));

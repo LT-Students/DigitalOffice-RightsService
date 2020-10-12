@@ -21,13 +21,14 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
         /// Adds rights for user.
         /// </summary>
         /// <param name="request">Request with rights and user id.</param>
-        void AddRightsToUser(AddRightsForUserRequest request);
+        void AddRightsToUser(RightsForUserRequest request);
 
         /// <summary>
         /// Remove rights for user.
         /// </summary>
-        /// <param name="request">Request with rights and user id.</param>
-        void RemoveRightsFromUser(RemoveRightsFromUserRequest request);
+        /// <param name="userId">User id.</param>
+        /// <param name="rightIds">List of rights.</param>
+        void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightIds);
 
         /// <summary>
         /// Checks whether the user has the specific right.

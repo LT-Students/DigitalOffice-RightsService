@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             return provider.Rights.ToList();
         }
 
-        public void AddRightsToUser(AddRightsForUserRequest request)
+        public void AddRightsToUser(RightsForUserRequest request)
         {
             foreach (var rightId in request.RightsIds)
             {
@@ -52,10 +52,10 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             provider.SaveChanges();
         }
 
-        public void RemoveRightsFromUser(RemoveRightsFromUserRequest request)
+        public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightsIds)
         {
             var userRights = provider.RightUsers.Where(ru =>
-                ru.UserId == request.UserId && request.RightIds.Contains(ru.RightId));
+                ru.UserId == userId && rightsIds.Contains(ru.RightId));
 
             provider.RightUsers.RemoveRange(userRights);
 

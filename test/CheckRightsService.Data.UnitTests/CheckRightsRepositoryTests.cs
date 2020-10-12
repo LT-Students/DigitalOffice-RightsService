@@ -22,6 +22,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         private DbRight dbRight1InDb;
         private DbRight dbRight2InDb;
         private Guid userId;
+        private IEnumerable<int> rightsIds;
 
         [SetUp]
         public void SetUp()
@@ -102,7 +103,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         public void ShouldAddRightsForUser()
         {
             var rightId = dbRight1InDb.Id;
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 UserId = Guid.NewGuid(),
                 RightsIds = new List<int> { rightId }
@@ -131,7 +132,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenRightIdIsNoFound()
         {
-            var request = new AddRightsForUserRequest
+            var request = new RightsForUserRequest
             {
                 UserId = Guid.NewGuid(),
                 RightsIds = new List<int> { int.MaxValue, 0 }
@@ -145,25 +146,22 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldRemoveRightsFromUser()
         {
-            var request = new RemoveRightsFromUserRequest
-            {
-                UserId = userId,
-                RightIds = new List<int> { dbRight1InDb.Id }
-            };
+            rightsIds = new List<int> { dbRight1InDb.Id };
 
-            var rightsBeforeRequest = provider.Rights.ToList();
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(request);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();
 
+
+            var rightsBeforeRequest = provider.Rights.ToList();
             // Rights have not been removed.
             Assert.AreEqual(rightsBeforeRequest, rightsAfterRequest);
             // Removed required rights.
             userRightsBeforeRequest.RemoveAll(ru =>
-                ru.UserId == request.UserId && request.RightIds.Contains(ru.RightId));
+                ru.UserId == userId && rightsIds.Contains(ru.RightId));
             Assert.AreEqual(userRightsBeforeRequest, userRightsAfterRequest);
 
         }
@@ -171,16 +169,12 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldNotDeleteAnythingWhenRightIdIsNotFound()
         {
-            var request = new RemoveRightsFromUserRequest
-            {
-                UserId = userId,
-                RightIds = new List<int> { int.MaxValue, 0 }
-            };
+            rightsIds = new List<int> { int.MaxValue, 0 };
 
             var rightsBeforeRequest = provider.Rights.ToList();
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(request);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();
@@ -194,16 +188,13 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldNotDeleteAnythingWhenUserIdIsNoFound()
         {
-            var request = new RemoveRightsFromUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightIds = new List<int> { dbRight1InDb.Id }
-            };
+            userId = Guid.NewGuid();
+            rightsIds = new List<int> { dbRight1InDb.Id };
 
             var rightsBeforeRequest = provider.Rights.ToList();
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(request);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();

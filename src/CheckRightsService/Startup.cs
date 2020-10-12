@@ -128,9 +128,7 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureValidators(IServiceCollection services)
         {
-            services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
-            services.AddTransient<IValidator<RemoveRightsFromUserRequest>, RemoveRightsFromUserValidator>();
-            services.AddTransient<IValidator<AddRightsForUserRequest>, AddRightsForUserValidator>();
+            services.AddTransient<IValidator<RightsForUserRequest>, RightsForUserValidator>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService.Controllers
@@ -18,7 +19,7 @@ namespace LT.DigitalOffice.CheckRightsService.Controllers
         [HttpPost("addRightsForUser")]
         public void AddRightsForUser(
             [FromServices] IAddRightsForUserCommand command,
-            [FromBody] AddRightsForUserRequest request)
+            [FromBody] RightsForUserRequest request)
         {
             command.Execute(request);
         }
@@ -26,9 +27,10 @@ namespace LT.DigitalOffice.CheckRightsService.Controllers
         [HttpDelete("removeRightsFromUser")]
         public void RemoveRightsFromUser(
             [FromServices] IRemoveRightsFromUserCommand command,
-            [FromBody] RemoveRightsFromUserRequest request)
+            [FromQuery] Guid userId,
+            [FromQuery] IEnumerable<int> rightsIds)
         {
-            command.Execute(request);
+            command.Execute(userId, rightsIds);
         }
     }
 }

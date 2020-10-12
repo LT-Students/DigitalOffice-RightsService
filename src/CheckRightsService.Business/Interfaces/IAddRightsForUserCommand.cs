@@ -16,6 +16,6 @@ namespace LT.DigitalOffice.CheckRightsService.Business.Interfaces
         /// <param name="request">Request with rights and user id.</param>
         /// <exception cref="ValidationException">Thrown when user data is incorrect.</exception>
         /// <exception cref="ForbiddenException">Thrown when user does not have the necessary rights.</exception>
-        void Execute(AddRightsForUserRequest request);
+        void Execute(RightsForUserRequest request);
     }
 }
