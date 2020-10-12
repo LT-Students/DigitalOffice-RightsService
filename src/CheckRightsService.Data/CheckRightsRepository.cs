@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             provider.SaveChanges();
         }
 
-        public void RemoveRightsFromUser(Guid userId, List<int> rightIds)
+        public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightIds)
         {
             var userRights = provider.RightUsers.Where(ru =>
                 ru.UserId == userId && rightIds.Contains(ru.RightId));

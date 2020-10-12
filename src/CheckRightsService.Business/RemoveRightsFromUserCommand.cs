@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business
             this.accessValidator = accessValidator;
         }
 
-        public void Execute(Guid userId, List<int> rightsIds)
+        public void Execute(Guid userId, IEnumerable<int> rightsIds)
         {
             if (!accessValidator.IsAdmin())
             {

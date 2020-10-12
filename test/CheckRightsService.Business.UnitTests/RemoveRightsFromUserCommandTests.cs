@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(true);
 
             repositoryMock
-                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()));
+                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
             command.Execute(userId, rightIds);
         }
@@ -53,10 +53,10 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Returns(false);
 
             repositoryMock
-                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()));
+                .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
             Assert.Throws<ForbiddenException>(() => command.Execute(userId, rightIds));
-            repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<List<int>>()), Times.Never);
+            repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()), Times.Never);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         private DbRight dbRight1InDb;
         private DbRight dbRight2InDb;
         private Guid userId;
-        private List<int> rightIds;
+        private IEnumerable<int> rightIds;
 
         [SetUp]
         public void SetUp()

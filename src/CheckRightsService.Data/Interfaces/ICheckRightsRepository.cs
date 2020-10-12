@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
         /// </summary>
         /// <param name="userId">User id.</param>
         /// <param name="rightIds">List of rights.</param>
-        void RemoveRightsFromUser(Guid userId, List<int> rightIds);
+        void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightIds);
 
         /// <summary>
         /// Checks whether the user has the specific right.
