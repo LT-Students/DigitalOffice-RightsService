@@ -52,10 +52,10 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             provider.SaveChanges();
         }
 
-        public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightIds)
+        public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightsIds)
         {
             var userRights = provider.RightUsers.Where(ru =>
-                ru.UserId == userId && rightIds.Contains(ru.RightId));
+                ru.UserId == userId && rightsIds.Contains(ru.RightId));
 
             provider.RightUsers.RemoveRange(userRights);
 

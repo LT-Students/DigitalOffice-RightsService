@@ -28,9 +28,9 @@ namespace LT.DigitalOffice.CheckRightsService.Controllers
         public void RemoveRightsFromUser(
             [FromServices] IRemoveRightsFromUserCommand command,
             [FromQuery] Guid userId,
-            [FromQuery] IEnumerable<int> rightIds)
+            [FromQuery] IEnumerable<int> rightsIds)
         {
-            command.Execute(userId, rightIds);
+            command.Execute(userId, rightsIds);
         }
     }
 }

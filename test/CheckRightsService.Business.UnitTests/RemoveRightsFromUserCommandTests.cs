@@ -1,8 +1,5 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+﻿using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Moq;
@@ -19,7 +16,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
         private Mock<IAccessValidator> accessValidator;
 
         private Guid userId;
-        private List<int> rightIds;
+        private IEnumerable<int> rightsIds;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +26,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             command = new RemoveRightsFromUserCommand(repositoryMock.Object, accessValidator.Object);
 
             userId = Guid.NewGuid();
-            rightIds = new List<int>() { 0, 1 };
+            rightsIds = new List<int>() { 0, 1 };
         }
 
         [Test]
@@ -42,7 +39,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             repositoryMock
                 .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
-            command.Execute(userId, rightIds);
+            command.Execute(userId, rightsIds);
         }
 
         [Test]
@@ -55,7 +52,7 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             repositoryMock
                 .Setup(x => x.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
-            Assert.Throws<ForbiddenException>(() => command.Execute(userId, rightIds));
+            Assert.Throws<ForbiddenException>(() => command.Execute(userId, rightsIds));
             repositoryMock.Verify(repository => repository.RemoveRightsFromUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()), Times.Never);
         }
     }

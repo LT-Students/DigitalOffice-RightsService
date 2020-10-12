@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         private DbRight dbRight1InDb;
         private DbRight dbRight2InDb;
         private Guid userId;
-        private IEnumerable<int> rightIds;
+        private IEnumerable<int> rightsIds;
 
         [SetUp]
         public void SetUp()
@@ -146,11 +146,11 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldRemoveRightsFromUser()
         {
-            rightIds = new List<int> { dbRight1InDb.Id };
+            rightsIds = new List<int> { dbRight1InDb.Id };
 
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(userId, rightIds);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();
@@ -161,7 +161,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
             Assert.AreEqual(rightsBeforeRequest, rightsAfterRequest);
             // Removed required rights.
             userRightsBeforeRequest.RemoveAll(ru =>
-                ru.UserId == userId && rightIds.Contains(ru.RightId));
+                ru.UserId == userId && rightsIds.Contains(ru.RightId));
             Assert.AreEqual(userRightsBeforeRequest, userRightsAfterRequest);
 
         }
@@ -169,12 +169,12 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldNotDeleteAnythingWhenRightIdIsNotFound()
         {
-            rightIds = new List<int> { int.MaxValue, 0 };
+            rightsIds = new List<int> { int.MaxValue, 0 };
 
             var rightsBeforeRequest = provider.Rights.ToList();
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(userId, rightIds);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();
@@ -189,12 +189,12 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         public void ShouldNotDeleteAnythingWhenUserIdIsNoFound()
         {
             userId = Guid.NewGuid();
-            rightIds = new List<int> { dbRight1InDb.Id };
+            rightsIds = new List<int> { dbRight1InDb.Id };
 
             var rightsBeforeRequest = provider.Rights.ToList();
             var userRightsBeforeRequest = provider.RightUsers.ToList();
 
-            repository.RemoveRightsFromUser(userId, rightIds);
+            repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
             var userRightsAfterRequest = provider.RightUsers.ToList();
