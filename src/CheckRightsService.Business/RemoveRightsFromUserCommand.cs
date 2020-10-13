@@ -16,13 +16,16 @@ namespace LT.DigitalOffice.CheckRightsService.Business
     public class RemoveRightsFromUserCommand : IRemoveRightsFromUserCommand
     {
         private readonly ICheckRightsRepository repository;
+        private readonly IValidator<IEnumerable<int>> validator;
         private readonly IAccessValidator accessValidator;
 
         public RemoveRightsFromUserCommand(
             [FromServices] ICheckRightsRepository repository,
+            [FromServices] IValidator<IEnumerable<int>> validator,
             IAccessValidator accessValidator)
         {
             this.repository = repository;
+            this.validator = validator;
             this.accessValidator = accessValidator;
         }
 
@@ -32,6 +35,8 @@ namespace LT.DigitalOffice.CheckRightsService.Business
             {
                 throw new ForbiddenException("You need to be an admin to remove rights.");
             }
+
+            validator.ValidateAndThrowCustom(rightsIds);
 
             repository.RemoveRightsFromUser(userId, rightsIds);
         }

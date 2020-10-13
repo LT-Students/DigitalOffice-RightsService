@@ -1,4 +1,6 @@
-﻿using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
@@ -12,17 +14,34 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
     public class AddRightsForUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
+        private Mock<IValidator<IEnumerable<int>>> validatorMock;
+        private Mock<ValidationResult> validationResultIsValidMock;
         private Mock<IAccessValidator> accessValidator;
         private IAddRightsForUserCommand command;
+
         private Guid userId;
         private List<int> rightsIds;
+        private ValidationResult validationResultError;
 
         [SetUp]
         public void Setup()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
+            validatorMock = new Mock<IValidator<IEnumerable<int>>>();
             accessValidator = new Mock<IAccessValidator>();
-            command = new AddRightsForUserCommand(repositoryMock.Object, accessValidator.Object);
+            command = new AddRightsForUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
+
+            validationResultError = new ValidationResult(
+                new List<ValidationFailure>
+                {
+                    new ValidationFailure("error", "something", null)
+                });
+
+            validationResultIsValidMock = new Mock<ValidationResult>();
+
+            validationResultIsValidMock
+                .Setup(x => x.IsValid)
+                .Returns(true);
         }
 
         [Test]
@@ -34,6 +53,10 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(true);
+
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultIsValidMock.Object);
 
             repositoryMock
                 .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
@@ -51,6 +74,10 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Setup(x => x.IsAdmin())
                 .Returns(false);
 
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultIsValidMock.Object);
+
             repositoryMock
                 .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
@@ -66,11 +93,30 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
                 .Setup(x => x.IsAdmin())
                 .Returns(true);
 
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultIsValidMock.Object);
+
             repositoryMock
                 .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()))
                 .Throws(new BadRequestException());
 
             Assert.Throws<BadRequestException>(() => command.Execute(userId, rightsIds));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenValidatorThrowsException()
+        {
+            accessValidator
+                .Setup(x => x.IsAdmin())
+                .Returns(true);
+
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultError);
+
+            Assert.Throws<ValidationException>(() => command.Execute(userId, rightsIds));
+            validatorMock.Verify(validator => validator.Validate(It.IsAny<IValidationContext>()), Times.Once);
         }
     }
 }

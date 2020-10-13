@@ -74,5 +74,10 @@ namespace LT.DigitalOffice.CheckRightsService.Data
 
             throw new Exception("Such user doesn't exist or does not have this right.");
         }
+
+        public bool DoesRightExist(int rightId)
+        {
+            return provider.Rights.Any(right => right.Id == rightId);
+        }
     }
 }
