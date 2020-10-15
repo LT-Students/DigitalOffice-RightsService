@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -10,13 +12,18 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
     public class RightsIdsValidatorTests
     {
         private IValidator<IEnumerable<int>> validator;
+        private List<DbRight> existingRightsList;
         private Mock<ICheckRightsRepository> repositoryMock;
+        private Mock<IMemoryCache> cacheMock;
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        [SetUp]
+        public void SetUp()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
-            validator = new RightsIdsValidator(repositoryMock.Object);
+            cacheMock = new Mock<IMemoryCache>();
+            validator = new RightsIdsValidator(repositoryMock.Object, cacheMock.Object);
+
+            existingRightsList = new List<DbRight>() { new DbRight{ Id = 1 } };
         }
 
         [Test]
@@ -28,6 +35,10 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
         [Test]
         public void ShouldThrowValidationExceptionWhenRightIdIsInvalid()
         {
+            repositoryMock
+                .Setup(x => x.GetRightsList())
+                .Returns(existingRightsList);
+
             validator.ShouldHaveValidationErrorFor(x => x, new List<int>() { -1 });
         }
 
@@ -35,20 +46,20 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
         public void ShouldThrowValidationExceptionWhenRightDoesNotExist()
         {
             repositoryMock
-                .Setup(x => x.DoesRightExist(It.IsAny<int>()))
-                .Returns(false);
+                .Setup(x => x.GetRightsList())
+                .Returns(existingRightsList);
 
             validator.ShouldHaveValidationErrorFor(x => x, new List<int>() { 10000 });
         }
 
         [Test]
-        public void ShouldValidateSuccessfullyWhenRightsList()
+        public void ShouldValidateSuccessfullyWhenRightsListExist()
         {
             repositoryMock
-                .Setup(x => x.DoesRightExist(It.IsAny<int>()))
-                .Returns(true);
+                .Setup(x => x.GetRightsList())
+                .Returns(existingRightsList);
 
-            validator.ShouldNotHaveValidationErrorFor(x => x, new List<int>() { 1, 2 });
+            validator.ShouldNotHaveValidationErrorFor(x => x, new List<int>() { 1 });
         }
     }
 }

@@ -1,25 +1,48 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Models.Db;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LT.DigitalOffice.CheckRightsService.Validation
 {
     public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>
     {
-        public RightsIdsValidator([FromServices] ICheckRightsRepository repository)
+        private readonly IMemoryCache cache;
+        private readonly ICheckRightsRepository repository;
+
+        public RightsIdsValidator(
+            [FromServices] ICheckRightsRepository repository,
+            [FromServices] IMemoryCache cache)
         {
+            this.repository = repository;
+            this.cache = cache;
+
             RuleFor(rightsIds => rightsIds)
                 .NotEmpty().WithMessage("Rights list can not be empty");
 
             RuleForEach(rightsIds => rightsIds)
-                .GreaterThan(-1).WithMessage("Right number can not be less than zero.")
-                .Must(right => DoesRightExist(repository, right)).WithMessage("Some rights does not exist.");
+                .Must(right => right > -1).WithMessage("Right number can not be less than zero.")
+                .Must(right => DoesRightExist(right) == true).WithMessage("Some rights does not exist.");
         }
 
-        private bool DoesRightExist(ICheckRightsRepository repository, int rightId)
+        private bool DoesRightExist(int rightId)
         {
-            return repository.DoesRightExist(rightId);
+            //if (cache.Get(rightId) == null)
+            //{
+                var dbRight = repository.GetRightsList().Find(right => right.Id == rightId);
+
+                if (dbRight == null)
+                {
+                    return false;
+                }
+
+            //    cache.Set(rightId, dbRight);
+            //}
+
+            return true;
         }
     }
 }

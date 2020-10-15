@@ -17,12 +17,6 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
         List<DbRight> GetRightsList();
 
         /// <summary>
-        /// Returns whether a right with the specified Id exists or not.
-        /// </summary>
-        /// <returns>True when right exists, otherwise false.</returns>
-        bool DoesRightExist(int rightId);
-
-        /// <summary>
         /// Adds rights for user.
         /// </summary>
         /// <param name="userId">User id.</param>
