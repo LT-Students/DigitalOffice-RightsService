@@ -35,9 +35,9 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
         [Test]
         public void ShouldThrowValidationExceptionWhenRightIdIsInvalid()
         {
-            repositoryMock
-                .Setup(x => x.GetRightsList())
-                .Returns(existingRightsList);
+            //repositoryMock
+            //    .Setup(x => x.GetRightsList())
+            //    .Returns(existingRightsList);
 
             validator.ShouldHaveValidationErrorFor(x => x, new List<int>() { -1 });
         }

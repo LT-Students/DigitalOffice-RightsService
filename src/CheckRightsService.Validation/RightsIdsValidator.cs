@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models.Db;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
@@ -21,18 +20,20 @@ namespace LT.DigitalOffice.CheckRightsService.Validation
             this.cache = cache;
 
             RuleFor(rightsIds => rightsIds)
-                .NotEmpty().WithMessage("Rights list can not be empty");
-
-            RuleForEach(rightsIds => rightsIds)
-                .Must(right => right > -1).WithMessage("Right number can not be less than zero.")
-                .Must(right => DoesRightExist(right) == true).WithMessage("Some rights does not exist.");
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("Rights list can not be empty")
+                .Must(rightsIds =>
+                {
+                    return rightsIds.All(r => r > 0);
+                }).WithMessage("Right number can not be less than zero.")
+                .Must(rightsId => rightsId.All(DoesRightExist)).WithMessage("Some rights does not exist.");
         }
 
         private bool DoesRightExist(int rightId)
         {
             //if (cache.Get(rightId) == null)
             //{
-                var dbRight = repository.GetRightsList().Find(right => right.Id == rightId);
+                var dbRight = repository.GetRightsList()?.Find(right => right.Id == rightId);
 
                 if (dbRight == null)
                 {
