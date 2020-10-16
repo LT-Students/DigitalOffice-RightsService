@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService.Data.Pro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService", "src\CheckRightsService\CheckRightsService.csproj", "{4CD0A595-D803-4673-A690-90F1EC459D2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService.Models.BrokerRequest", "src\CheckRightsService.Models.BrokerRequest\CheckRightsService.Models.BrokerRequest.csproj", "{DADF5598-476D-4F92-B0F5-BAB160B7E02A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckRightsService.Models.Broker", "src\CheckRightsService.Models.BrokerRequest\CheckRightsService.Models.Broker.csproj", "{DADF5598-476D-4F92-B0F5-BAB160B7E02A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
