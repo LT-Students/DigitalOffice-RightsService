@@ -41,17 +41,22 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Add/Edit/Remove user"
+                            Name = "Add/Edit/Remove users"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Add/Edit/Remove project"
+                            Name = "Add/Edit/Remove projects"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Add/Edit/Remove email template"
+                            Name = "Add/Edit/Remove email templates"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Add/Edit/Remove departments"
                         });
                 });
 #pragma warning restore 612, 618
