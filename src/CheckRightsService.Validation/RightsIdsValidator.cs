@@ -31,8 +31,8 @@ namespace LT.DigitalOffice.CheckRightsService.Validation
 
         private bool DoesRightExist(int rightId)
         {
-            //if (cache.Get(rightId) == null)
-            //{
+            if (cache.TryGetValue(rightId, out object right) == false)
+            {
                 var dbRight = repository.GetRightsList()?.Find(right => right.Id == rightId);
 
                 if (dbRight == null)
@@ -40,8 +40,8 @@ namespace LT.DigitalOffice.CheckRightsService.Validation
                     return false;
                 }
 
-            //    cache.Set(rightId, dbRight);
-            //}
+                cache.Set(rightId, dbRight);
+            }
 
             return true;
         }

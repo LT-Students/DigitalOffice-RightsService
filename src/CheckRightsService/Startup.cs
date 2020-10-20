@@ -1,3 +1,4 @@
+using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Broker.Consumers;
 using LT.DigitalOffice.CheckRightsService.Business;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
@@ -9,6 +10,7 @@ using LT.DigitalOffice.CheckRightsService.Mappers;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models.Db;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
+using LT.DigitalOffice.CheckRightsService.Validation;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService
 {
@@ -42,6 +45,7 @@ namespace LT.DigitalOffice.CheckRightsService
             });
 
             ConfigureCommands(services);
+            ConfigureValidator(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
@@ -121,6 +125,11 @@ namespace LT.DigitalOffice.CheckRightsService
         private void ConfigureMappers(IServiceCollection services)
         {
             services.AddTransient<IMapper<DbRight, Right>, RightsMapper>();
+        }
+
+        private void ConfigureValidator(IServiceCollection services)
+        {
+            services.AddTransient<IValidator<IEnumerable<int>>, RightsIdsValidator>();
         }
     }
 }
