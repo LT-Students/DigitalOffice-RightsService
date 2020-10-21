@@ -33,6 +33,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.Configure<RabbitMQOptions>(Configuration);
 
             services.AddHealthChecks();
