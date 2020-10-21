@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.CheckRightsService.Validation.UnitTests
 
         private int rightId;
         private DbRight dbRight;
-        object right;
+        private object right;
 
         [SetUp]
         public void SetUp()
