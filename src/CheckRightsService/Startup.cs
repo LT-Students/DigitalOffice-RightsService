@@ -1,4 +1,6 @@
+using System;
 using FluentValidation;
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.CheckRightsService.Broker.Consumers;
 using LT.DigitalOffice.CheckRightsService.Business;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
@@ -13,6 +15,7 @@ using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.CheckRightsService.Validation;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Middlewares.Token;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +36,7 @@ namespace LT.DigitalOffice.CheckRightsService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<RabbitMQOptions>(Configuration);
+            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
             services.AddHealthChecks();
 
@@ -66,6 +70,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
             app.UseRouting();
 
+            app.UseMiddleware<TokenMiddleware>();
+
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
 
             app.UseCors(builder =>
@@ -93,11 +99,7 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            string serviceName = Configuration.GetSection(RabbitMQOptions.RabbitMQ)["Username"];
-            string servicePassword = Configuration.GetSection(RabbitMQOptions.RabbitMQ)["Password"];
-            var rabbitMQOptions = new RabbitMQOptions();
-            Configuration.GetSection(RabbitMQOptions.RabbitMQ).Bind(rabbitMQOptions);
-
+            var rabbitmqOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
 
             services.AddMassTransit(o =>
             {
@@ -107,12 +109,15 @@ namespace LT.DigitalOffice.CheckRightsService
                 {
                     cfg.Host("localhost", "/", host =>
                     {
-                        host.Username($"{serviceName}_{servicePassword}");
-                        host.Password(servicePassword);
+                        host.Username($"{rabbitmqOptions.Username}_{rabbitmqOptions.Password}");
+                        host.Password(rabbitmqOptions.Password);
                     });
                 });
 
-                o.ConfigureKernelMassTransit(rabbitMQOptions);
+                o.AddRequestClient<ICheckTokenRequest>(
+                    new Uri("rabbitmq://localhost/AuthenticationService_ValidationJwt"));
+
+                o.ConfigureKernelMassTransit(rabbitmqOptions);
             });
 
             services.AddMassTransitHostedService();
