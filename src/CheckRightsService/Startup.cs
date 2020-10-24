@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService
 {
@@ -35,6 +36,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.Configure<RabbitMQOptions>(Configuration);
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
@@ -48,10 +51,10 @@ namespace LT.DigitalOffice.CheckRightsService
             });
 
             ConfigureCommands(services);
+            ConfigureValidator(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
-            ConfigureValidators(services);
 
             services.AddKernelExtensions();
         }
@@ -141,9 +144,9 @@ namespace LT.DigitalOffice.CheckRightsService
             services.AddTransient<IMapper<DbRight, Right>, RightsMapper>();
         }
 
-        private void ConfigureValidators(IServiceCollection services)
+        private void ConfigureValidator(IServiceCollection services)
         {
-            services.AddTransient<IValidator<RightsForUserRequest>, RightsForUserValidator>();
+            services.AddTransient<IValidator<IEnumerable<int>>, RightsIdsValidator>();
         }
     }
 }

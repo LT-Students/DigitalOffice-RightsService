@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.CheckRightsService.Business
 {
@@ -13,12 +14,12 @@ namespace LT.DigitalOffice.CheckRightsService.Business
     public class AddRightsForUserCommand : IAddRightsForUserCommand
     {
         private readonly ICheckRightsRepository repository;
-        private readonly IValidator<RightsForUserRequest> validator;
+        private readonly IValidator<IEnumerable<int>> validator;
         private readonly IAccessValidator accessValidator;
 
         public AddRightsForUserCommand(
             [FromServices] ICheckRightsRepository repository,
-            [FromServices] IValidator<RightsForUserRequest> validator,
+            [FromServices] IValidator<IEnumerable<int>> validator,
             IAccessValidator accessValidator)
         {
             this.repository = repository;
@@ -26,16 +27,16 @@ namespace LT.DigitalOffice.CheckRightsService.Business
             this.accessValidator = accessValidator;
         }
 
-        public void Execute(RightsForUserRequest request)
+        public void Execute(Guid userId, IEnumerable<int> rightsIds)
         {
             if (!accessValidator.IsAdmin())
             {
                 throw new ForbiddenException("You need to be an admin to add rights.");
             }
 
-            validator.ValidateAndThrowCustom(request);
+            validator.ValidateAndThrowCustom(rightsIds);
 
-            repository.AddRightsToUser(request);
+            repository.AddRightsToUser(userId, rightsIds);
         }
     }
 }

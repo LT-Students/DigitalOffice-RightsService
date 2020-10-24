@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Moq;
@@ -15,110 +14,109 @@ namespace LT.DigitalOffice.CheckRightsService.Business.UnitTests
     public class AddRightsForUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IValidator<RightsForUserRequest>> validatorMock;
+        private Mock<IValidator<IEnumerable<int>>> validatorMock;
+        private Mock<ValidationResult> validationResultIsValidMock;
         private Mock<IAccessValidator> accessValidator;
         private IAddRightsForUserCommand command;
+
+        private Guid userId;
+        private List<int> rightsIds;
+        private ValidationResult validationResultError;
 
         [SetUp]
         public void Setup()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
-            validatorMock = new Mock<IValidator<RightsForUserRequest>>();
+            validatorMock = new Mock<IValidator<IEnumerable<int>>>();
             accessValidator = new Mock<IAccessValidator>();
             command = new AddRightsForUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
+
+            validationResultError = new ValidationResult(
+                new List<ValidationFailure>
+                {
+                    new ValidationFailure("error", "something", null)
+                });
+
+            validationResultIsValidMock = new Mock<ValidationResult>();
+
+            validationResultIsValidMock
+                .Setup(x => x.IsValid)
+                .Returns(true);
         }
 
         [Test]
         public void ShouldAddRightsForUser()
         {
-            var request = new RightsForUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightsIds = new List<int>() { 0, 1 }
-            };
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
+            userId = Guid.NewGuid();
+            rightsIds = new List<int>() { 0, 1 };
 
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(true);
 
-            repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()));
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultIsValidMock.Object);
 
-            command.Execute(request);
+            repositoryMock
+                .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
+
+            command.Execute(userId, rightsIds);
         }
 
         [Test]
         public void ShouldThrowForbiddenExceptionWhenAccessValidatorThrowFalse()
         {
-            var request = new RightsForUserRequest
-            {
-                UserId = Guid.NewGuid(),
-                RightsIds = new List<int>() { 0, 1 }
-            };
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
+            userId = Guid.NewGuid();
+            rightsIds = new List<int>() { 0, 1 };
 
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(false);
 
-            repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()));
-
-            Assert.Throws<ForbiddenException>(() => command.Execute(request));
-        }
-
-        [Test]
-        public void ShouldThrowValidationExceptionWheValidatorThrowException()
-        {
-            var request = new RightsForUserRequest
-            {
-                RightsIds = new List<int>() { 0, 1 }
-            };
-
             validatorMock
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(new ValidationResult(
-                    new List<ValidationFailure>
-                    {
-                        new ValidationFailure("test", "something", null)
-                    }));
+                .Returns(validationResultIsValidMock.Object);
 
-            accessValidator
-                .Setup(x => x.IsAdmin())
-                .Returns(true);
+            repositoryMock
+                .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()));
 
-            Assert.Throws<ValidationException>(() => command.Execute(request));
-            repositoryMock.Verify(repository => repository.AddRightsToUser(It.IsAny<RightsForUserRequest>()), Times.Never);
+            Assert.Throws<ForbiddenException>(() => command.Execute(userId, rightsIds));
         }
 
         [Test]
         public void ShouldThrowBadRequestExceptionWhenRepositoryThrowException()
         {
-            var request = new RightsForUserRequest
-            {
-                RightsIds = new List<int>() { 1 }
-            };
-
-            validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
+            rightsIds = new List<int>() { 1 };
 
             accessValidator
                 .Setup(x => x.IsAdmin())
                 .Returns(true);
 
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultIsValidMock.Object);
+
             repositoryMock
-                .Setup(x => x.AddRightsToUser(It.IsAny<RightsForUserRequest>()))
+                .Setup(x => x.AddRightsToUser(It.IsAny<Guid>(), It.IsAny<IEnumerable<int>>()))
                 .Throws(new BadRequestException());
 
-            Assert.Throws<BadRequestException>(() => command.Execute(request));
+            Assert.Throws<BadRequestException>(() => command.Execute(userId, rightsIds));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenValidatorThrowsException()
+        {
+            accessValidator
+                .Setup(x => x.IsAdmin())
+                .Returns(true);
+
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(validationResultError);
+
+            Assert.Throws<ValidationException>(() => command.Execute(userId, rightsIds));
+            validatorMock.Verify(validator => validator.Validate(It.IsAny<IValidationContext>()), Times.Once);
         }
     }
 }

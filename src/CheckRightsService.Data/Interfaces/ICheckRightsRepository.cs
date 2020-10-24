@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.CheckRightsService.Models.Db;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
 using System;
 using System.Collections.Generic;
 
@@ -20,8 +19,9 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
         /// <summary>
         /// Adds rights for user.
         /// </summary>
-        /// <param name="request">Request with rights and user id.</param>
-        void AddRightsToUser(RightsForUserRequest request);
+        /// <param name="userId">User id.</param>
+        /// <param name="rightIds">List of rights.</param>
+        void AddRightsToUser(Guid userId, IEnumerable<int> rightIds);
 
         /// <summary>
         /// Remove rights for user.

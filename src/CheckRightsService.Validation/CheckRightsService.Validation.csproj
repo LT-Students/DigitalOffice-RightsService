@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CheckRightsService.Data\CheckRightsService.Data.csproj" />
     <ProjectReference Include="..\CheckRightsService.Models.Dto\CheckRightsService.Models.Dto.csproj" />
   </ItemGroup>
 
