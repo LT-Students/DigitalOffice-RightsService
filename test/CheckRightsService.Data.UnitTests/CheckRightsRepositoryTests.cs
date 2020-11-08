@@ -132,7 +132,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
             userId = Guid.NewGuid();
             rightsIds = new List<int> { int.MaxValue, 0 };
 
-            Assert.Throws<BadRequestException>(() => repository.AddRightsToUser(userId, rightsIds));
+            Assert.Throws<NotFoundException>(() => repository.AddRightsToUser(userId, rightsIds));
         }
         #endregion
 
