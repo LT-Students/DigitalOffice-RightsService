@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data
 
                 if (dbRight == null)
                 {
-                    throw new BadRequestException("Right doesn't exist.");
+                    throw new NotFoundException("Right doesn't exist.");
                 }
 
                 var dbRightUser = provider.RightUsers.FirstOrDefault(rightUser =>
