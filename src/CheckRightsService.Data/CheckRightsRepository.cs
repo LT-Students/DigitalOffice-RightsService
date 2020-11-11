@@ -61,18 +61,15 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             provider.SaveChanges();
         }
 
-        public bool CheckIfUserHasRight(Guid userId, int rightId)
+        public bool IsUserHasRight(Guid userId, int rightId)
         {
-            var rights = provider.Rights
+            return provider.Rights
                 .AsNoTracking()
-                .Include(r => r.RightUsers);
-
-            if (rights.Any(r => r.RightUsers.Select(ru => ru.UserId).Contains(userId)))
-            {
-                return true;
-            }
-
-            throw new Exception("Such user doesn't exist or does not have this right.");
+                .Include(r => r.RightUsers)
+                .Select(r => r.RightUsers)
+                .ToList()
+                .Any(r => r.Select(r => (r.UserId, r.RightId))
+                .Contains((userId, rightId)));
         }
     }
 }
