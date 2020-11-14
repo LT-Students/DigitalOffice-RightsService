@@ -48,7 +48,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data
                     });
                 }
             }
-            provider.SaveChanges();
+            provider.Save();
         }
 
         public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightsIds)
@@ -58,7 +58,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data
 
             provider.RightUsers.RemoveRange(userRights);
 
-            provider.SaveChanges();
+            provider.Save();
         }
 
         public bool CheckIfUserHasRight(Guid userId, int rightId)

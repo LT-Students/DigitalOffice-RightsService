@@ -2,7 +2,7 @@
 using FluentValidation.Results;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using Moq;
 using NUnit.Framework;

@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.CheckRightsService.Models.Dto;
-using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
