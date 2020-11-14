@@ -1,24 +1,40 @@
-﻿using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
+﻿using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.Broker.Responses;
+using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Provider;
 using LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.CheckRightsService.Mappers.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Models.Db;
 using LT.DigitalOffice.CheckRightsService.Models.Dto;
+using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
 {
     public class CheckRightsRepositoryTests
     {
+        public class OperationResult<T> : IOperationResult<T>
+        {
+            public bool IsSuccess { get; set; }
+
+            public List<string> Errors { get; set; }
+
+            public T Body { get; set; }
+        }
+
         private IDataProvider provider;
         private ICheckRightsRepository repository;
         private Mock<IMapper<DbRight, Right>> mapperMock;
+        private Mock<IRequestClient<IGetUserRequest>> clientMock;
+        private OperationResult<IGetUserResponse> operationResult;
         private DbRight dbRight1InDb;
         private DbRight dbRight2InDb;
         private Guid userId;
@@ -32,7 +48,10 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
                 .Options;
             provider = new CheckRightsServiceDbContext(dbOptions);
             mapperMock = new Mock<IMapper<DbRight, Right>>();
-            repository = new CheckRightsRepository(provider);
+            clientMock = new Mock<IRequestClient<IGetUserRequest>>();
+            BrokerSetUp();
+
+            repository = new CheckRightsRepository(provider, clientMock.Object);
 
             userId = Guid.NewGuid();
             dbRight1InDb = new DbRight
@@ -80,6 +99,23 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
             }
         }
 
+        private void BrokerSetUp()
+        {
+            var responseClientMock = new Mock<Response<IOperationResult<IGetUserResponse>>>();
+            clientMock = new Mock<IRequestClient<IGetUserRequest>>();
+
+            operationResult = new OperationResult<IGetUserResponse>();
+
+            clientMock.Setup(
+                x => x.GetResponse<IOperationResult<IGetUserResponse>>(
+                    It.IsAny<object>(), default, default))
+                .Returns(Task.FromResult(responseClientMock.Object));
+
+            responseClientMock
+                .SetupGet(x => x.Message)
+                .Returns(operationResult);
+        }
+
         #region GetRightsList
         [Test]
         public void ShouldGetRightsListWhenDbIsNotEmpty()
@@ -102,6 +138,9 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldAddRightsForUser()
         {
+            operationResult.IsSuccess = true;
+            operationResult.Errors = new List<string>();
+
             var rightId = dbRight1InDb.Id;
             userId = Guid.NewGuid();
             rightsIds = new List<int> { rightId };
@@ -129,10 +168,25 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenRightIdIsNoFound()
         {
+            operationResult.IsSuccess = true;
+            operationResult.Errors = new List<string>();
+
             userId = Guid.NewGuid();
             rightsIds = new List<int> { int.MaxValue, 0 };
 
             Assert.Throws<BadRequestException>(() => repository.AddRightsToUser(userId, rightsIds));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenUserIdIsNoFound()
+        {
+            operationResult.IsSuccess = false;
+            operationResult.Errors = new List<string>();
+
+            userId = Guid.NewGuid();
+            rightsIds = new List<int> { dbRight1InDb.Id };
+
+            Assert.Throws<NotFoundException>(() => repository.AddRightsToUser(userId, rightsIds));
         }
         #endregion
 
