@@ -1,11 +1,16 @@
+using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Provider;
 using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace LT.DigitalOffice.CheckRightsService.Data
 {
@@ -13,10 +18,12 @@ namespace LT.DigitalOffice.CheckRightsService.Data
     public class CheckRightsRepository : ICheckRightsRepository
     {
         private readonly IDataProvider provider;
+        private readonly IRequestClient<IGetUserRequest> client;
 
-        public CheckRightsRepository(IDataProvider _provider)
+        public CheckRightsRepository(IDataProvider _provider, IRequestClient<IGetUserRequest> _client)
         {
             provider = _provider;
+            client = _client;
         }
 
         public List<DbRight> GetRightsList()
@@ -24,8 +31,23 @@ namespace LT.DigitalOffice.CheckRightsService.Data
             return provider.Rights.ToList();
         }
 
+        private bool SentRequestInUserService(Guid userId)
+        {
+            var brokerResponse = client.GetResponse<IOperationResult<IGetUserResponse>>(new
+            {
+                UserId = userId
+            }).Result;
+
+            return brokerResponse.Message.IsSuccess;
+        }
+
         public void AddRightsToUser(Guid userId, IEnumerable<int> rightsIds)
         {
+            if (!SentRequestInUserService(userId))
+            {
+                throw new NotFoundException("User not found.");
+            }
+
             foreach (var rightId in rightsIds)
             {
                 var dbRight = provider.Rights.FirstOrDefault(right => right.Id == rightId);

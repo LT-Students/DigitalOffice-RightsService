@@ -119,6 +119,8 @@ namespace LT.DigitalOffice.CheckRightsService
 
                 o.AddRequestClient<ICheckTokenRequest>(
                     new Uri("rabbitmq://localhost/AuthenticationService_ValidationJwt"));
+                o.AddRequestClient<IGetUserRequest>(
+                    new Uri("rabbitmq://localhost/UserService"));
 
                 o.ConfigureKernelMassTransit(rabbitmqOptions);
             });
