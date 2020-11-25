@@ -199,5 +199,15 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
             Assert.AreEqual(userRightsBeforeRequest, userRightsAfterRequest);
         }
         #endregion
+
+        #region IsUserHasRight
+        [Test]
+        public void ShouldReturnTrueOrFalseWhenPairExistOrNotExist()
+        {
+            Assert.IsTrue(repository.IsUserHasRight(userId, dbRight1InDb.Id));
+            Assert.IsFalse(repository.IsUserHasRight(userId, int.MaxValue));
+            Assert.IsFalse(repository.IsUserHasRight(Guid.NewGuid(), dbRight1InDb.Id));
+        }
+        #endregion
     }
 }
