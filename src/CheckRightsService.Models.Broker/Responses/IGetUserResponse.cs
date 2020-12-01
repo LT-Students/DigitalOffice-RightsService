@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.Broker.Responses
         Guid Id { get; }
         string FirstName { get; }
         string MiddleName { get; }
-        string LastName { get; set; }
+        string LastName { get; }
 
         static object CreateObj(Guid id, string firstName, string middleName, string lastName)
         {
