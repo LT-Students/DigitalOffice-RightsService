@@ -13,6 +13,7 @@
     <ProjectReference Include="..\CheckRightsService.Data.Provider.MsSql.Ef\CheckRightsService.Data.Provider.MsSql.Ef.csproj" />
     <ProjectReference Include="..\CheckRightsService.Data\CheckRightsService.Data.csproj" />
     <ProjectReference Include="..\CheckRightsService.Mappers\CheckRightsService.Mappers.csproj" />
+    <ProjectReference Include="..\CheckRightsService.Models.Broker\CheckRightsService.Models.Broker.csproj" />
     <ProjectReference Include="..\CheckRightsService.Models.Db\CheckRightsService.Models.Db.csproj" />
     <ProjectReference Include="..\CheckRightsService.Models.Dto\CheckRightsService.Models.Dto.csproj" />
     <ProjectReference Include="..\CheckRightsService.Validation\CheckRightsService.Validation.csproj" />
