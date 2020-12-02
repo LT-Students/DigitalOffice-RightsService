@@ -83,7 +83,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
                 });
 
             provider.Rights.AddRange(dbRight1InDb, dbRight2InDb);
-            provider.SaveChanges();
+            provider.Save();
 
             mapperMock.Setup(mapper => mapper.Map(dbRight1InDb)).Returns(new Right
                 {Id = dbRight1InDb.Id, Name = dbRight1InDb.Name, Description = dbRight1InDb.Description});
@@ -127,7 +127,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
         public void ShouldGetRightListWhenDbIsEmpty()
         {
             provider.Rights.RemoveRange(provider.Rights);
-            provider.SaveChanges();
+            provider.Save();
 
             Assert.That(repository.GetRightsList(), Is.Not.Null);
             Assert.That(provider.Rights, Is.Empty);
@@ -251,6 +251,16 @@ namespace LT.DigitalOffice.CheckRightsService.Data.UnitTests
             Assert.AreEqual(rightsBeforeRequest, rightsAfterRequest);
             // User rights have not been removed.
             Assert.AreEqual(userRightsBeforeRequest, userRightsAfterRequest);
+        }
+        #endregion
+
+        #region IsUserHasRight
+        [Test]
+        public void ShouldReturnTrueOrFalseWhenPairExistOrNotExist()
+        {
+            Assert.IsTrue(repository.IsUserHasRight(userId, dbRight1InDb.Id));
+            Assert.IsFalse(repository.IsUserHasRight(userId, int.MaxValue));
+            Assert.IsFalse(repository.IsUserHasRight(Guid.NewGuid(), dbRight1InDb.Id));
         }
         #endregion
     }

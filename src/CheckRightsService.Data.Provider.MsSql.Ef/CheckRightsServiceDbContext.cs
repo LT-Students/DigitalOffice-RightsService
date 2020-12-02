@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.CheckRightsService.Models.Db;
+using LT.DigitalOffice.Kernel.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -20,7 +21,7 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Provider.MsSql.Ef
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("LT.DigitalOffice.CheckRightsService.Models.Db"));
         }
 
-        void IDataProvider.SaveChanges()
+        void IBaseDataProvider.Save()
         {
             SaveChanges();
         }

@@ -22,6 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using LT.DigitalOffice.CheckRightsService.Configuration;
 
 namespace LT.DigitalOffice.CheckRightsService
 {
@@ -38,7 +39,6 @@ namespace LT.DigitalOffice.CheckRightsService
         {
             services.AddMemoryCache();
 
-            services.Configure<RabbitMQOptions>(Configuration);
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
             services.AddHealthChecks();
@@ -102,7 +102,7 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitmqOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
+            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<RabbitMqConfig>();
 
             services.AddMassTransit(o =>
             {
@@ -112,17 +112,15 @@ namespace LT.DigitalOffice.CheckRightsService
                 {
                     cfg.Host("localhost", "/", host =>
                     {
-                        host.Username($"{rabbitmqOptions.Username}_{rabbitmqOptions.Password}");
-                        host.Password(rabbitmqOptions.Password);
+                        host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
+                        host.Password(rabbitMqConfig.Password);
                     });
                 });
 
-                o.AddRequestClient<ICheckTokenRequest>(
-                    new Uri("rabbitmq://localhost/AuthenticationService_ValidationJwt"));
-                o.AddRequestClient<IGetUserRequest>(
-                    new Uri("rabbitmq://localhost/UserService"));
+                o.AddRequestClient<ICheckTokenRequest>(new Uri(rabbitMqConfig.AuthenticationServiceValidationUrl));
+                o.AddRequestClient<ICheckTokenRequest>(new Uri(rabbitMqConfig.AccessValidatorUserServiceURL));
 
-                o.ConfigureKernelMassTransit(rabbitmqOptions);
+                o.ConfigureKernelMassTransit(rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();

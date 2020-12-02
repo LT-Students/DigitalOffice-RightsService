@@ -36,6 +36,6 @@ namespace LT.DigitalOffice.CheckRightsService.Data.Interfaces
         /// <param name="userId">ID of the user.</param>
         /// <param name="rightId">ID of the right.</param>
         /// <returns>True, if there's a UserId-RightId pair. False otherwise.</returns>
-        bool CheckIfUserHasRight(Guid userId, int rightId);
+        bool IsUserHasRight(Guid userId, int rightId);
     }
 }

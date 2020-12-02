@@ -1,8 +1,9 @@
 ﻿using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
-using LT.DigitalOffice.Kernel.AccessValidator.Requests;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Requests;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
@@ -24,7 +25,12 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
 
         private object HasRights(IAccessValidatorCheckRightsServiceRequest request)
         {
-            return repository.CheckIfUserHasRight(request.UserId, request.RightId);
+            if (repository.IsUserHasRight(request.UserId, request.RightId))
+            {
+                return true;
+            }
+
+            throw new Exception("Such user doesn't exist or does not have this right.");
         }
     }
 }
