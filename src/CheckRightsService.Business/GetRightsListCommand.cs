@@ -15,7 +15,8 @@ namespace LT.DigitalOffice.CheckRightsService.Business
         private readonly ICheckRightsRepository repository;
         private readonly IMapper<DbRight, Right> mapper;
 
-        public GetRightsListCommand([FromServices] ICheckRightsRepository repository,
+        public GetRightsListCommand(
+            [FromServices] ICheckRightsRepository repository,
             [FromServices] IMapper<DbRight, Right> mapper)
         {
             this.repository = repository;

@@ -2,10 +2,6 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\CheckRightsService.Broker\CheckRightsService.Broker.csproj" />
     <ProjectReference Include="..\CheckRightsService.Business\CheckRightsService.Business.csproj" />

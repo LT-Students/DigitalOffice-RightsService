@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\CheckRightsService.Data.Provider.MsSql.Ef\CheckRightsService.Data.Provider.MsSql.Ef.csproj" />
     <ProjectReference Include="..\..\src\CheckRightsService.Data\CheckRightsService.Data.csproj" />

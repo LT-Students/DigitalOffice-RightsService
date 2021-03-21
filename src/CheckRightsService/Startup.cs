@@ -1,9 +1,9 @@
-using System;
 using FluentValidation;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.CheckRightsService.Broker.Consumers;
 using LT.DigitalOffice.CheckRightsService.Business;
 using LT.DigitalOffice.CheckRightsService.Business.Interfaces;
+using LT.DigitalOffice.CheckRightsService.Configuration;
 using LT.DigitalOffice.CheckRightsService.Data;
 using LT.DigitalOffice.CheckRightsService.Data.Interfaces;
 using LT.DigitalOffice.CheckRightsService.Data.Provider;
@@ -21,8 +21,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
-using LT.DigitalOffice.CheckRightsService.Configuration;
 
 namespace LT.DigitalOffice.CheckRightsService
 {
@@ -45,9 +45,15 @@ namespace LT.DigitalOffice.CheckRightsService
 
             services.AddControllers();
 
+            string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+            if (string.IsNullOrEmpty(connStr))
+            {
+                connStr = Configuration.GetConnectionString("SQLConnectionString");
+            }
+
             services.AddDbContext<CheckRightsServiceDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("SQLConnectionString"));
+                options.UseSqlServer(connStr);
             });
 
             ConfigureCommands(services);
@@ -102,7 +108,9 @@ namespace LT.DigitalOffice.CheckRightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<RabbitMqConfig>();
+            var rabbitMqConfig = Configuration
+                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
+                .Get<RabbitMqConfig>();
 
             services.AddMassTransit(o =>
             {
@@ -110,15 +118,23 @@ namespace LT.DigitalOffice.CheckRightsService
 
                 o.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("localhost", "/", host =>
+                    cfg.Host(rabbitMqConfig.Host, "/", host =>
                     {
                         host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
                         host.Password(rabbitMqConfig.Password);
                     });
+
+                    cfg.ReceiveEndpoint(rabbitMqConfig.CheckUserRightsEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<AccessValidatorConsumer>(context);
+                    });
                 });
 
-                o.AddRequestClient<ICheckTokenRequest>(new Uri(rabbitMqConfig.AuthenticationServiceValidationUrl));
-                o.AddRequestClient<ICheckTokenRequest>(new Uri(rabbitMqConfig.AccessValidatorUserServiceURL));
+                o.AddRequestClient<ICheckTokenRequest>(
+                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+
+                o.AddRequestClient<IGetUserRequest>(
+                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetUserInfoEndpoint}"));
 
                 o.ConfigureKernelMassTransit(rabbitMqConfig);
             });
