@@ -2,4 +2,9 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CheckRightsService.Broker\CheckRightsService.Broker.csproj" />
+    <ProjectReference Include="..\..\src\CheckRightsService.Data\CheckRightsService.Data.csproj" />
+  </ItemGroup>
+
 </Project>
