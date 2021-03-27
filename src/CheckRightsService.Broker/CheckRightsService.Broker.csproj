@@ -10,8 +10,4 @@
     <ProjectReference Include="..\CheckRightsService.Data\CheckRightsService.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="LT.DigitalOffice.Kernel" Version="1.1.9" />
-  </ItemGroup>
-
 </Project>

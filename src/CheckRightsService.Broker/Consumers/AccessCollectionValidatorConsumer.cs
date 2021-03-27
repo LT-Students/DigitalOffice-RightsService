@@ -10,11 +10,11 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
 {
     public class AccessCollectionValidatorConsumer : IConsumer<IAccessValidatorCheckRightsCollectionServiceRequest>
     {
-        private readonly ICheckRightsRepository repository;
+        private readonly ICheckRightsRepository _repository;
 
         public AccessCollectionValidatorConsumer([FromServices] ICheckRightsRepository repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
 
         public async Task Consume(ConsumeContext<IAccessValidatorCheckRightsCollectionServiceRequest> context)
@@ -27,7 +27,7 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
         {
             foreach(var rigthId in request.RightIds)
             {
-                if (!repository.IsUserHasRight(request.UserId, rigthId))
+                if (!_repository.IsUserHasRight(request.UserId, rigthId))
                 {
                     throw new Exception("Such user doesn't exist or does not have this rights.");
                 }

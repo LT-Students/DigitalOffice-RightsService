@@ -14,8 +14,4 @@
     <ProjectReference Include="..\CheckRightsService.Validation\CheckRightsService.Validation.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="LT.DigitalOffice.Kernel" Version="1.1.9" />
-  </ItemGroup>
-
 </Project>
