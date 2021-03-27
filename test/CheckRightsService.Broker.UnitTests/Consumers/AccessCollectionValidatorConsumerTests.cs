@@ -21,7 +21,6 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.UnitTests.Consumers
         public bool Body { get; set; }
     }
 
-
     class AccessCollectionValidatorConsumerTests
     {
         private InMemoryTestHarness _harness;
