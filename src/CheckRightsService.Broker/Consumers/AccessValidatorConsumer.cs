@@ -19,11 +19,11 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
 
         public async Task Consume(ConsumeContext<IAccessValidatorCheckRightsServiceRequest> context)
         {
-            var response = OperationResultWrapper.CreateResponse(HasRights, context.Message);
+            var response = OperationResultWrapper.CreateResponse(HasRight, context.Message);
             await context.RespondAsync<IOperationResult<bool>>(response);
         }
 
-        private object HasRights(IAccessValidatorCheckRightsServiceRequest request)
+        private object HasRight(IAccessValidatorCheckRightsServiceRequest request)
         {
             if (repository.IsUserHasRight(request.UserId, request.RightId))
             {
