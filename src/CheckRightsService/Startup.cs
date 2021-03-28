@@ -115,6 +115,7 @@ namespace LT.DigitalOffice.CheckRightsService
             services.AddMassTransit(o =>
             {
                 o.AddConsumer<AccessValidatorConsumer>();
+                o.AddConsumer<AccessCollectionValidatorConsumer>();
 
                 o.UsingRabbitMq((context, cfg) =>
                 {
