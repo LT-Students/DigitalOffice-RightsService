@@ -20,6 +20,7 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
         public async Task Consume(ConsumeContext<IAccessValidatorCheckRightsCollectionServiceRequest> context)
         {
             var response = OperationResultWrapper.CreateResponse(HasRights, context.Message);
+
             await context.RespondAsync<IOperationResult<bool>>(response);
         }
 
@@ -29,7 +30,7 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
             {
                 if (!_repository.IsUserHasRight(request.UserId, rigthId))
                 {
-                    throw new Exception("Such user doesn't exist or does not have this rights.");
+                    return false;
                 }
             }
 

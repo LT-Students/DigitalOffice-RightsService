@@ -14,20 +14,13 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.CheckRightsService.Broker.UnitTests.Consumers
 {
-    public class OperationResult : IOperationResult<bool>
-    {
-        public bool IsSuccess { get; set; }
-        public List<string> Errors { get; set; }
-        public bool Body { get; set; }
-    }
-
-    class AccessCollectionValidatorConsumerTests
+    class AccessValidatorConsumerTests
     {
         private InMemoryTestHarness _harness;
         private Mock<ICheckRightsRepository> _rigthsRepositoryMock;
-        private ConsumerTestHarness<AccessCollectionValidatorConsumer> _consumerTestHarness;
-        private Guid _userGuidWithRights;
-        private Guid _userGuidWithoutRights;
+        private ConsumerTestHarness<AccessValidatorConsumer> _consumerTestHarness;
+        private Guid _userGuidWithRight;
+        private Guid _userGuidWithoutRight;
 
         [SetUp]
         public void SetUp()
@@ -35,19 +28,19 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.UnitTests.Consumers
             _harness = new InMemoryTestHarness();
             _rigthsRepositoryMock = new Mock<ICheckRightsRepository>();
 
-            _userGuidWithRights = Guid.NewGuid();
-            _userGuidWithoutRights = Guid.NewGuid();
+            _userGuidWithRight = Guid.NewGuid();
+            _userGuidWithoutRight = Guid.NewGuid();
 
             _rigthsRepositoryMock
-                .Setup(x => x.IsUserHasRight(It.Is<Guid>(guid => guid == _userGuidWithRights), It.IsAny<int>()))
+                .Setup(x => x.IsUserHasRight(It.Is<Guid>(guid => guid == _userGuidWithRight), It.IsAny<int>()))
                 .Returns(true);
 
             _rigthsRepositoryMock
-                .Setup(x => x.IsUserHasRight(It.Is<Guid>(guid => guid == _userGuidWithoutRights), It.IsAny<int>()))
+                .Setup(x => x.IsUserHasRight(It.Is<Guid>(guid => guid == _userGuidWithoutRight), It.IsAny<int>()))
                 .Returns(false);
 
             _consumerTestHarness = _harness.Consumer(
-                () => new AccessCollectionValidatorConsumer(_rigthsRepositoryMock.Object));
+                () => new AccessValidatorConsumer(_rigthsRepositoryMock.Object));
         }
 
         [Test]
@@ -57,17 +50,17 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.UnitTests.Consumers
 
             try
             {
-                var requestClient = await _harness.ConnectRequestClient<IAccessValidatorCheckRightsCollectionServiceRequest>();
+                var requestClient = await _harness.ConnectRequestClient<IAccessValidatorCheckRightsServiceRequest>();
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(
-                    IAccessValidatorCheckRightsCollectionServiceRequest.CreateObj(_userGuidWithRights, new List<int>() { 0, 1 }));
+                    IAccessValidatorCheckRightsServiceRequest.CreateObj(_userGuidWithRight, 1));
 
                 Assert.True(response.Message.IsSuccess);
                 Assert.IsNull(response.Message.Errors);
                 Assert.IsTrue(response.Message.Body);
-                Assert.That(_consumerTestHarness.Consumed.Select<IAccessValidatorCheckRightsCollectionServiceRequest>().Any(), Is.True);
+                Assert.That(_consumerTestHarness.Consumed.Select<IAccessValidatorCheckRightsServiceRequest>().Any(), Is.True);
                 Assert.That(_harness.Sent.Select<IOperationResult<bool>>().Any(), Is.True);
-                _rigthsRepositoryMock.Verify(repository => repository.IsUserHasRight(It.IsAny<Guid>(), It.IsAny<int>()), Times.Exactly(2));
+                _rigthsRepositoryMock.Verify(repository => repository.IsUserHasRight(It.IsAny<Guid>(), It.IsAny<int>()), Times.Once);
             }
             finally
             {
@@ -82,17 +75,17 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.UnitTests.Consumers
 
             try
             {
-                var requestClient = await _harness.ConnectRequestClient<IAccessValidatorCheckRightsCollectionServiceRequest>();
+                var requestClient = await _harness.ConnectRequestClient<IAccessValidatorCheckRightsServiceRequest>();
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(
-                    IAccessValidatorCheckRightsCollectionServiceRequest.CreateObj(_userGuidWithoutRights, new List<int>() { 0, 1 }));
+                    IAccessValidatorCheckRightsServiceRequest.CreateObj(_userGuidWithoutRight, 3));
 
                 Assert.True(response.Message.IsSuccess);
                 SerializerAssert.AreEqual(response.Message.Errors, null);
                 Assert.IsFalse(response.Message.Body);
-                Assert.That(_consumerTestHarness.Consumed.Select<IAccessValidatorCheckRightsCollectionServiceRequest>().Any(), Is.True);
+                Assert.That(_consumerTestHarness.Consumed.Select<IAccessValidatorCheckRightsServiceRequest>().Any(), Is.True);
                 Assert.That(_harness.Sent.Select<IOperationResult<bool>>().Any(), Is.True);
-                _rigthsRepositoryMock.Verify(repository => repository.IsUserHasRight(It.IsAny<Guid>(), It.IsAny<int>()), Times.Exactly(1));
+                _rigthsRepositoryMock.Verify(repository => repository.IsUserHasRight(It.IsAny<Guid>(), It.IsAny<int>()), Times.Once);
             }
             finally
             {

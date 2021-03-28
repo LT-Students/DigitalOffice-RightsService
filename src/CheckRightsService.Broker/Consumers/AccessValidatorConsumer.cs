@@ -30,7 +30,7 @@ namespace LT.DigitalOffice.CheckRightsService.Broker.Consumers
                 return true;
             }
 
-            throw new Exception("Such user doesn't exist or does not have this right.");
+            return false;
         }
     }
 }
