@@ -1,1 +1,1 @@
-# DigitalOffice-CheckRightsService
+# DigitalOffice-RightsService
