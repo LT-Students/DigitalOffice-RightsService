@@ -10,4 +10,4 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 COPY --from=build /app/out .
-ENTRYPOINT ["dotnet", "LT.DigitalOffice.CheckRightsService.dll"]
+ENTRYPOINT ["dotnet", "LT.DigitalOffice.RightsService.dll"]
