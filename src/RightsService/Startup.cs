@@ -54,7 +54,6 @@ namespace LT.DigitalOffice.RightsService
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
 
-
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
@@ -88,7 +87,7 @@ namespace LT.DigitalOffice.RightsService
 
             app.UseRouting();
 
-            //app.UseMiddleware<TokenMiddleware>();
+            app.UseMiddleware<TokenMiddleware>();
 
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
 
