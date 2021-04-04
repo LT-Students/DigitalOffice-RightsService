@@ -1,5 +1,9 @@
 using FluentValidation;
+using HealthChecks.UI.Client;
 using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.RightsService.Broker.Consumers;
 using LT.DigitalOffice.RightsService.Business;
 using LT.DigitalOffice.RightsService.Business.Interfaces;
@@ -13,23 +17,23 @@ using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Validation;
-using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.Kernel.Middlewares.Token;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using LT.DigitalOffice.Kernel.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+
+        private RabbitMqConfig _rabbitMqConfig;
 
         public Startup(IConfiguration configuration)
         {
@@ -40,6 +44,8 @@ namespace LT.DigitalOffice.RightsService
         {
             services.AddMemoryCache();
 
+            services.AddKernelExtensions();
+
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
             services.AddHealthChecks();
@@ -47,6 +53,8 @@ namespace LT.DigitalOffice.RightsService
             services.AddControllers();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+
+
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
@@ -57,19 +65,19 @@ namespace LT.DigitalOffice.RightsService
                 options.UseSqlServer(connStr);
             });
 
+            services
+               .AddHealthChecks()
+               .AddSqlServer(connStr);
+
             ConfigureCommands(services);
             ConfigureValidator(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
-
-            services.AddKernelExtensions();
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            app.UseHealthChecks("/api/healthcheck");
-
             app.AddExceptionsHandler(loggerFactory);
 
             UpdateDatabase(app);
@@ -80,7 +88,7 @@ namespace LT.DigitalOffice.RightsService
 
             app.UseRouting();
 
-            app.UseMiddleware<TokenMiddleware>();
+            //app.UseMiddleware<TokenMiddleware>();
 
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
 
@@ -93,6 +101,12 @@ namespace LT.DigitalOffice.RightsService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHealthChecks($"/{_rabbitMqConfig.Password}/hc", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
         }
 
@@ -109,36 +123,36 @@ namespace LT.DigitalOffice.RightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration
+            _rabbitMqConfig = Configuration
                 .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
                 .Get<RabbitMqConfig>();
 
-            services.AddMassTransit(o =>
+            services.AddMassTransit(x =>
             {
-                o.AddConsumer<AccessValidatorConsumer>();
-                o.AddConsumer<AccessCollectionValidatorConsumer>();
+                x.AddConsumer<AccessValidatorConsumer>();
+                x.AddConsumer<AccessCollectionValidatorConsumer>();
 
-                o.UsingRabbitMq((context, cfg) =>
+                x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitMqConfig.Host, "/", host =>
+                    cfg.Host(_rabbitMqConfig.Host, "/", host =>
                     {
-                        host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
-                        host.Password(rabbitMqConfig.Password);
+                        host.Username($"{_rabbitMqConfig.Username}_{_rabbitMqConfig.Password}");
+                        host.Password(_rabbitMqConfig.Password);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMqConfig.CheckUserRightsEndpoint, ep =>
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserRightsEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<AccessValidatorConsumer>(context);
                     });
                 });
 
-                o.AddRequestClient<ICheckTokenRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+                x.AddRequestClient<ICheckTokenRequest>(
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.ValidateTokenEndpoint}"));
 
-                o.AddRequestClient<IGetUserRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetUserInfoEndpoint}"));
+                x.AddRequestClient<IGetUserRequest>(
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetUserInfoEndpoint}"));
 
-                o.ConfigureKernelMassTransit(rabbitMqConfig);
+                x.ConfigureKernelMassTransit(_rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
