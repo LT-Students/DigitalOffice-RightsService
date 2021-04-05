@@ -62,6 +62,7 @@ namespace LT.DigitalOffice.RightsService
                 options.UseSqlServer(connStr);
             });
 
+            // TODO: HealthChecks doesn't work when RabbitMQ was stopped
             services
                .AddHealthChecks()
                .AddSqlServer(connStr);
