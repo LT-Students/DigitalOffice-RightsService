@@ -48,8 +48,6 @@ namespace LT.DigitalOffice.RightsService
 
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
-            services.AddHealthChecks();
-
             services.AddControllers();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
