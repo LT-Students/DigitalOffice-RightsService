@@ -1,49 +1,62 @@
-using FluentValidation;
-using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.RightsService.Broker.Consumers;
-using LT.DigitalOffice.RightsService.Business;
-using LT.DigitalOffice.RightsService.Business.Interfaces;
-using LT.DigitalOffice.RightsService.Configuration;
-using LT.DigitalOffice.RightsService.Data;
-using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Data.Provider;
-using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.RightsService.Mappers;
-using LT.DigitalOffice.RightsService.Mappers.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
-using LT.DigitalOffice.RightsService.Validation;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Configurations;
+using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
+using LT.DigitalOffice.RightsService.Broker.Consumers;
+using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
+using LT.DigitalOffice.RightsService.Models.Dto.Configurations;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using LT.DigitalOffice.Kernel.Extensions;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace LT.DigitalOffice.RightsService
 {
-    public class Startup
+    public class Startup : BaseApiInfo
     {
+        private readonly BaseServiceInfoConfig _serviceInfoConfig;
+        private readonly RabbitMqConfig _rabbitMqConfig;
+        private readonly ILogger<Startup> _logger;
+
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            _serviceInfoConfig = Configuration
+                .GetSection(BaseServiceInfoConfig.SectionName)
+                .Get<BaseServiceInfoConfig>();
+
+            _rabbitMqConfig = Configuration
+                .GetSection(BaseRabbitMqConfig.SectionName)
+                .Get<RabbitMqConfig>();
+
+            Version = "1.2.0";
+            Description = "RightsService is an API intended to work with the user rights .";
+            StartTime = DateTime.UtcNow;
+            ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
+
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("LT.DigitalOffice.RightsService.Startup", LogLevel.Trace)
+                    .AddConsole();
+            });
+
+            _logger = loggerFactory.CreateLogger<Startup>();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
-
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
 
+            services.AddHttpContextAccessor();
+            services.AddMemoryCache();
             services.AddHealthChecks();
-
             services.AddControllers();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
@@ -57,22 +70,18 @@ namespace LT.DigitalOffice.RightsService
                 options.UseSqlServer(connStr);
             });
 
-            ConfigureCommands(services);
-            ConfigureValidator(services);
-            ConfigureMappers(services);
-            ConfigureRepositories(services);
-            ConfigureMassTransit(services);
+            services.AddBusinessObjects(_logger);
 
-            services.AddKernelExtensions();
+            ConfigureMassTransit(services);
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            UpdateDatabase(app);
+
             app.UseHealthChecks("/api/healthcheck");
 
-            app.AddExceptionsHandler(loggerFactory);
-
-            UpdateDatabase(app);
+            app.UseExceptionsHandler(loggerFactory);
 
 #if RELEASE
             app.UseHttpsRedirection();
@@ -81,6 +90,7 @@ namespace LT.DigitalOffice.RightsService
             app.UseRouting();
 
             app.UseMiddleware<TokenMiddleware>();
+            app.UseApiInformation();
 
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
 
@@ -109,62 +119,29 @@ namespace LT.DigitalOffice.RightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration
-                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
-                .Get<RabbitMqConfig>();
-
-            services.AddMassTransit(o =>
+            services.AddMassTransit(busConfigurator =>
             {
-                o.AddConsumer<AccessValidatorConsumer>();
-                o.AddConsumer<AccessCollectionValidatorConsumer>();
+                busConfigurator.AddConsumer<AccessValidatorConsumer>();
+                busConfigurator.AddConsumer<AccessCollectionValidatorConsumer>();
 
-                o.UsingRabbitMq((context, cfg) =>
+                busConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitMqConfig.Host, "/", host =>
+                    cfg.Host(_rabbitMqConfig.Host, "/", host =>
                     {
-                        host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
-                        host.Password(rabbitMqConfig.Password);
+                        host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
+                        host.Password(_serviceInfoConfig.Id);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMqConfig.CheckUserRightsEndpoint, ep =>
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserRightsEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<AccessValidatorConsumer>(context);
                     });
                 });
 
-                o.AddRequestClient<ICheckTokenRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
-
-                o.AddRequestClient<IGetUserRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetUserInfoEndpoint}"));
-
-                o.ConfigureKernelMassTransit(rabbitMqConfig);
+                busConfigurator.AddRequestClients(_rabbitMqConfig, _logger);
             });
 
             services.AddMassTransitHostedService();
-        }
-
-        private void ConfigureCommands(IServiceCollection services)
-        {
-            services.AddTransient<IGetRightsListCommand, GetRightsListCommand>();
-            services.AddTransient<IAddRightsForUserCommand, AddRightsForUserCommand>();
-            services.AddTransient<IRemoveRightsFromUserCommand, RemoveRightsFromUserCommand>();
-        }
-
-        private void ConfigureRepositories(IServiceCollection services)
-        {
-            services.AddTransient<IDataProvider, RightsServiceDbContext>();
-            services.AddTransient<ICheckRightsRepository, CheckRightsRepository>();
-        }
-
-        private void ConfigureMappers(IServiceCollection services)
-        {
-            services.AddTransient<IMapper<DbRight, Right>, RightsMapper>();
-        }
-
-        private void ConfigureValidator(IServiceCollection services)
-        {
-            services.AddTransient<IValidator<IEnumerable<int>>, RightsIdsValidator>();
         }
     }
 }

@@ -1,41 +1,41 @@
-﻿using FluentValidation;
+﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.RightsService.Business.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using System;
 using System.Collections.Generic;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 
 namespace LT.DigitalOffice.RightsService.Business
 {
     /// <inheritdoc cref="IAddRightsForUserCommand"/>
     public class AddRightsForUserCommand : IAddRightsForUserCommand
     {
-        private readonly ICheckRightsRepository repository;
-        private readonly IValidator<IEnumerable<int>> validator;
-        private readonly IAccessValidator accessValidator;
+        private readonly ICheckRightsRepository _repository;
+        private readonly IRightsIdsValidator _validator;
+        private readonly IAccessValidator _accessValidator;
 
         public AddRightsForUserCommand(
             ICheckRightsRepository repository,
-            IValidator<IEnumerable<int>> validator,
+            IRightsIdsValidator validator,
             IAccessValidator accessValidator)
         {
-            this.repository = repository;
-            this.validator = validator;
-            this.accessValidator = accessValidator;
+            _repository = repository;
+            _validator = validator;
+            _accessValidator = accessValidator;
         }
 
         public void Execute(Guid userId, IEnumerable<int> rightsIds)
         {
-            if (!accessValidator.IsAdmin())
+            if (!_accessValidator.IsAdmin())
             {
                 throw new ForbiddenException("You need to be an admin to add rights.");
             }
 
-            validator.ValidateAndThrowCustom(rightsIds);
+            _validator.ValidateAndThrowCustom(rightsIds);
 
-            repository.AddRightsToUser(userId, rightsIds);
+            _repository.AddRightsToUser(userId, rightsIds);
         }
     }
 }

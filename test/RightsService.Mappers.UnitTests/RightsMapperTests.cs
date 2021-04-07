@@ -8,7 +8,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
 {
     public class RightsMapperTests
     {
-        private IMapper<DbRight, Right> mapper;
+        private IRightsMapper<DbRight, Right> mapper;
 
         private const int Id = 0;
         private const string Name = "Right";

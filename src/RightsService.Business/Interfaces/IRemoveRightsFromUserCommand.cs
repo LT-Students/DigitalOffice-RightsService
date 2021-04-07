@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.Kernel.Exceptions;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Kernel.Exceptions;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace LT.DigitalOffice.RightsService.Business.Interfaces
     /// Represents the command pattern.
     /// Provides method for removing rights from user.
     /// </summary>
+    [AutoInject]
     public interface IRemoveRightsFromUserCommand
     {
         /// <summary>

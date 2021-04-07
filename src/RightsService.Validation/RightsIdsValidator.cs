@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
-    public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>
+    public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>, IRightsIdsValidator
     {
         private readonly IMemoryCache cache;
         private readonly ICheckRightsRepository repository;

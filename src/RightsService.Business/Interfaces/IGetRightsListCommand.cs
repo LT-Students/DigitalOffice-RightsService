@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.RightsService.Models.Dto;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.RightsService.Models.Dto;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Business.Interfaces
@@ -7,6 +8,7 @@ namespace LT.DigitalOffice.RightsService.Business.Interfaces
     /// Represents the command pattern.
     /// Provides a method for getting all added rights.
     /// </summary>
+    [AutoInject]
     public interface IGetRightsListCommand
     {
         /// <summary>

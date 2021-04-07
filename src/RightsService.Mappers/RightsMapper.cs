@@ -5,7 +5,7 @@ using System;
 
 namespace LT.DigitalOffice.RightsService.Mappers
 {
-    public class RightsMapper : IMapper<DbRight, Right>
+    public class RightsMapper : IRightsMapper
     {
         public Right Map(DbRight value)
         {
