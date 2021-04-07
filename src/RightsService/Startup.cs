@@ -3,6 +3,7 @@ using HealthChecks.UI.Client;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.RightsService.Broker.Consumers;
 using LT.DigitalOffice.RightsService.Business;
@@ -29,7 +30,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService
 {
-    public class Startup
+    public class Startup : BaseApiInfo
     {
         public IConfiguration Configuration { get; }
 
@@ -38,6 +39,15 @@ namespace LT.DigitalOffice.RightsService
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var description = string.Join(" ",
+                "RightsService is an API intended to work with the user rights:",
+                "create them, assign them to people, remove.");
+
+            Version = "1.1.2";
+            Description = description;
+            StartTime = DateTime.UtcNow;
+            ApiName = "LT Digital Office - RightsService";
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -76,7 +86,7 @@ namespace LT.DigitalOffice.RightsService
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            app.AddExceptionsHandler(loggerFactory);
+            app.UseExceptionsHandler(loggerFactory);
 
             UpdateDatabase(app);
 
@@ -86,6 +96,7 @@ namespace LT.DigitalOffice.RightsService
 
             app.UseRouting();
 
+            app.UseApiInformation();
             app.UseMiddleware<TokenMiddleware>();
 
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
