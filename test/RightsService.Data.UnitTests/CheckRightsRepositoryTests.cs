@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
 
         private IDataProvider provider;
         private ICheckRightsRepository repository;
-        private Mock<IRightsMapper<DbRight, Right>> mapperMock;
+        private Mock<IRightsMapper> mapperMock;
         private Mock<IRequestClient<IGetUserRequest>> clientMock;
         private OperationResult<IGetUserResponse> operationResult;
         private DbRight dbRight1InDb;
@@ -47,7 +47,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                 .Options;
             provider = new RightsServiceDbContext(dbOptions);
-            mapperMock = new Mock<IRightsMapper<DbRight, Right>>();
+            mapperMock = new Mock<IRightsMapper>();
             clientMock = new Mock<IRequestClient<IGetUserRequest>>();
             BrokerSetUp();
 

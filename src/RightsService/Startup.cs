@@ -1,3 +1,5 @@
+using HealthChecks.UI.Client;
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
@@ -7,11 +9,14 @@ using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Models.Dto.Configurations;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService
 {
@@ -53,13 +58,15 @@ namespace LT.DigitalOffice.RightsService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
+            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
+            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
-            services.AddHealthChecks();
             services.AddControllers();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
@@ -73,13 +80,16 @@ namespace LT.DigitalOffice.RightsService
             services.AddBusinessObjects(_logger);
 
             ConfigureMassTransit(services);
+
+            services
+               .AddHealthChecks()
+               .AddSqlServer(connStr)
+               .AddRabbitMqCheck();
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             UpdateDatabase(app);
-
-            app.UseHealthChecks("/api/healthcheck");
 
             app.UseExceptionsHandler(loggerFactory);
 
@@ -103,6 +113,18 @@ namespace LT.DigitalOffice.RightsService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
+                {
+                    ResultStatusCodes = new Dictionary<HealthStatus, int>
+                    {
+                        { HealthStatus.Unhealthy, 200 },
+                        { HealthStatus.Healthy, 200 },
+                        { HealthStatus.Degraded, 200 },
+                    },
+                    Predicate = check => check.Name != "masstransit-bus",
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
         }
 

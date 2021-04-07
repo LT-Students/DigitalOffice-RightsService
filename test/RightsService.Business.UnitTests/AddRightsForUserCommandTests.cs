@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.RightsService.Business.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -14,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
     public class AddRightsForUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IValidator<IEnumerable<int>>> validatorMock;
+        private Mock<IRightsIdsValidator> validatorMock;
         private Mock<ValidationResult> validationResultIsValidMock;
         private Mock<IAccessValidator> accessValidator;
         private IAddRightsForUserCommand command;
@@ -27,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
         public void Setup()
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
-            validatorMock = new Mock<IValidator<IEnumerable<int>>>();
+            validatorMock = new Mock<IRightsIdsValidator>();
             accessValidator = new Mock<IAccessValidator>();
             command = new AddRightsForUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
 

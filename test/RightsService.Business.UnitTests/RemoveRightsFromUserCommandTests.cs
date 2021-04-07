@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.RightsService.Business.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -14,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
     public class RemoveRightsFromUserCommandTests
     {
         private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IValidator<IEnumerable<int>>> validatorMock;
+        private Mock<IRightsIdsValidator> validatorMock;
         private Mock<ValidationResult> validationResultIsValidMock;
         private IRemoveRightsFromUserCommand command;
         private Mock<IAccessValidator> accessValidator;
@@ -28,7 +29,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
         {
             repositoryMock = new Mock<ICheckRightsRepository>();
             accessValidator = new Mock<IAccessValidator>();
-            validatorMock = new Mock<IValidator<IEnumerable<int>>>();
+            validatorMock = new Mock<IRightsIdsValidator>();
             command = new RemoveRightsFromUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);
 
             userId = Guid.NewGuid();
