@@ -1,7 +1,7 @@
 using FluentValidation;
 using HealthChecks.UI.Client;
 using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,90 +36,9 @@ namespace LT.DigitalOffice.RightsService
         public IConfiguration Configuration { get; }
 
         private RabbitMqConfig _rabbitMqConfig;
+        private BaseServiceInfoConfig _serviceInfoConfig;
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-
-            var description = string.Join(" ",
-                "RightsService is an API intended to work with the user rights:",
-                "create them, assign them to people, remove.");
-
-            Version = "1.1.2";
-            Description = description;
-            StartTime = DateTime.UtcNow;
-            ApiName = "LT Digital Office - RightsService";
-        }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMemoryCache();
-
-            services.AddKernelExtensions();
-
-            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
-
-            services.AddControllers();
-
-            string connStr = Environment.GetEnvironmentVariable("ConnectionString");
-
-            if (string.IsNullOrEmpty(connStr))
-            {
-                connStr = Configuration.GetConnectionString("SQLConnectionString");
-            }
-
-            services.AddDbContext<RightsServiceDbContext>(options =>
-            {
-                options.UseSqlServer(connStr);
-            });
-
-            // TODO: HealthChecks doesn't work when RabbitMQ was stopped
-            services
-               .AddHealthChecks()
-               .AddSqlServer(connStr);
-
-            ConfigureCommands(services);
-            ConfigureValidator(services);
-            ConfigureMappers(services);
-            ConfigureRepositories(services);
-            ConfigureMassTransit(services);
-        }
-
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
-        {
-            app.UseExceptionsHandler(loggerFactory);
-
-            UpdateDatabase(app);
-
-#if RELEASE
-            app.UseHttpsRedirection();
-#endif
-
-            app.UseRouting();
-
-            app.UseApiInformation();
-            app.UseMiddleware<TokenMiddleware>();
-
-            string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
-
-            app.UseCors(builder =>
-                builder
-                    .WithOrigins(corsUrl)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-
-                endpoints.MapHealthChecks($"/{_rabbitMqConfig.Password}/hc", new HealthCheckOptions
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-            });
-        }
-
+        #region private methods
         private void UpdateDatabase(IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices
@@ -132,10 +52,6 @@ namespace LT.DigitalOffice.RightsService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            _rabbitMqConfig = Configuration
-                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
-                .Get<RabbitMqConfig>();
-
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<AccessValidatorConsumer>();
@@ -145,8 +61,8 @@ namespace LT.DigitalOffice.RightsService
                 {
                     cfg.Host(_rabbitMqConfig.Host, "/", host =>
                     {
-                        host.Username($"{_rabbitMqConfig.Username}_{_rabbitMqConfig.Password}");
-                        host.Password(_rabbitMqConfig.Password);
+                        host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
+                        host.Password(_serviceInfoConfig.Id);
                     });
 
                     cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserRightsEndpoint, ep =>
@@ -189,5 +105,111 @@ namespace LT.DigitalOffice.RightsService
         {
             services.AddTransient<IValidator<IEnumerable<int>>, RightsIdsValidator>();
         }
+
+        #endregion
+
+        #region public methods
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+
+            _rabbitMqConfig = Configuration
+             .GetSection(BaseRabbitMqConfig.SectionName)
+             .Get<RabbitMqConfig>();
+
+            _serviceInfoConfig = Configuration
+                .GetSection(BaseServiceInfoConfig.SectionName)
+                .Get<BaseServiceInfoConfig>();
+
+            var description = string.Join(" ",
+                "RightsService is an API intended to work with the user rights:",
+                "create them, assign them to people, remove.");
+
+            Version = "1.1.2";
+            Description = description;
+            StartTime = DateTime.UtcNow;
+            ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
+            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
+
+            services.AddMemoryCache();
+
+            services.AddKernelExtensions();
+
+            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
+
+            services.AddControllers();
+
+            string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+
+            if (string.IsNullOrEmpty(connStr))
+            {
+                connStr = Configuration.GetConnectionString("SQLConnectionString");
+            }
+
+            services.AddDbContext<RightsServiceDbContext>(options =>
+            {
+                options.UseSqlServer(connStr);
+            });
+
+            services
+               .AddHealthChecks()
+               .AddSqlServer(connStr)
+               .AddRabbitMqCheck();
+
+            ConfigureCommands(services);
+            ConfigureValidator(services);
+            ConfigureMappers(services);
+            ConfigureRepositories(services);
+            ConfigureMassTransit(services);
+        }
+
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        {
+            app.UseExceptionsHandler(loggerFactory);
+
+            UpdateDatabase(app);
+
+#if RELEASE
+            app.UseHttpsRedirection();
+#endif
+
+            app.UseRouting();
+
+            app.UseApiInformation();
+            app.UseMiddleware<TokenMiddleware>();
+
+            string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
+
+            app.UseCors(builder =>
+                builder
+                    .WithOrigins(corsUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+
+                endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
+                {
+                    ResultStatusCodes = new Dictionary<HealthStatus, int>
+                    {
+                        { HealthStatus.Unhealthy, 200 },
+                        { HealthStatus.Healthy, 200 },
+                        { HealthStatus.Degraded, 200 },
+                    },
+                    Predicate = check => check.Name != "masstransit-bus",
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+            });
+        }
+
+        #endregion
     }
 }
