@@ -39,6 +39,7 @@ namespace LT.DigitalOffice.RightsService
         private BaseServiceInfoConfig _serviceInfoConfig;
 
         #region private methods
+
         private void UpdateDatabase(IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices
