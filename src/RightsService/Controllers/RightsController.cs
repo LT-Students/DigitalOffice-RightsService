@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class CheckRightsController : ControllerBase
+    public class RightsController : ControllerBase
     {
         [HttpGet("getRightsList")]
         public List<Right> GetRightsList([FromServices] IGetRightsListCommand command)

@@ -1,5 +1,4 @@
 using HealthChecks.UI.Client;
-using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
@@ -22,9 +21,10 @@ namespace LT.DigitalOffice.RightsService
 {
     public class Startup : BaseApiInfo
     {
+        public const string CorsPolicyName = "LtDoCorsPolicy";
+
         private readonly BaseServiceInfoConfig _serviceInfoConfig;
         private readonly RabbitMqConfig _rabbitMqConfig;
-        private readonly ILogger<Startup> _logger;
 
         public IConfiguration Configuration { get; }
 
@@ -40,23 +40,33 @@ namespace LT.DigitalOffice.RightsService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.2.0";
-            Description = "RightsService is an API intended to work with the user rights .";
+            Version = "1.2.2";
+            Description = "RightsService is an API intended to work with the user rights.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
-
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .AddFilter("LT.DigitalOffice.RightsService.Startup", LogLevel.Trace)
-                    .AddConsole();
-            });
-
-            _logger = loggerFactory.CreateLogger<Startup>();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    CorsPolicyName,
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins(
+                                "https://*.ltdo.xyz",
+                                "http://*.ltdo.xyz",
+                                "http://ltdo.xyz",
+                                "http://ltdo.xyz:9802",
+                                "http://localhost:4200",
+                                "http://localhost:4500")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -77,7 +87,7 @@ namespace LT.DigitalOffice.RightsService
                 options.UseSqlServer(connStr);
             });
 
-            services.AddBusinessObjects(_logger);
+            services.AddBusinessObjects();
 
             ConfigureMassTransit(services);
 
@@ -91,28 +101,21 @@ namespace LT.DigitalOffice.RightsService
         {
             UpdateDatabase(app);
 
+            app.UseForwardedHeaders();
+
             app.UseExceptionsHandler(loggerFactory);
 
-#if RELEASE
-            app.UseHttpsRedirection();
-#endif
+            app.UseApiInformation();
 
             app.UseRouting();
 
             app.UseMiddleware<TokenMiddleware>();
-            app.UseApiInformation();
 
-            string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
-
-            app.UseCors(builder =>
-                builder
-                    .WithOrigins(corsUrl)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
+            app.UseCors(CorsPolicyName);
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors(CorsPolicyName);
 
                 endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
                 {
@@ -160,7 +163,7 @@ namespace LT.DigitalOffice.RightsService
                     });
                 });
 
-                busConfigurator.AddRequestClients(_rabbitMqConfig, _logger);
+                busConfigurator.AddRequestClients(_rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
