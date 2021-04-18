@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                     "nvarchar(max)",
                     "nvarchar(max)"
                 },
-                values: new object[] {5, "Add/Edit/Remove news", null });
+                values: new object[] { 5, "Add/Edit/Remove news", null });
 
             migrationBuilder.InsertData(
                 table: DbRight.TableName,
