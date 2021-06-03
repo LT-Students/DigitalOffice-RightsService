@@ -1,6 +1,4 @@
-﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Broker.Responses;
-using LT.DigitalOffice.RightsService.Data.Interfaces;
+﻿using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
@@ -16,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.Models.Broker.Requests.User;
+using LT.DigitalOffice.Models.Broker.Responses.User;
 
 namespace LT.DigitalOffice.RightsService.Data.UnitTests
 {
@@ -33,8 +33,8 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         private IDataProvider provider;
         private ICheckRightsRepository repository;
         private Mock<IRightsMapper> mapperMock;
-        private Mock<IRequestClient<IGetUserRequest>> clientMock;
-        private OperationResult<IGetUserResponse> operationResult;
+        private Mock<IRequestClient<IGetUserDataRequest>> clientMock;
+        private OperationResult<IGetUserDataResponse> operationResult;
         private DbRight dbRight1InDb;
         private DbRight dbRight2InDb;
         private Guid userId;
@@ -48,7 +48,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 .Options;
             provider = new RightsServiceDbContext(dbOptions);
             mapperMock = new Mock<IRightsMapper>();
-            clientMock = new Mock<IRequestClient<IGetUserRequest>>();
+            clientMock = new Mock<IRequestClient<IGetUserDataRequest>>();
             BrokerSetUp();
 
             repository = new CheckRightsRepository(provider, clientMock.Object);
@@ -101,13 +101,13 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
 
         private void BrokerSetUp()
         {
-            var responseClientMock = new Mock<Response<IOperationResult<IGetUserResponse>>>();
-            clientMock = new Mock<IRequestClient<IGetUserRequest>>();
+            var responseClientMock = new Mock<Response<IOperationResult<IGetUserDataResponse>>>();
+            clientMock = new Mock<IRequestClient<IGetUserDataRequest>>();
 
-            operationResult = new OperationResult<IGetUserResponse>();
+            operationResult = new OperationResult<IGetUserDataResponse>();
 
             clientMock.Setup(
-                x => x.GetResponse<IOperationResult<IGetUserResponse>>(
+                x => x.GetResponse<IOperationResult<IGetUserDataResponse>>(
                     It.IsAny<object>(), default, default))
                 .Returns(Task.FromResult(responseClientMock.Object));
 

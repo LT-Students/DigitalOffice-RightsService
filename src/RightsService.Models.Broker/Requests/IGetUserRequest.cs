@@ -1,10 +1,7 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Dto.Configurations;
-using System;
+﻿using System;
 
 namespace LT.DigitalOffice.Broker.Requests
 {
-    [AutoInjectRequest(nameof(RabbitMqConfig.GetUserInfoEndpoint))]
     public interface IGetUserRequest
     {
         Guid UserId { get; }

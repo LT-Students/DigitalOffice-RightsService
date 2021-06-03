@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
             rightsIds = new List<int>() { 0, 1 };
 
             accessValidator
-                .Setup(x => x.IsAdmin())
+                .Setup(x => x.IsAdmin(null))
                 .Returns(true);
 
             validatorMock
@@ -72,7 +72,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
             rightsIds = new List<int>() { 0, 1 };
 
             accessValidator
-                .Setup(x => x.IsAdmin())
+                .Setup(x => x.IsAdmin(null))
                 .Returns(false);
 
             validatorMock
@@ -91,7 +91,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
             rightsIds = new List<int>() { 1 };
 
             accessValidator
-                .Setup(x => x.IsAdmin())
+                .Setup(x => x.IsAdmin(null))
                 .Returns(true);
 
             validatorMock
@@ -109,7 +109,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
         public void ShouldThrowExceptionWhenValidatorThrowsException()
         {
             accessValidator
-                .Setup(x => x.IsAdmin())
+                .Setup(x => x.IsAdmin(null))
                 .Returns(true);
 
             validatorMock
