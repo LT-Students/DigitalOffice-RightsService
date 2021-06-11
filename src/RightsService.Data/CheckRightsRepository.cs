@@ -1,7 +1,7 @@
-using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.Models.Broker.Requests.User;
+using LT.DigitalOffice.Models.Broker.Responses.User;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
@@ -17,11 +17,11 @@ namespace LT.DigitalOffice.RightsService.Data
     public class CheckRightsRepository : ICheckRightsRepository
     {
         private readonly IDataProvider _provider;
-        private readonly IRequestClient<IGetUserRequest> _client;
+        private readonly IRequestClient<IGetUserDataRequest> _client;
 
         public CheckRightsRepository(
             IDataProvider provider,
-            IRequestClient<IGetUserRequest> client)
+            IRequestClient<IGetUserDataRequest> client)
         {
             _provider = provider;
             _client = client;
@@ -34,7 +34,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
         private bool SentRequestInUserService(Guid userId)
         {
-            var brokerResponse = _client.GetResponse<IOperationResult<IGetUserResponse>>(new
+            var brokerResponse = _client.GetResponse<IOperationResult<IGetUserDataResponse>>(new
             {
                 UserId = userId
             }).Result;

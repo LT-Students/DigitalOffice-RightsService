@@ -19,7 +19,6 @@
     <ProjectReference Include="..\RightsService.Data.Provider.MsSql.Ef\RightsService.Data.Provider.MsSql.Ef.csproj" />
     <ProjectReference Include="..\RightsService.Data\RightsService.Data.csproj" />
     <ProjectReference Include="..\RightsService.Mappers\RightsService.Mappers.csproj" />
-    <ProjectReference Include="..\RightsService.Models.Broker\RightsService.Models.Broker.csproj" />
     <ProjectReference Include="..\RightsService.Models.Db\RightsService.Models.Db.csproj" />
     <ProjectReference Include="..\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
     <ProjectReference Include="..\RightsService.Validation\RightsService.Validation.csproj" />
