@@ -1,6 +1,6 @@
-﻿namespace LT.DigitalOffice.RightsService.Models.Dto
+﻿namespace LT.DigitalOffice.RightsService.Models.Dto.Responses
 {
-    public class Right
+    public class RightResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }

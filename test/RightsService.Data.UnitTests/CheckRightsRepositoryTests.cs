@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 
 namespace LT.DigitalOffice.RightsService.Data.UnitTests
 {
@@ -32,7 +33,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
 
         private IDataProvider provider;
         private ICheckRightsRepository repository;
-        private Mock<IRightsMapper> mapperMock;
+        private Mock<IRightMapper> mapperMock;
         private Mock<IRequestClient<IGetUserDataRequest>> clientMock;
         private OperationResult<IGetUserDataResponse> operationResult;
         private DbRight dbRight1InDb;
@@ -47,7 +48,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                 .Options;
             provider = new RightsServiceDbContext(dbOptions);
-            mapperMock = new Mock<IRightsMapper>();
+            mapperMock = new Mock<IRightMapper>();
             clientMock = new Mock<IRequestClient<IGetUserDataRequest>>();
             BrokerSetUp();
 
@@ -85,7 +86,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             provider.Rights.AddRange(dbRight1InDb, dbRight2InDb);
             provider.Save();
 
-            mapperMock.Setup(mapper => mapper.Map(dbRight1InDb)).Returns(new Right
+            mapperMock.Setup(mapper => mapper.Map(dbRight1InDb)).Returns(new RightResponse
                 {Id = dbRight1InDb.Id, Name = dbRight1InDb.Name, Description = dbRight1InDb.Description});
 
         }

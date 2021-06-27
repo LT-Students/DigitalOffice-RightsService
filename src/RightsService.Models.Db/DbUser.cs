@@ -11,6 +11,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
         public Guid Id { get; set; }
         public ICollection<DbUserRight> Rights { get; set; }
+        public DbUserRole Role { get; set; }
 
         public DbUser()
         {

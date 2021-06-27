@@ -3,6 +3,10 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
+    <PackageReference Include="Moq.AutoMock" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\RightsService.Business\RightsService.Business.csproj" />
     <ProjectReference Include="..\..\src\RightsService.Data\RightsService.Data.csproj" />
   </ItemGroup>

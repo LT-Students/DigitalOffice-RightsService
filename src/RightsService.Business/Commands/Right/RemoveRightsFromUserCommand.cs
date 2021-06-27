@@ -1,22 +1,22 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
-using LT.DigitalOffice.RightsService.Business.Interfaces;
+using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Business
+namespace LT.DigitalOffice.RightsService.Business.Commands.Right
 {
-    /// <inheritdoc cref="IAddRightsForUserCommand"/>
-    public class AddRightsForUserCommand : IAddRightsForUserCommand
+    /// <inheritdoc cref="IRemoveRightsFromUserCommand"/>
+    public class RemoveRightsFromUserCommand : IRemoveRightsFromUserCommand
     {
         private readonly ICheckRightsRepository _repository;
         private readonly IRightsIdsValidator _validator;
         private readonly IAccessValidator _accessValidator;
 
-        public AddRightsForUserCommand(
+        public RemoveRightsFromUserCommand(
             ICheckRightsRepository repository,
             IRightsIdsValidator validator,
             IAccessValidator accessValidator)
@@ -30,12 +30,12 @@ namespace LT.DigitalOffice.RightsService.Business
         {
             if (!_accessValidator.IsAdmin())
             {
-                throw new ForbiddenException("You need to be an admin to add rights.");
+                throw new ForbiddenException("You need to be an admin to remove rights.");
             }
 
             _validator.ValidateAndThrowCustom(rightsIds);
 
-            _repository.AddRightsToUser(userId, rightsIds);
+            _repository.RemoveRightsFromUser(userId, rightsIds);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using NUnit.Framework;
 using System;
 
@@ -8,7 +9,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
 {
     public class RightsMapperTests
     {
-        private IRightsMapper mapper;
+        private IRightMapper mapper;
 
         private const int Id = 0;
         private const string Name = "Right";
@@ -19,7 +20,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
         [SetUp]
         public void SetUp()
         {
-            mapper = new RightsMapper();
+            mapper = new RightMapper();
             dbRight = new DbRight
             {
                 Id = Id,
@@ -41,7 +42,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
             var result = mapper.Map(dbRight);
 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<Right>(result);
+            Assert.IsInstanceOf<RightResponse>(result);
             Assert.AreEqual(Id, result.Id);
             Assert.AreEqual(Name, result.Name);
             Assert.AreEqual(Description, result.Description);

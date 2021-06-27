@@ -3,17 +3,17 @@ using LT.DigitalOffice.Kernel.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Business.Interfaces
+namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
 {
     /// <summary>
     /// Represents the command pattern.
-    /// Provides a method to add rights for user.
+    /// Provides method for removing rights from user.
     /// </summary>
     [AutoInject]
-    public interface IAddRightsForUserCommand
+    public interface IRemoveRightsFromUserCommand
     {
         /// <summary>
-        /// Add rights for user.
+        /// Remove rights from user.
         /// </summary>
         /// <param name="userId">User id.</param>
         /// <param name="rightsIds">List of rights.</param>

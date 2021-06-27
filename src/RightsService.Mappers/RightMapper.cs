@@ -1,20 +1,20 @@
 ﻿using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using System;
 
 namespace LT.DigitalOffice.RightsService.Mappers
 {
-    public class RightsMapper : IRightsMapper
+    public class RightMapper : IRightMapper
     {
-        public Right Map(DbRight value)
+        public RightResponse Map(DbRight value)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return new Right
+            return new RightResponse
             {
                 Id = value.Id,
                 Name = value.Name,

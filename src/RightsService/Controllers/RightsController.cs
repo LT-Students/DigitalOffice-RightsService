@@ -1,5 +1,6 @@
-﻿using LT.DigitalOffice.RightsService.Business.Interfaces;
+﻿using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
     public class RightsController : ControllerBase
     {
         [HttpGet("getRightsList")]
-        public List<Right> GetRightsList([FromServices] IGetRightsListCommand command)
+        public List<RightResponse> GetRightsList([FromServices] IGetRightsListCommand command)
         {
             return command.Execute();
         }

@@ -12,10 +12,12 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public string Name { get; set; }
         public string Description { get; set; }
         public ICollection<DbUserRight> Users { get; set; }
+        public ICollection<DbRoleRight> Roles { get; set; }
 
         public DbRight()
         {
             Users = new HashSet<DbUserRight>();
+            Roles = new HashSet<DbRoleRight>();
         }
     }
 
@@ -35,6 +37,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
             builder
                 .HasMany(r => r.Users)
+                .WithOne(u => u.Right);
+
+            builder
+                .HasMany(r => r.Roles)
                 .WithOne(u => u.Right);
         }
     }

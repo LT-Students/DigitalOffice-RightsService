@@ -1,12 +1,14 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
+using System;
 
 namespace LT.DigitalOffice.RightsService.Mappers.Interfaces
 {
     [AutoInject]
-    public interface IRightsMapper
+    public interface IDbRoleMapper
     {
-        Right Map(DbRight value);
+        DbRole Map(CreateRoleRequest value, Guid userId);
     }
 }

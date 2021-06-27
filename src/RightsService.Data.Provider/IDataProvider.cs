@@ -11,6 +11,10 @@ namespace LT.DigitalOffice.RightsService.Data.Provider
     {
         DbSet<DbRight> Rights { get; set; }
         DbSet<DbUserRight> RightUsers { get; set; }
+
+        DbSet<DbRole> Roles { get; set; }
+        DbSet<DbUserRole> UserRoles { get; set; }
+
         DbSet<DbUser> Users { get; set; }
     }
 }
