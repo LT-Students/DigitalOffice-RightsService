@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.RightsService.Validation
 {
     public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>, ICreateRoleRequestValidator
     {
-        // TODO add check exists users, rights
+        // TODO add check exists rights
 
         public CreateRoleRequestValidator()
         {
@@ -19,9 +19,6 @@ namespace LT.DigitalOffice.RightsService.Validation
             .NotEmpty()
                 .MinimumLength(1).WithMessage("Role name is too short.")
                 .MaximumLength(100).WithMessage("Role name is too long.");
-
-            RuleForEach(x => x.Users)
-                .NotEmpty();
 
             RuleForEach(x => x.Rights)
                 .NotEmpty();

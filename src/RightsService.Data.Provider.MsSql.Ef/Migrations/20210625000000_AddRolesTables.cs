@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DbRoleUsers", x => x.Id);
+                    table.PrimaryKey("PK_UserRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DbRoleRights", x => x.Id);
+                    table.PrimaryKey("PK_RoleRights", x => x.Id);
                 });
         }
 

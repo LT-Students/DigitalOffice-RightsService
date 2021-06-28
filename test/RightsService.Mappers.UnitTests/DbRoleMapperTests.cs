@@ -25,7 +25,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.RequestsMappers.UnitTests
             {
                 Name = "test name",
                 Description = "test descripton",
-                Users = new List<Guid> { Guid.NewGuid() },
                 Rights = new List<int> { 123 }
             };
         }

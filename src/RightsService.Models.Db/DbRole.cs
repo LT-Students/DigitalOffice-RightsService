@@ -20,6 +20,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public DbRole()
         {
             Users = new HashSet<DbUserRole>();
+            Rights = new HashSet<DbRoleRight>();
         }
     }
 
@@ -28,7 +29,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public void Configure(EntityTypeBuilder<DbRole> builder)
         {
             builder
-                .ToTable(DbRight.TableName);
+                .ToTable(DbRole.TableName);
 
             builder
                 .HasKey(r => r.Id);

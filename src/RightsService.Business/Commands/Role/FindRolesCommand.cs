@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.RightsService.Business.Interfaces;
 using LT.DigitalOffice.RightsService.Data;
+using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
@@ -11,15 +12,15 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
+    /// <inheritdoc/>
     public class FindRolesCommand : IFindRolesCommand
     {
-        /// <inheritdoc/>
         private readonly IRoleInfoMapper _mapper;
-        private readonly RoleRepository _repository;
+        private readonly IRoleRepository _repository;
         private readonly ILogger<FindRolesCommand> _logger;
 
         public FindRolesCommand(
-            RoleRepository repository,
+            IRoleRepository repository,
             IRoleInfoMapper mapper,
             ILogger<FindRolesCommand> logger)
         {
@@ -28,7 +29,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             _repository = repository;
         }
 
-        /// <inheritdoc/>
         public RolesResponse Execute(int skipCount, int takeCount)
         {
             RolesResponse result = new();

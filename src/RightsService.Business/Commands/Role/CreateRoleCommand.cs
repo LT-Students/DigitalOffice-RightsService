@@ -51,7 +51,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             _accessValidator = accessValidator;
         }
 
-        /// <inheritdoc/>
         public OperationResultResponse<Guid> Execute(CreateRoleRequest request)
         {
             if (!_accessValidator.IsAdmin())

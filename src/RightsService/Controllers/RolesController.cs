@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RolesController : ControllerBase
     {
         [HttpGet("find")]
         public RolesResponse Find([FromServices] IFindRolesCommand command,

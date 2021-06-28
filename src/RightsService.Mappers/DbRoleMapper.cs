@@ -17,17 +17,23 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
                 throw new ArgumentNullException(nameof(value));
             }
 
-            // TODO add add rights and users
+            var roleId = Guid.NewGuid();
 
             return new DbRole
             {
-                Id = Guid.NewGuid(),
+                Id = roleId,
                 Name = value.Name,
                 Description = value.Description,
                 CreatedBy = userId,
                 CreatedAt = DateTime.Now,
-                Rights = null,
-                Users = null
+                Rights = value.Rights?.Select(x => new DbRoleRight
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = userId,
+                    RightId = x,
+                    RoleId = roleId
+                }).ToList()
             };
         }
     }

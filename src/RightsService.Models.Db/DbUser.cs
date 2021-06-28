@@ -32,6 +32,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
             builder
                 .HasMany(u => u.Rights)
                 .WithOne(r => r.User);
+
+            builder
+                .HasOne(u => u.Role)
+                .WithOne(r => r.User);
         }
     }
 }

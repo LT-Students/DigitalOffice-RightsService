@@ -30,6 +30,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
                 .HasOne(ru => ru.Role)
                 .WithMany(r => r.Users)
                 .HasForeignKey(ru => ru.RoleId);
+
+            builder
+                .HasOne(ru => ru.User)
+                .WithOne(r => r.Role);
         }
     }
 }

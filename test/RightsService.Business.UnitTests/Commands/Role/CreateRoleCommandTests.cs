@@ -50,8 +50,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             {
                 Name = "Create Smth",
                 Description = "Create smth in somewhere",
-                Rights = new List<int> { _rightId },
-                Users = new List<Guid> { _userId }
+                Rights = new List<int> { _rightId }
             };
 
             var dbUserRole = new DbUserRole {
