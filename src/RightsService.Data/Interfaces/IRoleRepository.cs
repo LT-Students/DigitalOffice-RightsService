@@ -13,14 +13,20 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     public interface IRoleRepository
     {
         /// <summary>
+        /// Adds new role to the database. Returns whether it was successful to add.
+        /// </summary>
+        Guid Create(DbRole dbRole);
+
+        /// <summary>
+        /// Returns role by id or throws not found exception.
+        /// </summary>
+        /// <returns>List of all added roles.</returns>
+        DbRole Get(Guid roleId);
+
+        /// <summary>
         /// Returns a list of all added roles to the database.
         /// </summary>
         /// <returns>List of all added roles.</returns>
         IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount);
-
-        /// <summary>
-        /// Adds new role to the database. Returns whether it was successful to add.
-        /// </summary>
-        Guid Create(DbRole dbRole);
     }
 }

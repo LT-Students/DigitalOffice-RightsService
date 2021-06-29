@@ -31,10 +31,21 @@ namespace LT.DigitalOffice.RightsService.Data
             return dbRole.Id;
         }
 
+        public DbRole Get(Guid roleId)
+        {
+            var dbRole = _provider.Roles.FirstOrDefault(x => x.Id == roleId);
+
+            if (dbRole == null)
+            {
+                throw new NotFoundException($"Role with id {roleId} was not found.");
+            }
+
+            return dbRole;
+        }
+
         public IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount)
         {
-            totalCount = _provider.Users.Count();
-
+            totalCount = _provider.Roles.Count();
 
             return _provider.Roles
                 .Skip(skipCount * takeCount)

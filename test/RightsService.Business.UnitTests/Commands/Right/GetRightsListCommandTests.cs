@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
 {
     public class GetRightsListCommandTests
     {
-        private Mock<ICheckRightsRepository> repositoryMock;
+        private Mock<IRightRepository> repositoryMock;
         private Mock<IRightMapper> mapperMock;
         private IGetRightsListCommand command;
         private List<DbRight> dbRightsList;
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
         public void Setup()
         {
             mapperMock = new Mock<IRightMapper>();
-            repositoryMock = new Mock<ICheckRightsRepository>();
+            repositoryMock = new Mock<IRightRepository>();
             command = new GetRightsListCommand(repositoryMock.Object, mapperMock.Object);
             dbRight = new DbRight { Id = 0, Name = "Right", Description = "Allows you everything" };
             right = new RightResponse { Id = 0, Name = "Right", Description = "Allows you everything"};

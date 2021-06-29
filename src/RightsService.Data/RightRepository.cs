@@ -13,13 +13,13 @@ using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Data
 {
-    /// <inheritdoc cref="ICheckRightsRepository"/>
-    public class CheckRightsRepository : ICheckRightsRepository
+    /// <inheritdoc cref="IRightRepository"/>
+    public class RightRepository : IRightRepository
     {
         private readonly IDataProvider _provider;
         private readonly IRequestClient<IGetUserDataRequest> _client;
 
-        public CheckRightsRepository(
+        public RightRepository(
             IDataProvider provider,
             IRequestClient<IGetUserDataRequest> client)
         {

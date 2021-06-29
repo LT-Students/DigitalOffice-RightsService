@@ -17,12 +17,12 @@ using System.Linq;
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
     /// <inheritdoc/>
-    public class FindRolesCommand : IFindRolesCommand
+    public class GetRoleCommand : IGetRoleCommand
     {
-        private readonly ILogger<FindRolesCommand> _logger;
+        private readonly ILogger<GetRoleCommand> _logger;
         private readonly IRoleRepository _roleRepository;
         private readonly IRightRepository _rightRepository;
-        private readonly IRoleInfoMapper _roleInfoMapper;
+        private readonly IRoleInfoMapper _roleInfomapper;
         private readonly IUserInfoMapper _userInfoMapper;
         private readonly IRightMapper _rightMapper;
         private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
@@ -64,45 +64,40 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             return usersInfo;
         }
 
-        public FindRolesCommand(
-            ILogger<FindRolesCommand> logger,
+        public GetRoleCommand(
+            ILogger<GetRoleCommand> logger,
             IRoleRepository roleRepository,
             IRightRepository rightRepository,
-            IUserInfoMapper userInfoMapper,
             IRoleInfoMapper roleInfoMapper,
+            IUserInfoMapper userInfoMapper,
             IRightMapper rightMapper,
             IRequestClient<IGetUsersDataRequest> usersDataRequestClient)
         {
             _logger = logger;
             _roleRepository = roleRepository;
             _rightRepository = rightRepository;
-            _roleInfoMapper = roleInfoMapper;
+            _roleInfomapper = roleInfoMapper;
             _userInfoMapper = userInfoMapper;
             _rightMapper = rightMapper;
             _usersDataRequestClient = usersDataRequestClient;
         }
 
-        public RolesResponse Execute(int skipCount, int takeCount)
+        public RoleResponse Execute(Guid roleId)
         {
-            RolesResponse result = new();
-
-            var dbRoles = _roleRepository.Find(skipCount, takeCount, out int totalCount);
-
-            result.TotalCount = totalCount;
+            RoleResponse result = new();
 
             var allRights = _rightRepository.GetRightsList();
 
-            foreach (var dbRole in dbRoles)
-            {
-                var rights = allRights
+            var dbRole = _roleRepository.Get(roleId);
+
+            var rights = allRights
                     .Where(x => dbRole.Rights.Select(x => x.RightId).ToList().Contains(x.Id))
                     .Select(_rightMapper.Map)
                     .ToList();
 
-                var users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
+            var users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
 
-                result.Roles.Add(_roleInfoMapper.Map(dbRole, rights, users));
-            }
+            result.Role = _roleInfomapper.Map(dbRole, rights, users);
 
             return result;
         }

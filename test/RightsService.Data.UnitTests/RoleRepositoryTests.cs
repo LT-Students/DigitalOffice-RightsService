@@ -65,6 +65,21 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             }
         }
 
+        #region Get
+
+        [Test]
+        public void ShouldGetRoleWhenRoleExists()
+        {
+            Assert.AreEqual(_repository.Get(_dbRole.Id), _dbRole);
+        }
+
+        [Test]
+        public void ShouldThrowNotFoundExceptionWhenRoleNotExists()
+        {
+            Assert.Throws<NotFoundException>(() => _repository.Get(Guid.NewGuid()));
+        }
+
+        #endregion
 
         #region Find
 
@@ -74,7 +89,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             int total;
 
             Assert.That(_repository.Find(0, 100, out total), Is.EquivalentTo(_provider.Roles.ToList()));
-            Assert.Equals(total, _provider.Roles.ToList().Count);
+            Assert.AreEqual(total, _provider.Roles.ToList().Count);
         }
 
         #endregion

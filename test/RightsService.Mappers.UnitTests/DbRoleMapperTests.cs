@@ -50,7 +50,8 @@ namespace LT.DigitalOffice.RightsService.Mappers.RequestsMappers.UnitTests
                 CreatedBy = authorId,
                 Name = _request.Name,
                 Description = _request.Description,
-                CreatedAt = resultDbRole.CreatedAt
+                CreatedAt = resultDbRole.CreatedAt,
+                Rights = resultDbRole.Rights
             };
 
             SerializerAssert.AreEqual(expectedDbRole, resultDbRole);

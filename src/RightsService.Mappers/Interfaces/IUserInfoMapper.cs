@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
@@ -7,8 +8,8 @@ using System.Collections.Generic;
 namespace LT.DigitalOffice.RightsService.Mappers.Interfaces
 {
     [AutoInject]
-    public interface IRoleInfoMapper
+    public interface IUserInfoMapper
     {
-        RoleInfo Map(DbRole value, List<RightResponse> rights, List<UserInfo> users);
+        UserInfo Map(UserData userData);
     }
 }

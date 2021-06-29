@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using System;
 
@@ -6,14 +7,14 @@ namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.
-    /// Provides method for getting list of role models with pagination.
+    /// Provides method for get role model.
     /// </summary>
     [AutoInject]
-    public interface IFindRolesCommand
+    public interface IGetRoleCommand
     {
         /// <summary>
-        /// Returns the list of role models using pagination.
+        /// Returns role by id.
         /// </summary>
-        RolesResponse Execute(int skipCount, int takeCount);
+        RoleResponse Execute(Guid roleId);
     }
 }

@@ -3,13 +3,14 @@ using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Mappers
 {
     public class RoleInfoMapper : IRoleInfoMapper
     {
-        public RoleInfo Map(DbRole value)
+        public RoleInfo Map(DbRole value, List<RightResponse> rights, List<UserInfo> users)
         {
             if (value == null)
             {
@@ -23,8 +24,8 @@ namespace LT.DigitalOffice.RightsService.Mappers
                 Description = value.Description,
                 CreatedAt = value.CreatedAt,
                 CreatedBy = value.CreatedBy,
-                Rights = value.Rights.Select(x => x.Id).ToList(),
-                Users = value.Users.Select(x => x.Id).ToList()
+                Rights = rights,
+                Users = users
             };
         }
     }

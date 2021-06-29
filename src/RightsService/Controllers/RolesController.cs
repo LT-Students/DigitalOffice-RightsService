@@ -1,5 +1,6 @@
-﻿using LT.DigitalOffice.RightsService.Business.Interfaces;
+﻿using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,6 +26,14 @@ namespace LT.DigitalOffice.RightsService.Controllers
             [FromQuery] CreateRoleRequest role)
         {
             command.Execute(role);
+        }
+
+        [HttpGet("get")]
+        public RoleResponse Create(
+            [FromServices] IGetRoleCommand command,
+            [FromQuery] Guid roleId)
+        {
+            return command.Execute(roleId);
         }
     }
 }

@@ -11,7 +11,7 @@ using LT.DigitalOffice.Models.Broker.Requests.Company;
 using LT.DigitalOffice.Models.Broker.Requests.File;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.Models.Broker.Responses.File;
-using LT.DigitalOffice.RightsService.Business.Interfaces;
+using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
@@ -29,21 +29,18 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     public class CreateRoleCommand : ICreateRoleCommand
     {
         private readonly IRoleRepository _repository;
-        private readonly ILogger<CreateRoleCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICreateRoleRequestValidator _validator;
         private readonly IDbRoleMapper _mapper;
         private readonly IAccessValidator _accessValidator;
 
         public CreateRoleCommand(
-            ILogger<CreateRoleCommand> logger,
             IHttpContextAccessor httpContextAccessor,
             IRoleRepository repository,
             ICreateRoleRequestValidator validator,
             IDbRoleMapper mapper,
             IAccessValidator accessValidator)
         {
-            _logger = logger;
             _validator = validator;
             _httpContextAccessor = httpContextAccessor;
             _repository = repository;

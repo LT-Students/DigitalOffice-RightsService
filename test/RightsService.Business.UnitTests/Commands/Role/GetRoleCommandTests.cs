@@ -20,25 +20,34 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 {
-    class FindRolesCommandTests
+    class GetRoleCommandTests
     {
-        private IEnumerable<DbRole> _dbRoles;
-        private IEnumerable<UserInfo> _rolesInfo;
+        private DbRole _dbRole;
+        private UserInfo _roleInfo;
 
         private AutoMocker _mocker;
-        private IFindRolesCommand _command;
+        private IGetRoleCommand _command;
+        private IDictionary<object, object> _contextValues;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            // TODO add fill
+            _dbRole = new DbRole {
+                Id = Guid.NewGuid()
+            };
+
+            _roleInfo = new UserInfo
+            {
+                Id = _dbRole.Id
+            };
+
         }
 
         [SetUp]
         public void SetUp()
         {
             _mocker = new AutoMocker();
-            _command = _mocker.CreateInstance<IFindRolesCommand>();
+            _command = _mocker.CreateInstance<IGetRoleCommand>();
         }
 
         // TODO add tests

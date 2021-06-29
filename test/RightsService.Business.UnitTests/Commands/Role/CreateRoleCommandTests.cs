@@ -7,7 +7,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using LT.DigitalOffice.Models.Broker.Responses.Company;
 using LT.DigitalOffice.RightsService.Business.Commands;
-using LT.DigitalOffice.RightsService.Business.Interfaces;
+using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Business.Role;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
@@ -64,7 +64,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 Right = new DbRight { Id = _rightId }
             };
 
-
             _dbRole = new DbRole
             {
                 Id = Guid.NewGuid(),
@@ -95,56 +94,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             _mocker.GetMock<IDataProvider>().Reset();
         }
 
-        [Test]
-        public void ShouldThrowExceptionWhenCreatingNewUserIsNotAdmin()
-        {
-            _mocker
-              .Setup<IAccessValidator, bool>(x => x.IsAdmin(_authorId))
-              .Returns(false);
-
-            Assert.Throws<ForbiddenException>(() => _command.Execute(_newRequest));
-
-            _mocker.Verify<IAccessValidator, bool>(x => x.IsAdmin(_authorId), Times.Once);
-            _mocker.Verify<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid, Times.Once);
-        }
-
-        [Test]
-        public void ShouldThrowExceptionWhenCreatingNewRoleWithIncorrectData()
-        {
-            _mocker
-              .Setup<IAccessValidator, bool>(x => x.IsAdmin(_authorId))
-              .Returns(true);
-
-            _mocker
-                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(false);
-
-            Assert.Throws<ValidationException>(() => _command.Execute(_newRequest));
-
-            _mocker.Verify<IAccessValidator, bool>(x => x.IsAdmin(_authorId), Times.Once);
-            _mocker.Verify<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid, Times.Once);
-        }
-
-        [Test]
-        public void ShouldReturnResponseWhenCreatingNewRole()
-        {
-            _mocker
-              .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-              .Returns(true);
-
-            _mocker
-                .Setup<IDbRoleMapper, DbRole>(x => x.Map(_newRequest, _authorId))
-                .Returns(_dbRole);
-
-            _mocker
-                .Setup<IRoleRepository, Guid>(x => x.Create(_dbRole))
-                .Returns(_response.Body);
-
-            SerializerAssert.AreEqual(_response, _command.Execute(_newRequest));
-
-            _mocker.Verify<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid, Times.Once);
-            _mocker.Verify<IDbRoleMapper, DbRole>(x => x.Map(_newRequest, _authorId), Times.Once);
-            _mocker.Verify<IRoleRepository, Guid>(x => x.Create(_dbRole), Times.Once);
-        }
+        // TODO
     }
 }

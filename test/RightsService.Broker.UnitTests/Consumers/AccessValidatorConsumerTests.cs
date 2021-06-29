@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.RightsService.Broker.UnitTests.Consumers
     class AccessValidatorConsumerTests
     {
         private InMemoryTestHarness _harness;
-        private Mock<ICheckRightsRepository> _rigthsRepositoryMock;
+        private Mock<IRightRepository> _rigthsRepositoryMock;
         private ConsumerTestHarness<AccessValidatorConsumer> _consumerTestHarness;
         private Guid _userGuidWithRight;
         private Guid _userGuidWithoutRight;

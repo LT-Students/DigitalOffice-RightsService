@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         }
 
         private IDataProvider provider;
-        private ICheckRightsRepository repository;
+        private IRightRepository repository;
         private Mock<IRightMapper> mapperMock;
         private Mock<IRequestClient<IGetUserDataRequest>> clientMock;
         private OperationResult<IGetUserDataResponse> operationResult;
@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             clientMock = new Mock<IRequestClient<IGetUserDataRequest>>();
             BrokerSetUp();
 
-            repository = new CheckRightsRepository(provider, clientMock.Object);
+            repository = new RightRepository(provider, clientMock.Object);
 
             userId = Guid.NewGuid();
             dbRight1InDb = new DbRight

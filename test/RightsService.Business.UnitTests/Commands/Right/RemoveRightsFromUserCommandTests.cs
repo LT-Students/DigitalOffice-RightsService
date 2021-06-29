@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
 {
     public class RemoveRightsFromUserCommandTests
     {
-        private Mock<ICheckRightsRepository> repositoryMock;
+        private Mock<IRightRepository> repositoryMock;
         private Mock<IRightsIdsValidator> validatorMock;
         private Mock<ValidationResult> validationResultIsValidMock;
         private IRemoveRightsFromUserCommand command;
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<ICheckRightsRepository>();
+            repositoryMock = new Mock<IRightRepository>();
             accessValidator = new Mock<IAccessValidator>();
             validatorMock = new Mock<IRightsIdsValidator>();
             command = new RemoveRightsFromUserCommand(repositoryMock.Object, validatorMock.Object, accessValidator.Object);

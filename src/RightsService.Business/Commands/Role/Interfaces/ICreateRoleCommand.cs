@@ -3,7 +3,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Models.Dto;
 using System;
 
-namespace LT.DigitalOffice.RightsService.Business.Interfaces
+namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.
