@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         private readonly IRightRepository _rightRepository;
         private readonly IRoleInfoMapper _roleInfomapper;
         private readonly IUserInfoMapper _userInfoMapper;
-        private readonly IRightMapper _rightMapper;
+        private readonly IRightResponseMapper _rightMapper;
         private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
 
         private List<UserInfo> GetUsers(List<Guid> userIds, List<string> errors)
@@ -68,7 +68,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             IRightRepository rightRepository,
             IRoleInfoMapper roleInfoMapper,
             IUserInfoMapper userInfoMapper,
-            IRightMapper rightMapper,
+            IRightResponseMapper rightMapper,
             IRequestClient<IGetUsersDataRequest> usersDataRequestClient)
         {
             _logger = logger;
@@ -89,7 +89,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             var dbRole = _roleRepository.Get(roleId);
 
             var rights = allRights
-                    .Where(x => dbRole.Rights.Select(x => x.RightId).ToList().Contains(x.Id))
+                    .Where(x => dbRole.Rights.Select(x => x.RightId).Contains(x.Id))
                     .Select(_rightMapper.Map)
                     .ToList();
 

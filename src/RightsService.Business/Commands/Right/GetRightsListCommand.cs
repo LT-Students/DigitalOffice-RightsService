@@ -11,11 +11,11 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     public class GetRightsListCommand : IGetRightsListCommand
     {
         private readonly IRightRepository _repository;
-        private readonly IRightMapper _mapper;
+        private readonly IRightResponseMapper _mapper;
 
         public GetRightsListCommand(
             IRightRepository repository,
-            IRightMapper mapper)
+            IRightResponseMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

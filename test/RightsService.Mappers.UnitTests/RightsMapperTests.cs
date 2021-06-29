@@ -8,7 +8,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
 {
     public class RightsMapperTests
     {
-        private IRightMapper mapper;
+        private IRightResponseMapper mapper;
 
         private const int Id = 0;
         private const string Name = "Right";
@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
         [SetUp]
         public void SetUp()
         {
-            mapper = new RightMapper();
+            mapper = new RightResponseMapper();
             dbRight = new DbRight
             {
                 Id = Id,

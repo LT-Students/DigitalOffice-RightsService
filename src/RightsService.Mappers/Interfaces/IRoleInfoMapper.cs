@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Interfaces
     [AutoInject]
     public interface IRoleInfoMapper
     {
-        RoleInfo Map(DbRole value, List<RightResponse> rights, List<UserInfo> users);
+        RoleInfo Map(DbRole value, IEnumerable<RightResponse> rights, IEnumerable<UserInfo> users);
     }
 }

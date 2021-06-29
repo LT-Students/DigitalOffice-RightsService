@@ -5,7 +5,7 @@ using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 namespace LT.DigitalOffice.RightsService.Mappers.Interfaces
 {
     [AutoInject]
-    public interface IRightMapper
+    public interface IRightResponseMapper
     {
         RightResponse Map(DbRight value);
     }

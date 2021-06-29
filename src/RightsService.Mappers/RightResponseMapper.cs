@@ -5,7 +5,7 @@ using System;
 
 namespace LT.DigitalOffice.RightsService.Mappers
 {
-    public class RightMapper : IRightMapper
+    public class RightResponseMapper : IRightResponseMapper
     {
         public RightResponse Map(DbRight value)
         {

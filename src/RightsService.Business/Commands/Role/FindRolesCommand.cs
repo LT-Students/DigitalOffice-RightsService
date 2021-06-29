@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         private readonly IRightRepository _rightRepository;
         private readonly IRoleInfoMapper _roleInfoMapper;
         private readonly IUserInfoMapper _userInfoMapper;
-        private readonly IRightMapper _rightMapper;
+        private readonly IRightResponseMapper _rightMapper;
         private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
 
         private List<UserInfo> GetUsers(List<Guid> userIds, List<string> errors)
@@ -68,7 +68,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             IRightRepository rightRepository,
             IUserInfoMapper userInfoMapper,
             IRoleInfoMapper roleInfoMapper,
-            IRightMapper rightMapper,
+            IRightResponseMapper rightMapper,
             IRequestClient<IGetUsersDataRequest> usersDataRequestClient)
         {
             _logger = logger;
@@ -90,14 +90,15 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             var allRights = _rightRepository.GetRightsList();
 
+            var allUsers = GetUsers(dbRoles.SelectMany(x => x.Users).Select(x => x.UserId).ToList(), result.Errors);
+
             foreach (var dbRole in dbRoles)
             {
                 var rights = allRights
                     .Where(x => dbRole.Rights.Select(x => x.RightId).ToList().Contains(x.Id))
-                    .Select(_rightMapper.Map)
-                    .ToList();
+                    .Select(_rightMapper.Map);
 
-                var users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
+                var users = allUsers.Where(x => dbRole.Users.Select(x => x.UserId).Contains(x.Id));
 
                 result.Roles.Add(_roleInfoMapper.Map(dbRole, rights, users));
             }

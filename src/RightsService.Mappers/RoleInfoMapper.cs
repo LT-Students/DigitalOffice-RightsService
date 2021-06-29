@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.RightsService.Mappers
 {
     public class RoleInfoMapper : IRoleInfoMapper
     {
-        public RoleInfo Map(DbRole value, List<RightResponse> rights, List<UserInfo> users)
+        public RoleInfo Map(DbRole value, IEnumerable<RightResponse> rights, IEnumerable<UserInfo> users)
         {
             if (value == null)
             {

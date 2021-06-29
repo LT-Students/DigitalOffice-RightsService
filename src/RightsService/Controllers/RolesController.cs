@@ -11,7 +11,8 @@ namespace LT.DigitalOffice.RightsService.Controllers
     public class RolesController : ControllerBase
     {
         [HttpGet("find")]
-        public RolesResponse Find([FromServices] IFindRolesCommand command,
+        public RolesResponse Find(
+            [FromServices] IFindRolesCommand command,
             [FromQuery] int skipCount,
             [FromQuery] int takeCount)
         {

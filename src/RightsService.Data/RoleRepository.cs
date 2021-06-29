@@ -47,8 +47,7 @@ namespace LT.DigitalOffice.RightsService.Data
                 .Skip(skipCount * takeCount)
                 .Take(takeCount)
                 .Include(x => x.Rights)
-                .Include(x => x.Users)
-                .ToList();
+                .Include(x => x.Users);
         }
     }
 }
