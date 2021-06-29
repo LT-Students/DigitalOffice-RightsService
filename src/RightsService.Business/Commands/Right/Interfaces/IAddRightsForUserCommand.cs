@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.Kernel.Exceptions;
 using System;
 using System.Collections.Generic;
 

@@ -1,19 +1,15 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Validation.Helpers;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
     public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>, ICreateRoleRequestValidator
     {
-        // TODO add check exists rights
-
         public CreateRoleRequestValidator(
             IRightRepository repository,
             IMemoryCache cache)

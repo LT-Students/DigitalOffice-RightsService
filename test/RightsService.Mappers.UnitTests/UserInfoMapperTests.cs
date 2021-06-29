@@ -1,14 +1,9 @@
 ﻿using LT.DigitalOffice.Models.Broker.Models;
-using LT.DigitalOffice.Models.Broker.Responses.Company;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
-using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using LT.DigitalOffice.UnitTestKernel;
-using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Mappers.UnitTests.Models
 {

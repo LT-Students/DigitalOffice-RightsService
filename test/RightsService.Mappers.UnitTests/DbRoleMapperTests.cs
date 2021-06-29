@@ -6,7 +6,6 @@ using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Mappers.RequestsMappers.UnitTests
 {

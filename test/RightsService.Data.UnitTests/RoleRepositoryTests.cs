@@ -1,16 +1,11 @@
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.RightsService.Data.Provider;
-using LT.DigitalOffice.UnitTestKernel;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Models.Db;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Data.UnitTests
@@ -42,8 +37,6 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             _dbContext = new DbContextOptionsBuilder<RightsServiceDbContext>()
                   .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                   .Options;
-
-            // TODO fill data
         }
 
         [SetUp]
@@ -99,7 +92,18 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         [Test]
         public void ShouldCreateRole()
         {
-            // TODO
+            var newDbRole = new DbRole
+            {
+                Id = Guid.NewGuid(),
+                Name = "test name",
+                Description = "test description",
+                CreatedAt = DateTime.Now,
+                CreatedBy = Guid.NewGuid()
+            };
+
+            _repository.Create(newDbRole);
+
+            Assert.That(_provider.Roles.FirstOrDefault(x => x.Id == newDbRole.Id) == newDbRole);
         }
 
         #endregion

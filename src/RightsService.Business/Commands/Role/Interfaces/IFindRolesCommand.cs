@@ -1,6 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
-using System;
 
 namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {

@@ -3,7 +3,6 @@ using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Moq;
 using NUnit.Framework;

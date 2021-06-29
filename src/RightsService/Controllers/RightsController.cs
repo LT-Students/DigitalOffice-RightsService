@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;

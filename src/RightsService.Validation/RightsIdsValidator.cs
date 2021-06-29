@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Validation.Helpers;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.Extensions.Caching.Memory;

@@ -1,11 +1,7 @@
 ﻿using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
-using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Mappers
 {

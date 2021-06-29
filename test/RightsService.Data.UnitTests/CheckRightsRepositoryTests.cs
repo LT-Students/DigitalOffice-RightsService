@@ -3,7 +3,6 @@ using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;

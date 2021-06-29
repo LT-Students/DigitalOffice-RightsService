@@ -1,6 +1,5 @@
 ﻿using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using NUnit.Framework;
 using System;
