@@ -1,8 +1,10 @@
 ﻿using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 
 namespace LT.DigitalOffice.RightsService.Controllers
 {
@@ -10,6 +12,13 @@ namespace LT.DigitalOffice.RightsService.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
+        private readonly IHttpContextAccessor _context;
+
+        public RolesController(IHttpContextAccessor context)
+        {
+            _context = context;
+        }
+
         [HttpGet("find")]
         public FindResponse Find(
             [FromServices] IFindRolesCommand command,
@@ -24,6 +33,8 @@ namespace LT.DigitalOffice.RightsService.Controllers
             [FromServices] ICreateRoleCommand command,
             [FromBody] CreateRoleRequest role)
         {
+            _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
             command.Execute(role);
         }
 
