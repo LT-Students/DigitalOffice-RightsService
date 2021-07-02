@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
+﻿using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Http;
@@ -29,13 +30,13 @@ namespace LT.DigitalOffice.RightsService.Controllers
         }
 
         [HttpPost("create")]
-        public void Create(
+        public OperationResultResponse<Guid> Create(
             [FromServices] ICreateRoleCommand command,
             [FromBody] CreateRoleRequest role)
         {
             _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
-            command.Execute(role);
+            return command.Execute(role);
         }
 
         [HttpGet("get")]

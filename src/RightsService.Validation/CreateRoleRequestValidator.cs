@@ -15,9 +15,7 @@ namespace LT.DigitalOffice.RightsService.Validation
             IMemoryCache cache)
         {
             RuleFor(x => x.Name)
-            .NotEmpty()
-                .MinimumLength(1).WithMessage("Role name is too short.")
-                .MaximumLength(100).WithMessage("Role name is too long.");
+            .NotEmpty().WithMessage("Role name must not be empty.");
 
             RuleFor(x => x.Rights)
                 .Cascade(CascadeMode.Stop)

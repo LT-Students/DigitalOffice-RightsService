@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         private readonly IRoleInfoMapper _roleInfomapper;
         private readonly IUserInfoMapper _userInfoMapper;
         private readonly IRightResponseMapper _rightMapper;
-        private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
+        private readonly IRequestClient<IGetUserDataRequest> _usersDataRequestClient;
 
         private List<UserInfo> GetUsers(List<Guid> userIds, List<string> errors)
         {
@@ -58,7 +58,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
                 _logger.LogError(exc, "Exception on get user information.");
             }
-
+            
             return usersInfo;
         }
 
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             IRoleInfoMapper roleInfoMapper,
             IUserInfoMapper userInfoMapper,
             IRightResponseMapper rightMapper,
-            IRequestClient<IGetUsersDataRequest> usersDataRequestClient)
+            IRequestClient<IGetUserDataRequest> usersDataRequestClient)
         {
             _logger = logger;
             _roleRepository = roleRepository;

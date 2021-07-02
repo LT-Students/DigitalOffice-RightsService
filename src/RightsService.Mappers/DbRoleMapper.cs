@@ -8,11 +8,11 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
 {
     public class DbRoleMapper : IDbRoleMapper
     {
-        public DbRole Map(CreateRoleRequest value, Guid userId)
+        public DbRole Map(CreateRoleRequest request, Guid userId)
         {
-            if (value == null)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(request));
             }
 
             var roleId = Guid.NewGuid();
@@ -20,17 +20,17 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
             return new DbRole
             {
                 Id = roleId,
-                Name = value.Name,
-                Description = value.Description,
+                Name = request.Name,
+                Description = request.Description,
                 CreatedBy = userId,
-                CreatedAt = DateTime.Now,
-                Rights = value.Rights?.Select(x => new DbRoleRight
+                CreatedAt = DateTime.UtcNow,
+                Rights = request.Rights?.Select(x => new DbRoleRight
                 {
                     Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.Now,
+                    RoleId = roleId,
                     CreatedBy = userId,
+                    CreatedAt = DateTime.UtcNow,
                     RightId = x,
-                    RoleId = roleId
                 }).ToList()
             };
         }
