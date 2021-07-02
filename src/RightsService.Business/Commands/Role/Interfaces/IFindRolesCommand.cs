@@ -13,6 +13,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
         /// <summary>
         /// Returns the list of role models using pagination.
         /// </summary>
-        RolesResponse Execute(int skipCount, int takeCount);
+        FindResponse Execute(int skipCount, int takeCount);
     }
 }

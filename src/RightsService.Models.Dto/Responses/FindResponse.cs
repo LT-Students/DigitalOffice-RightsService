@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Models.Dto.Responses
 {
-    public class RolesResponse
+    public class FindResponse
     {
         public int TotalCount { get; set; }
         public List<RoleInfo> Roles { get; set; } = new();

@@ -56,7 +56,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             {
                 errors.Add(errorMessage);
 
-                _logger.LogError(exc, "Exception on get user information.");
+                _logger.LogError(exc, "Exception on get users information.");
             }
 
             return usersInfo;
@@ -80,9 +80,9 @@ namespace LT.DigitalOffice.RightsService.Business.Role
             _usersDataRequestClient = usersDataRequestClient;
         }
 
-        public RolesResponse Execute(int skipCount, int takeCount)
+        public FindResponse Execute(int skipCount, int takeCount)
         {
-            RolesResponse result = new();
+            FindResponse result = new();
 
             var dbRoles = _roleRepository.Find(skipCount, takeCount, out int totalCount);
 

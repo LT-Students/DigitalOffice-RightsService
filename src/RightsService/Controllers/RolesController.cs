@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
     public class RolesController : ControllerBase
     {
         [HttpGet("find")]
-        public RolesResponse Find(
+        public FindResponse Find(
             [FromServices] IFindRolesCommand command,
             [FromQuery] int skipCount,
             [FromQuery] int takeCount)
@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
         [HttpPost("create")]
         public void Create(
             [FromServices] ICreateRoleCommand command,
-            [FromQuery] CreateRoleRequest role)
+            [FromBody] CreateRoleRequest role)
         {
             command.Execute(role);
         }
