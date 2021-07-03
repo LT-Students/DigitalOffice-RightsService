@@ -16,6 +16,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
             }
 
             var roleId = Guid.NewGuid();
+            var createdAt = DateTime.UtcNow;
 
             return new DbRole
             {
@@ -23,13 +24,14 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
                 Name = request.Name,
                 Description = request.Description,
                 CreatedBy = userId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = createdAt,
+                IsActive = true,
                 Rights = request.Rights?.Select(x => new DbRoleRight
                 {
                     Id = Guid.NewGuid(),
                     RoleId = roleId,
                     CreatedBy = userId,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = createdAt,
                     RightId = x,
                 }).ToList()
             };

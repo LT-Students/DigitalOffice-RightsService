@@ -48,18 +48,13 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             _validator.ValidateAndThrowCustom(request);
 
-            List<string> errors = new();
-
             var userId = _httpContextAccessor.HttpContext.GetUserId();
             var roleId = _repository.Create(_mapper.Map(request, userId));
 
             return new OperationResultResponse<Guid>
             {
                 Body = roleId,
-                Status = errors.Any()
-                    ? OperationResultStatusType.PartialSuccess
-                    : OperationResultStatusType.FullSuccess,
-                Errors = errors
+                Status = OperationResultStatusType.FullSuccess
             };
         }
     }

@@ -10,11 +10,9 @@ namespace LT.DigitalOffice.RightsService.Data.Provider
     public interface IDataProvider : IBaseDataProvider
     {
         DbSet<DbRight> Rights { get; set; }
-        DbSet<DbUserRight> RightUsers { get; set; }
-
         DbSet<DbRole> Roles { get; set; }
-        DbSet<DbUserRole> UserRoles { get; set; }
-
+        DbSet<DbRoleRight> RoleRights { get; set;}
         DbSet<DbUser> Users { get; set; }
+        DbSet<DbUserRight> UserRights { get; set; }
     }
 }

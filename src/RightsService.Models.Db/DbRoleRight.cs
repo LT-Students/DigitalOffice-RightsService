@@ -15,6 +15,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public DateTime CreatedAt { get; set; }
         public DateTime? RemovedAt { get; set; }
         public int RightId { get; set; }
+
         public DbRight Right { get; set; }
         public DbRole Role { get; set; }
     }

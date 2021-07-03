@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
         }
 
         [HttpGet("get")]
-        public RoleResponse Create(
+        public RoleResponse Get(
             [FromServices] IGetRoleCommand command,
             [FromQuery] Guid roleId)
         {

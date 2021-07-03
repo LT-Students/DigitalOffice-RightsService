@@ -14,12 +14,14 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public string Description { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; }
+
         public ICollection<DbRoleRight> Rights { get; set; }
-        public ICollection<DbUserRole> Users { get; set; }
+        public ICollection<DbUser> Users { get; set; }
 
         public DbRole()
         {
-            Users = new HashSet<DbUserRole>();
+            Users = new HashSet<DbUser>();
             Rights = new HashSet<DbRoleRight>();
         }
     }

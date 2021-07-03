@@ -95,7 +95,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
                     .Select(_rightMapper.Map)
                     .ToList();
 
-            var users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
+            var users = GetUsers(dbRole.Users.Select(x => x.Id).ToList(), result.Errors);
 
             result.Role = _roleInfomapper.Map(dbRole, rights, users);
 
