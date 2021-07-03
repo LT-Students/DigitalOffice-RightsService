@@ -1,9 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.Kernel.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Business.Interfaces
+namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
 {
     /// <summary>
     /// Represents the command pattern.

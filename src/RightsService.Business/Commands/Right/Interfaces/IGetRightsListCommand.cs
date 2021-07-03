@@ -1,8 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Business.Interfaces
+namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
 {
     /// <summary>
     /// Represents the command pattern.
@@ -15,6 +15,6 @@ namespace LT.DigitalOffice.RightsService.Business.Interfaces
         /// Returns all added rights.
         /// </summary>
         /// <returns>All added rights.</returns>
-        List<Right> Execute();
+        List<RightResponse> Execute();
     }
 }

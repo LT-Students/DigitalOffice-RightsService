@@ -10,7 +10,15 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public const string TableName = "Users";
 
         public Guid Id { get; set; }
+        public Guid CreatedBy { get; set; }
+        public Guid? RemovedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? RemovedAt { get; set; }
+        public Guid RoleId { get; set; }
+        public bool IsActive { get; set; }
+
         public ICollection<DbUserRight> Rights { get; set; }
+        public DbRole Role { get; set; }
 
         public DbUser()
         {
@@ -31,6 +39,11 @@ namespace LT.DigitalOffice.RightsService.Models.Db
             builder
                 .HasMany(u => u.Rights)
                 .WithOne(r => r.User);
+
+            builder
+                .HasOne(u => u.Role)
+                .WithMany(u => u.Users)
+                .HasForeignKey(u => u.RoleId);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     /// Provides methods for working with the database of RightsService.
     /// </summary>
     [AutoInject]
-    public interface ICheckRightsRepository
+    public interface IRightRepository
     {
         /// <summary>
         /// Returns a list of all added rights to the database.

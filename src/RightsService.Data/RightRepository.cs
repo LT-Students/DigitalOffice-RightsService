@@ -13,13 +13,13 @@ using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Data
 {
-    /// <inheritdoc cref="ICheckRightsRepository"/>
-    public class CheckRightsRepository : ICheckRightsRepository
+    /// <inheritdoc cref="IRightRepository"/>
+    public class RightRepository : IRightRepository
     {
         private readonly IDataProvider _provider;
         private readonly IRequestClient<IGetUserDataRequest> _client;
 
-        public CheckRightsRepository(
+        public RightRepository(
             IDataProvider provider,
             IRequestClient<IGetUserDataRequest> client)
         {
@@ -58,12 +58,12 @@ namespace LT.DigitalOffice.RightsService.Data
                     throw new BadRequestException("Right doesn't exist.");
                 }
 
-                var dbRightUser = _provider.RightUsers.FirstOrDefault(rightUser =>
+                var dbRightUser = _provider.UserRights.FirstOrDefault(rightUser =>
                     rightUser.RightId == rightId && rightUser.UserId == userId);
 
                 if (dbRightUser == null)
                 {
-                    _provider.RightUsers.Add(new DbUserRight
+                    _provider.UserRights.Add(new DbUserRight
                     {
                         UserId = userId,
                         Right = dbRight,
@@ -76,10 +76,10 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public void RemoveRightsFromUser(Guid userId, IEnumerable<int> rightsIds)
         {
-            var userRights = _provider.RightUsers.Where(ru =>
+            var userRights = _provider.UserRights.Where(ru =>
                 ru.UserId == userId && rightsIds.Contains(ru.RightId));
 
-            _provider.RightUsers.RemoveRange(userRights);
+            _provider.UserRights.RemoveRange(userRights);
 
             _provider.Save();
         }
@@ -93,13 +93,13 @@ namespace LT.DigitalOffice.RightsService.Data
 
             bool result = rightIds.Any();
 
-            DbUser dbUser = _provider.Users.FirstOrDefault(u => u.Id == userId);
-            if (dbUser == null)
+            DbUser dbRoleUser = _provider.Users.FirstOrDefault(u => u.Id == userId);
+            if (dbRoleUser == null)
             {
                 throw new NotFoundException($"User with ID '{userId}' does not have any rights.");
             }
 
-            return dbUser.Rights.All(r => rightIds.Contains(r.RightId));
+            return dbRoleUser.Rights.All(r => rightIds.Contains(r.RightId));
         }
     }
 }

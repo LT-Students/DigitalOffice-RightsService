@@ -1,23 +1,15 @@
 ﻿using LT.DigitalOffice.RightsService.Broker.Consumers;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Requests;
-using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.UnitTestKernel;
 using MassTransit.Testing;
 using Moq;
-using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.RightsService.Broker.UnitTests.Consumers
 {
     class AccessCollectionValidatorConsumerTests
     {
         private InMemoryTestHarness _harness;
-        private Mock<ICheckRightsRepository> _rigthsRepositoryMock;
+        private Mock<IRightRepository> _rigthsRepositoryMock;
         private ConsumerTestHarness<AccessCollectionValidatorConsumer> _consumerTestHarness;
         private Guid _userGuidWithRights;
         private Guid _userGuidWithoutRights;

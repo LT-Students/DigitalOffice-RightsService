@@ -9,9 +9,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
     public class AccessValidatorConsumer : IConsumer<ICheckUserRightsRequest>
     {
-        private readonly ICheckRightsRepository repository;
+        private readonly IRightRepository repository;
 
-        public AccessValidatorConsumer([FromServices] ICheckRightsRepository repository)
+        public AccessValidatorConsumer([FromServices] IRightRepository repository)
         {
             this.repository = repository;
         }

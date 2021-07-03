@@ -1,32 +1,33 @@
-using LT.DigitalOffice.RightsService.Business.Interfaces;
+using LT.DigitalOffice.RightsService.Business.Commands.Right;
+using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Business.UnitTests
+namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
 {
     public class GetRightsListCommandTests
     {
-        private Mock<ICheckRightsRepository> repositoryMock;
-        private Mock<IRightsMapper> mapperMock;
+        private Mock<IRightRepository> repositoryMock;
+        private Mock<IRightResponseMapper> mapperMock;
         private IGetRightsListCommand command;
         private List<DbRight> dbRightsList;
         private DbRight dbRight;
-        private Right right;
+        private RightResponse right;
 
         [SetUp]
         public void Setup()
         {
-            mapperMock = new Mock<IRightsMapper>();
-            repositoryMock = new Mock<ICheckRightsRepository>();
+            mapperMock = new Mock<IRightResponseMapper>();
+            repositoryMock = new Mock<IRightRepository>();
             command = new GetRightsListCommand(repositoryMock.Object, mapperMock.Object);
             dbRight = new DbRight { Id = 0, Name = "Right", Description = "Allows you everything" };
-            right = new Right {Id = 0, Name = "Right", Description = "Allows you everything"};
+            right = new RightResponse { Id = 0, Name = "Right", Description = "Allows you everything"};
             dbRightsList = new List<DbRight> { dbRight };
         }
 
@@ -40,7 +41,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests
                 .Returns(right)
                 .Verifiable();
 
-            Assert.That(command.Execute(), Is.EquivalentTo(new List<Right> {right}));
+            Assert.That(command.Execute(), Is.EquivalentTo(new List<RightResponse> {right}));
             repositoryMock.Verify();
             mapperMock.Verify();
         }

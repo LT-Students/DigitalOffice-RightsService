@@ -3,7 +3,6 @@ using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.Kernel.Broker;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
+using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 
 namespace LT.DigitalOffice.RightsService.Data.UnitTests
 {
@@ -31,8 +31,8 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         }
 
         private IDataProvider provider;
-        private ICheckRightsRepository repository;
-        private Mock<IRightsMapper> mapperMock;
+        private IRightRepository repository;
+        private Mock<IRightResponseMapper> mapperMock;
         private Mock<IRequestClient<IGetUserDataRequest>> clientMock;
         private OperationResult<IGetUserDataResponse> operationResult;
         private DbRight dbRight1InDb;
@@ -47,11 +47,11 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                 .Options;
             provider = new RightsServiceDbContext(dbOptions);
-            mapperMock = new Mock<IRightsMapper>();
+            mapperMock = new Mock<IRightResponseMapper>();
             clientMock = new Mock<IRequestClient<IGetUserDataRequest>>();
             BrokerSetUp();
 
-            repository = new CheckRightsRepository(provider, clientMock.Object);
+            repository = new RightRepository(provider, clientMock.Object);
 
             userId = Guid.NewGuid();
             dbRight1InDb = new DbRight
@@ -61,7 +61,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 Description = "Allows you everything",
                 Users = new List<DbUserRight>()
             };
-            provider.RightUsers.Add(
+            provider.UserRights.Add(
                 new DbUserRight
                 {
                     RightId = dbRight1InDb.Id,
@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
                 Description = "Allows you update everything",
                 Users = new List<DbUserRight>()
             };
-            provider.RightUsers.Add(
+            provider.UserRights.Add(
                 new DbUserRight
                 {
                     RightId = dbRight2InDb.Id,
@@ -85,7 +85,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             provider.Rights.AddRange(dbRight1InDb, dbRight2InDb);
             provider.Save();
 
-            mapperMock.Setup(mapper => mapper.Map(dbRight1InDb)).Returns(new Right
+            mapperMock.Setup(mapper => mapper.Map(dbRight1InDb)).Returns(new RightResponse
                 {Id = dbRight1InDb.Id, Name = dbRight1InDb.Name, Description = dbRight1InDb.Description});
 
         }
@@ -146,7 +146,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             rightsIds = new List<int> { rightId };
 
             var rightsBeforeRequest = provider.Rights.ToList();
-            var rightUsersBeforeRequest = provider.RightUsers.ToList();
+            var rightUsersBeforeRequest = provider.UserRights.ToList();
             Assert.IsNotNull(rightsBeforeRequest.FirstOrDefault(
                 x => x.Id == rightId));
             Assert.IsNull(rightUsersBeforeRequest.FirstOrDefault(
@@ -155,7 +155,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             repository.AddRightsToUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
-            var rightUsersAfterRequest = provider.RightUsers.ToList();
+            var rightUsersAfterRequest = provider.UserRights.ToList();
             foreach(var right in rightsBeforeRequest)
             {
                 Assert.IsTrue(rightsAfterRequest.Contains(right));
@@ -196,12 +196,12 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         {
             rightsIds = new List<int> { dbRight1InDb.Id };
 
-            var userRightsBeforeRequest = provider.RightUsers.ToList();
+            var userRightsBeforeRequest = provider.UserRights.ToList();
 
             repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
-            var userRightsAfterRequest = provider.RightUsers.ToList();
+            var userRightsAfterRequest = provider.UserRights.ToList();
 
 
             var rightsBeforeRequest = provider.Rights.ToList();
@@ -220,12 +220,12 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             rightsIds = new List<int> { int.MaxValue, 0 };
 
             var rightsBeforeRequest = provider.Rights.ToList();
-            var userRightsBeforeRequest = provider.RightUsers.ToList();
+            var userRightsBeforeRequest = provider.UserRights.ToList();
 
             repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
-            var userRightsAfterRequest = provider.RightUsers.ToList();
+            var userRightsAfterRequest = provider.UserRights.ToList();
 
             // Rights have not been removed.
             Assert.AreEqual(rightsBeforeRequest, rightsAfterRequest);
@@ -240,12 +240,12 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             rightsIds = new List<int> { dbRight1InDb.Id };
 
             var rightsBeforeRequest = provider.Rights.ToList();
-            var userRightsBeforeRequest = provider.RightUsers.ToList();
+            var userRightsBeforeRequest = provider.UserRights.ToList();
 
             repository.RemoveRightsFromUser(userId, rightsIds);
 
             var rightsAfterRequest = provider.Rights.ToList();
-            var userRightsAfterRequest = provider.RightUsers.ToList();
+            var userRightsAfterRequest = provider.UserRights.ToList();
 
             // Rights have not been removed.
             Assert.AreEqual(rightsBeforeRequest, rightsAfterRequest);

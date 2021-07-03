@@ -11,6 +11,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public int RightId { get; set; }
+
         public DbRight Right { get; set; }
         public DbUser User { get; set; }
     }
