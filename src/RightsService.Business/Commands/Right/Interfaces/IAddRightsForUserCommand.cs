@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Kernel.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +18,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
         /// <param name="userId">User id.</param>
         /// <param name="rightsIds">List of rights.</param>
         /// <exception cref="ForbiddenException">Thrown when user does not have the necessary rights.</exception>
-        void Execute(Guid userId, IEnumerable<int> rightsIds);
+        OperationResultResponse<bool> Execute(Guid userId, IEnumerable<int> rightsIds);
     }
 }

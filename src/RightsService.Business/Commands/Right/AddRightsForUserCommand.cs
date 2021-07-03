@@ -1,6 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
@@ -26,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
             _accessValidator = accessValidator;
         }
 
-        public void Execute(Guid userId, IEnumerable<int> rightsIds)
+        public OperationResultResponse<bool> Execute(Guid userId, IEnumerable<int> rightsIds)
         {
             if (!_accessValidator.IsAdmin())
             {
@@ -36,6 +38,12 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
             _validator.ValidateAndThrowCustom(rightsIds);
 
             _repository.AddRightsToUser(userId, rightsIds);
+
+            return new OperationResultResponse<bool>
+            {
+                Body = true,
+                Status = OperationResultStatusType.FullSuccess
+            };
         }
     }
 }

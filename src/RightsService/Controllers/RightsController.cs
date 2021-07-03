@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
+﻿using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,14 +28,19 @@ namespace LT.DigitalOffice.RightsService.Controllers
         }
 
         [HttpPost("addRightsForUser")]
-        public void AddRightsForUser(
+        public OperationResultResponse<bool> AddRightsForUser(
             [FromServices] IAddRightsForUserCommand command,
             [FromQuery] Guid userId,
             [FromQuery] IEnumerable<int> rightsIds)
         {
-            _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+            var result = command.Execute(userId, rightsIds);
 
-            command.Execute(userId, rightsIds);
+            if (result.Status != Kernel.Enums.OperationResultStatusType.Failed)
+            {
+                _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+            }
+
+            return result;
         }
 
         [HttpDelete("removeRightsFromUser")]

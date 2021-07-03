@@ -34,9 +34,14 @@ namespace LT.DigitalOffice.RightsService.Controllers
             [FromServices] ICreateRoleCommand command,
             [FromBody] CreateRoleRequest role)
         {
-            _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+            var result = command.Execute(role);
 
-            return command.Execute(role);
+            if (result.Status != Kernel.Enums.OperationResultStatusType.Failed)
+            {
+                _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+            }
+
+            return result;
         }
 
         [HttpGet("get")]
