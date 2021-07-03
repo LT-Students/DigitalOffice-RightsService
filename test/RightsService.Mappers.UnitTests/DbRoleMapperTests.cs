@@ -35,25 +35,5 @@ namespace LT.DigitalOffice.RightsService.Mappers.RequestsMappers.UnitTests
 
             Assert.Throws<ArgumentNullException>(() => _roleRequestMapper.Map(request, Guid.NewGuid()));
         }
-
-        [Test]
-        public void ShouldReturnDbProjectWhenProjectRequestIsMapped()
-        {
-            var authorId = Guid.NewGuid();
-
-            var resultDbRole = _roleRequestMapper.Map(_request, authorId);
-
-            var expectedDbRole = new DbRole
-            {
-                Id = resultDbRole.Id,
-                CreatedBy = authorId,
-                Name = _request.Name,
-                Description = _request.Description,
-                CreatedAt = resultDbRole.CreatedAt,
-                Rights = resultDbRole.Rights
-            };
-
-            SerializerAssert.AreEqual(expectedDbRole, resultDbRole);
-        }
     }
 }

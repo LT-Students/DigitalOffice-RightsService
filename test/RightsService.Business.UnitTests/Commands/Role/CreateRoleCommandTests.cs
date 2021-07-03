@@ -44,9 +44,8 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 Rights = new List<int> { _rightId }
             };
 
-            var dbUserRole = new DbUserRole {
-                Id = Guid.NewGuid(),
-                User = new DbUser { Id = _userId },
+            var dbUser = new DbUser {
+                Id = _userId,
                 Role = new DbRole { Id = _roleId }
             };
             var dbRoleRight = new DbRoleRight {
@@ -63,7 +62,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = _authorId,
                 Rights = new List<DbRoleRight> { dbRoleRight },
-                Users = new List<DbUserRole> { dbUserRole }
+                Users = new List<DbUser> { dbUser }
             };
 
             _response = new OperationResultResponse<Guid>
