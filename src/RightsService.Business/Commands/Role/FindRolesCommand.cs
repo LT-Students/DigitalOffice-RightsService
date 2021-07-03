@@ -50,6 +50,8 @@ namespace LT.DigitalOffice.RightsService.Business.Role
                 {
                     _logger.LogWarning(
                         $"Can not get users. Reason:{Environment.NewLine}{string.Join('\n', usersDataResponse.Message.Errors)}.");
+
+                    errors.AddRange(usersDataResponse.Message.Errors);
                 }
             }
             catch (Exception exc)
