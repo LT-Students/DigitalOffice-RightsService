@@ -29,7 +29,10 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public DbRole Get(Guid roleId)
         {
-            var dbRole = _provider.Roles.FirstOrDefault(x => x.Id == roleId);
+            var dbRole = _provider.Roles
+                .Include(x => x.Users)
+                .Include(x => x.Rights)
+                .FirstOrDefault(x => x.Id == roleId);
 
             if (dbRole == null)
             {
