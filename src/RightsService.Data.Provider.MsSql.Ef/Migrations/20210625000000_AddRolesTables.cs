@@ -16,10 +16,10 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,17 +43,17 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                     table.PrimaryKey("PK_UserRoles", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
+        migrationBuilder.CreateTable(
                 name: DbRoleRight.TableName,
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     RoleId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
                     RemovedBy = table.Column<Guid>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    RemovedAt = table.Column<DateTime>(nullable: true)
+                    RemovedAt = table.Column<DateTime>(nullable: true),
+                    RightId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {

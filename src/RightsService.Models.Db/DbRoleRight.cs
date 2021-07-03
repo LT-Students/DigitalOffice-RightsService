@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
             builder
                 .HasOne(ru => ru.Right)
-                .WithMany(r => r.Roles)
+                .WithMany(u => u.Roles)
                 .HasForeignKey(ru => ru.RightId);
 
             builder

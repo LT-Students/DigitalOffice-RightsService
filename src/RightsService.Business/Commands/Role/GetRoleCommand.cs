@@ -58,7 +58,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
                 _logger.LogError(exc, "Exception on get user information.");
             }
-            
+
             return usersInfo;
         }
 
