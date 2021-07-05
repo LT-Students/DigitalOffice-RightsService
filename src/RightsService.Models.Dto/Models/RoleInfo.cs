@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Models.Dto.Models
 {
-    public class RoleInfo
+    public record RoleInfo
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
