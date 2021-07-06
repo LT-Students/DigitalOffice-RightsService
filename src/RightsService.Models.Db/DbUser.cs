@@ -10,11 +10,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public const string TableName = "Users";
 
         public Guid Id { get; set; }
-        public Guid CreatedBy { get; set; }
-        public Guid? RemovedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? RemovedAt { get; set; }
+        public Guid UserId { get; set; }
         public Guid RoleId { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
 
         public ICollection<DbUserRight> Rights { get; set; }

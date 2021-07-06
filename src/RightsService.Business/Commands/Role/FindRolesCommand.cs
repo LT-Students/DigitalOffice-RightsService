@@ -92,7 +92,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             var allRights = _rightRepository.GetRightsList();
 
-            var allUsers = GetUsers(dbRoles.SelectMany(x => x.Users).Select(x => x.Id).ToList(), result.Errors);
+            var allUsers = GetUsers(dbRoles.SelectMany(x => x.Users).Select(x => x.UserId).ToList(), result.Errors);
 
             foreach (var dbRole in dbRoles)
             {
@@ -100,7 +100,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
                     .Where(x => dbRole.Rights.Select(x => x.RightId).ToList().Contains(x.Id))
                     .Select(_rightMapper.Map);
 
-                var users = allUsers.Where(x => dbRole.Users.Select(x => x.Id).Contains(x.Id));
+                var users = allUsers.Where(x => dbRole.Users.Select(x => x.UserId).Contains(x.Id));
 
                 result.Roles.Add(_roleInfoMapper.Map(dbRole, rights, users));
             }

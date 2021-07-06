@@ -93,7 +93,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
             bool result = rightIds.Any();
 
-            DbUser dbRoleUser = _provider.Users.FirstOrDefault(u => u.Id == userId);
+            DbUser dbRoleUser = _provider.Users.FirstOrDefault(u => u.UserId == userId);
             if (dbRoleUser == null)
             {
                 throw new NotFoundException($"User with ID '{userId}' does not have any rights.");
