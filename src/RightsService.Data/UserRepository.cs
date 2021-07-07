@@ -2,6 +2,7 @@
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -57,6 +58,35 @@ namespace LT.DigitalOffice.RightsService.Data
                 });
 
             _provider.Save();
+        }
+
+        public bool CheckRights(Guid userId, params int[] rightIds)
+        {
+            if (rightIds == null)
+            {
+                throw new ArgumentNullException(nameof(rightIds));
+            }
+
+            DbUser user = _provider.Users
+                .Include(u => u.Role)
+                    .ThenInclude(r => r.Rights)
+                .Include(u => u.Rights).FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with ID '{userId}' does not have any rights.");
+            }
+
+            foreach(var rightId in rightIds)
+            {
+                if (user.Rights.Any(r => r.RightId == rightId) || user.Role.Rights.Any(r => r.RightId == rightId))
+                {
+                    continue;
+                }
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

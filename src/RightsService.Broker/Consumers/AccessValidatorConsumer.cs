@@ -9,9 +9,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
     public class AccessValidatorConsumer : IConsumer<ICheckUserRightsRequest>
     {
-        private readonly IRightRepository _repository;
+        private readonly IUserRepository _repository;
 
-        public AccessValidatorConsumer([FromServices] IRightRepository repository)
+        public AccessValidatorConsumer([FromServices] IUserRepository repository)
         {
             _repository = repository;
         }
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
         private object HasRight(ICheckUserRightsRequest request)
         {
-            return _repository.CheckUserHasRights(request.UserId, request.RightIds);
+            return _repository.CheckRights(request.UserId, request.RightIds);
         }
     }
 }

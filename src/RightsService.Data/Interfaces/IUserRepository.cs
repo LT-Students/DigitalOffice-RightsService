@@ -12,5 +12,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
         DbUser Get(Guid userId);
 
         void AssignRole(Guid userId, Guid roleId, Guid assignedBy);
+
+        public bool CheckRights(Guid userId, params int[] rightIds);
     }
 }

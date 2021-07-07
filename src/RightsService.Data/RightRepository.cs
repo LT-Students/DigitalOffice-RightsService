@@ -83,23 +83,5 @@ namespace LT.DigitalOffice.RightsService.Data
 
             _provider.Save();
         }
-
-        public bool CheckUserHasRights(Guid userId, params int[] rightIds)
-        {
-            if (rightIds == null)
-            {
-                throw new ArgumentNullException(nameof(rightIds));
-            }
-
-            bool result = rightIds.Any();
-
-            DbUser dbRoleUser = _provider.Users.FirstOrDefault(u => u.UserId == userId);
-            if (dbRoleUser == null)
-            {
-                throw new NotFoundException($"User with ID '{userId}' does not have any rights.");
-            }
-
-            return dbRoleUser.Rights.All(r => rightIds.Contains(r.RightId));
-        }
     }
 }
