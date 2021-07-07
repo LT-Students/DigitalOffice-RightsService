@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 defaultValue: Guid.Empty);
 
             migrationBuilder.AddColumn<Guid>(
-                name: nameof(DbUser.RemovedBy),
+                name: "RemovedBy",
                 table: DbUser.TableName,
                 nullable: true);
 
@@ -62,7 +62,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 defaultValue: DateTime.MinValue);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: nameof(DbUser.RemovedAt),
+                name: "RemovedAt",
                 table: DbUser.TableName,
                 nullable: true);
 
@@ -89,7 +89,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(
-                name: nameof(DbUser.RemovedBy),
+                name: "RemovedBy",
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(
@@ -97,7 +97,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(
-                name: nameof(DbUser.RemovedAt),
+                name: "RemovedAt",
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(

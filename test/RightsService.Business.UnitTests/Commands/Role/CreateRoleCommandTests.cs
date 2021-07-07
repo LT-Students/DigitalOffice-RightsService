@@ -45,7 +45,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             };
 
             var dbUser = new DbUser {
-                Id = _userId,
+                UserId = _userId,
                 Role = new DbRole { Id = _roleId }
             };
             var dbRoleRight = new DbRoleRight {

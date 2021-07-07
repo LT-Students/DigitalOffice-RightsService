@@ -9,27 +9,23 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
     public class AccessValidatorConsumer : IConsumer<ICheckUserRightsRequest>
     {
-        private readonly IRightRepository repository;
+        private readonly IUserRepository _repository;
 
-        public AccessValidatorConsumer([FromServices] IRightRepository repository)
+        public AccessValidatorConsumer([FromServices] IUserRepository repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
 
         public async Task Consume(ConsumeContext<ICheckUserRightsRequest> context)
         {
             var response = OperationResultWrapper.CreateResponse(HasRight, context.Message);
+
             await context.RespondAsync<IOperationResult<bool>>(response);
         }
 
         private object HasRight(ICheckUserRightsRequest request)
         {
-            if (repository.CheckUserHasRights(request.UserId, request.RightIds))
-            {
-                return true;
-            }
-
-            return false;
+            return _repository.CheckRights(request.UserId, request.RightIds);
         }
     }
 }
