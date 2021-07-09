@@ -6,6 +6,7 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Configurations
 {
     public class RabbitMqConfig : BaseRabbitMqConfig
     {
+        public string GetUserRolesEndpoint { get; set; }
         public string ChangeUserRoleEndpoint { get; set; }
 
         [AutoInjectRequest(typeof(IGetUserDataRequest))]

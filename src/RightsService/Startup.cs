@@ -148,6 +148,7 @@ namespace LT.DigitalOffice.RightsService
             {
                 busConfigurator.AddConsumer<AccessValidatorConsumer>();
                 busConfigurator.AddConsumer<ChangeUserRoleConsumer>();
+                busConfigurator.AddConsumer<GetUserRolesConsumer>();
 
                 busConfigurator.UsingRabbitMq((context, cfg) =>
                 {
@@ -165,6 +166,11 @@ namespace LT.DigitalOffice.RightsService
                     cfg.ReceiveEndpoint(_rabbitMqConfig.ChangeUserRoleEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<ChangeUserRoleConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.GetUserRolesEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<GetUserRolesConsumer>(context);
                     });
                 });
 

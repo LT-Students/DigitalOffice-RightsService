@@ -4,6 +4,7 @@ using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Data
@@ -87,6 +88,11 @@ namespace LT.DigitalOffice.RightsService.Data
             }
 
             return true;
+        }
+
+        public List<DbUser> Get(List<Guid> userId)
+        {
+            return _provider.Users.Where(u => userId.Contains(u.UserId)).Include(u => u.Role).ToList();
         }
     }
 }
