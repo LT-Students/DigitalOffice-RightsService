@@ -13,6 +13,6 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Configurations
         public string GetUserInfoEndpoint { get; set; }
 
         [AutoInjectRequest(typeof(IGetUsersDataRequest))]
-        public string GetUsersInfoEndpoint { get; set; }
+        public string GetUsersDataEndpoint { get; set; }
     }
 }
