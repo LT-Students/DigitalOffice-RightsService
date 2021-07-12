@@ -46,11 +46,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
         public async Task Consume(ConsumeContext<IGetUserRolesRequest> context)
         {
-            var response = OperationResultWrapper.CreateResponse(GetRoles, context.Message);
+            object response = OperationResultWrapper.CreateResponse(GetRoles, context.Message);
 
             await context.RespondAsync<IOperationResult<IGetUserRolesResponse>>(response);
         }
-
-
     }
 }
