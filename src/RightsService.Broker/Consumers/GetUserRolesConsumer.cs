@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
         private object GetRoles(IGetUserRolesRequest request)
         {
-            var users = _repository.Get(request.UserIds);
+            List<DbUser> users = _repository.Get(request.UserIds);
 
             List<DbRole> roles = new();
 
