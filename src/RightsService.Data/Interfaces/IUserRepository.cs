@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.RightsService.Models.Db;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
@@ -13,6 +14,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
         void AssignRole(Guid userId, Guid roleId, Guid assignedBy);
 
-        public bool CheckRights(Guid userId, params int[] rightIds);
+        bool CheckRights(Guid userId, params int[] rightIds);
+
+        List<DbUser> Get(List<Guid> userId);
     }
 }
