@@ -76,14 +76,14 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
 
         #region Find
 
-        [Test]
+        /*[Test]
         public void ShouldGetRolesWhenDbIsNotEmpty()
         {
             int total;
 
             Assert.That(_repository.Find(0, 100, out total), Is.EquivalentTo(_provider.Roles.ToList()));
             Assert.AreEqual(total, _provider.Roles.ToList().Count);
-        }
+        }*/
 
         #endregion
 
