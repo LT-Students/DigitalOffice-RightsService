@@ -44,10 +44,15 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount)
         {
+            if (takeCount <= 0)
+            {
+                throw new BadRequestException("Take count can't be equal or less than 0.");
+            }
+
             totalCount = _provider.Roles.Count();
 
             return _provider.Roles
-                .Skip(skipCount * takeCount)
+                .Skip(skipCount)
                 .Take(takeCount)
                 .Include(x => x.Rights)
                 .Include(x => x.Users);
