@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RightsService.Broker\RightsService.Broker.csproj" />
+    <ProjectReference Include="..\..\src\RightsService.Data\RightsService.Data.csproj" />
+  </ItemGroup>
+
+</Project>

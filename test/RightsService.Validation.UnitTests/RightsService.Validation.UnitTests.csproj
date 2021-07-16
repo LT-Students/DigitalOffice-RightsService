@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
+    <ProjectReference Include="..\..\src\RightsService.Validation\RightsService.Validation.csproj" />
+  </ItemGroup>
+
+</Project>
