@@ -94,5 +94,13 @@ namespace LT.DigitalOffice.RightsService.Data
         {
             return _provider.Users.Where(u => userId.Contains(u.UserId)).Include(u => u.Role).ToList();
         }
+
+        public void Remove(Guid userId)
+        {
+            DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
+
+            user.IsActive = false;
+            _provider.Save();
+        }
     }
 }
