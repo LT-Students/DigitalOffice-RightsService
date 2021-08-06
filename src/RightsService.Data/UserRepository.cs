@@ -97,7 +97,8 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public void Remove(Guid userId)
         {
-            DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
+            DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId)
+                ?? throw new NotFoundException($"No user with id {userId}.");
 
             user.IsActive = false;
             _provider.Save();
