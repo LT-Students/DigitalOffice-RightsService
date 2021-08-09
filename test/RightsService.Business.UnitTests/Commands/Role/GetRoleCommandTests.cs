@@ -25,7 +25,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     class GetRoleCommandTests
     {
         private AutoMocker _mocker;
-        private Mock<Response<IOperationResult<IGetUsersDataResponse>>> _operationResultGetUsersData;
 
         private Guid _validRoleId;
 
@@ -46,7 +45,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
         public void OneTimeSetUp()
         {
             _mocker = new AutoMocker();
-            _operationResultGetUsersData = new Mock<Response<IOperationResult<IGetUsersDataResponse>>>();
 
             _validRoleId = Guid.NewGuid();
 
@@ -96,28 +94,20 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 Errors = new List<string>()
             };
 
-            _command = new GetRoleCommand(
-                _mocker.GetMock<ILogger<GetRoleCommand>>().Object,
-                _mocker.GetMock<IRoleRepository>().Object,
-                _mocker.GetMock<IRightRepository>().Object,
-                _mocker.GetMock<IRoleInfoMapper>().Object,
-                _mocker.GetMock<IUserInfoMapper>().Object,
-                _mocker.GetMock<IRightResponseMapper>().Object,
-                _mocker.GetMock<IRequestClient<IGetUsersDataRequest>>().Object
-            );
+            _command = _mocker.CreateInstance<GetRoleCommand>();
         }
 
         [SetUp]
         public void SetUp()
         {
-            _operationResultGetUsersData.Reset();
-            _mocker.GetMock<ILogger<GetRoleCommand>>();
-            _mocker.GetMock<IRoleRepository>();
-            _mocker.GetMock<IRightRepository>();
-            _mocker.GetMock<IRoleInfoMapper>();
-            _mocker.GetMock<IUserInfoMapper>();
-            _mocker.GetMock<IRightResponseMapper>();
-            _mocker.GetMock<IRequestClient<IGetUsersDataRequest>>();
+            _mocker.GetMock<Response<IOperationResult<IGetUsersDataResponse>>>().Reset();
+            _mocker.GetMock<ILogger<GetRoleCommand>>().Reset();
+            _mocker.GetMock<IRoleRepository>().Reset();
+            _mocker.GetMock<IRightRepository>().Reset();
+            _mocker.GetMock<IRoleInfoMapper>().Reset();
+            _mocker.GetMock<IUserInfoMapper>().Reset();
+            _mocker.GetMock<IRightResponseMapper>().Reset();
+            _mocker.GetMock<IRequestClient<IGetUsersDataRequest>>().Reset();
         }
 
         [Test]
@@ -128,71 +118,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 .Throws(new NotFoundException());
 
             Assert.Throws<NotFoundException>(() => _command.Execute(Guid.NewGuid()));
-        }
-
-        [Test]
-        public void ShouldThrowArgumentNullExceptionWhenRightIsNull()
-        {
-            DbRole roleWithNullRight = new DbRole()
-            {
-                Rights = new List<DbRoleRight>()
-                {
-                    new DbRoleRight() { Right = null }
-                }
-            };
-
-            _mocker
-                .Setup<IRoleRepository, DbRole>(r => r.Get(It.IsAny<Guid>()))
-                .Returns(roleWithNullRight);
-
-            _mocker
-                .Setup<IRightResponseMapper, RightResponse>(rrm => rrm.Map(It.Is<DbRight>(value => value == null)))
-                .Throws(new ArgumentNullException());
-
-            Assert.Throws<ArgumentNullException>(() => _command.Execute(Guid.NewGuid()));
-        }
-
-        [Test]
-        public void ShouldGetAnErrorWhenConsumerReturnWrongUserData()
-        {
-            Guid invalidUserId = Guid.NewGuid();
-            int expectedErrorsCount = 1;
-
-            _mocker
-                .Setup<IRoleRepository, DbRole>(r => r.Get(It.IsAny<Guid>()))
-                .Returns(_dbRole);
-
-            _mocker
-                .Setup<IRightResponseMapper, RightResponse>(m => m.Map(It.IsNotNull<DbRight>()))
-                .Returns(_rightResponse);
-
-            _operationResultGetUsersData.Setup(r => r.Message.IsSuccess).Returns(true);
-            _operationResultGetUsersData.Setup(r => r.Message.Errors).Returns(new List<string>());
-            _operationResultGetUsersData
-                .Setup(r => r.Message.Body.UsersData)
-                .Returns(new List<UserData>() 
-                {
-                    // consumer return wrong UserData with invalid Id
-                    new UserData(invalidUserId, Guid.NewGuid(), "fName", "mName", "lName", "s", 1.0f, true)
-                });
-
-            _mocker
-                .Setup<IUserInfoMapper, UserInfo>(m => m.Map(It.IsAny<UserData>()))
-                .Returns(new UserInfo());
-
-            _mocker
-                .Setup<IRequestClient<IGetUsersDataRequest>, Task<Response<IOperationResult<IGetUsersDataResponse>>>>
-                (
-                    x => x.GetResponse<IOperationResult<IGetUsersDataResponse>>
-                    (
-                        It.IsAny<object>(), default, default
-                    )
-                )
-                .Returns(Task.FromResult(_operationResultGetUsersData.Object));
-
-            RoleResponse result = _command.Execute(_dbRole.Id);
-
-            Assert.AreEqual(result.Errors.Count, expectedErrorsCount);
         }
 
         [Test]
@@ -209,8 +134,13 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 .Setup<IRightResponseMapper, RightResponse>(m => m.Map(It.IsNotNull<DbRight>()))
                 .Returns(_rightResponse);
 
-            _operationResultGetUsersData.Setup(r => r.Message.IsSuccess).Returns(false);
-            _operationResultGetUsersData.Setup(r => r.Message.Errors).Returns(responedErrors);
+            _mocker.
+                Setup<Response<IOperationResult<IGetUsersDataResponse>>, bool>(r => r.Message.IsSuccess)
+                .Returns(false);
+
+            _mocker
+                .Setup<Response<IOperationResult<IGetUsersDataResponse>>, List<string>>(r => r.Message.Errors)
+                .Returns(responedErrors);
 
             _mocker
                 .Setup<IRequestClient<IGetUsersDataRequest>, Task<Response<IOperationResult<IGetUsersDataResponse>>>>
@@ -220,7 +150,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                         It.IsAny<object>(), default, default
                     )
                 )
-                .Returns(Task.FromResult(_operationResultGetUsersData.Object));
+                .Returns(Task.FromResult(_mocker.GetMock<Response<IOperationResult<IGetUsersDataResponse>>>().Object));
 
             RoleResponse result = _command.Execute(_dbRole.Id);
 
@@ -238,11 +168,17 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 .Setup<IRightResponseMapper, RightResponse>(m => m.Map(It.IsNotNull<DbRight>()))
                 .Returns(_rightResponse);
 
-            _operationResultGetUsersData.Setup(r => r.Message.IsSuccess).Returns(true);
-            _operationResultGetUsersData.Setup(r => r.Message.Errors).Returns(new List<string>());
-            _operationResultGetUsersData
-                .Setup(r => r.Message.Body.UsersData)
-                .Returns(new List<UserData>() { _userData });
+            _mocker
+                .Setup<Response<IOperationResult<IGetUsersDataResponse>>, bool>(r => r.Message.IsSuccess)
+                .Returns(true);
+
+            _mocker
+                .Setup<Response<IOperationResult<IGetUsersDataResponse>>, List<string>>(r => r.Message.Errors)
+                .Returns(new List<string>());
+
+            _mocker
+               .Setup<Response<IOperationResult<IGetUsersDataResponse>>, List<UserData>>(r => r.Message.Body.UsersData)
+               .Returns(new List<UserData>() { _userData });
 
             _mocker
                 .Setup<IUserInfoMapper, UserInfo>(m => m.Map(_userData))
@@ -256,7 +192,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                         It.IsAny<object>(), default, default
                     )
                 )
-                .Returns(Task.FromResult(_operationResultGetUsersData.Object));
+                .Returns(Task.FromResult(_mocker.GetMock<Response<IOperationResult<IGetUsersDataResponse>>>().Object));
 
             _mocker
                 .Setup<IRoleInfoMapper, RoleInfo>(m =>

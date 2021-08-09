@@ -4,6 +4,7 @@ using LT.DigitalOffice.Models.Broker.Responses.User;
 using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using MassTransit;
@@ -81,9 +82,9 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         {
             RoleResponse result = new();
 
-            var dbRole = _roleRepository.Get(roleId);
-            var rights = dbRole.Rights.Select(r => r.Right).Select(_rightMapper.Map).ToList();
-            var users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
+            DbRole dbRole = _roleRepository.Get(roleId);
+            List<RightResponse> rights = dbRole.Rights.Select(r => r.Right).Select(_rightMapper.Map).ToList();
+            List<UserInfo> users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
             result.Role = _roleInfomapper.Map(dbRole, rights, users);
 
             return result;
