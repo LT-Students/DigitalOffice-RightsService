@@ -101,7 +101,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
         public void SetUp()
         {
             _mocker.GetMock<Response<IOperationResult<IGetUsersDataResponse>>>().Reset();
-            _mocker.GetMock<ILogger<GetRoleCommand>>().Reset();
             _mocker.GetMock<IRoleRepository>().Reset();
             _mocker.GetMock<IRightRepository>().Reset();
             _mocker.GetMock<IRoleInfoMapper>().Reset();
@@ -118,6 +117,14 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 .Throws(new NotFoundException());
 
             Assert.Throws<NotFoundException>(() => _command.Execute(Guid.NewGuid()));
+
+            _mocker.Verify<IRoleRepository>(r => r.Get(It.IsAny<Guid>()), Times.Once());
+            _mocker.Verify<IRightResponseMapper>(m => m.Map(It.IsAny<DbRight>()), Times.Never());
+            _mocker.Verify<IRequestClient<IGetUsersDataRequest>>(r =>
+                r.GetResponse<IOperationResult<IGetUsersDataResponse>>(It.IsAny<object>(), default, default), Times.Never());
+            _mocker.Verify<IUserInfoMapper>(m => m.Map(It.IsAny<UserData>()), Times.Never());
+            _mocker.Verify<IRoleInfoMapper>(m =>
+                m.Map(It.IsAny<DbRole>(), It.IsAny<List<RightResponse>>(), It.IsAny<List<UserInfo>>()), Times.Never());
         }
 
         [Test]
@@ -155,6 +162,15 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
             RoleResponse result = _command.Execute(_dbRole.Id);
 
             Assert.AreEqual(result.Errors.Count, expectedErrorsCount);
+
+            _mocker.Verify<IRoleRepository>(r => r.Get(It.IsAny<Guid>()), Times.Once());
+            _mocker.Verify<IRightResponseMapper>(m => m.Map(It.IsAny<DbRight>()), Times.Once());
+            _mocker.Verify<IRequestClient<IGetUsersDataRequest>>(r =>
+                r.GetResponse<IOperationResult<IGetUsersDataResponse>>(It.IsAny<object>(), default, default), Times.Once());
+            _mocker.Verify<IUserInfoMapper>(m => m.Map(It.IsAny<UserData>()), Times.Never());
+            _mocker.Verify<IRoleInfoMapper>(m => 
+                m.Map(_dbRole, It.Is<List<RightResponse>>(lr => lr[0] == _rightResponse), It.Is<List<UserInfo>>(lu => lu.Count == 0)), 
+                Times.Once());
         }
 
         [Test]
@@ -200,6 +216,15 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
                 .Returns(_roleInfo);
 
             SerializerAssert.AreEqual(_roleResponse, _command.Execute(_dbRole.Id));
+
+            _mocker.Verify<IRoleRepository>(r => r.Get(It.IsAny<Guid>()), Times.Once());
+            _mocker.Verify<IRightResponseMapper>(m => m.Map(It.IsAny<DbRight>()), Times.Once());
+            _mocker.Verify<IRequestClient<IGetUsersDataRequest>>(r =>
+                r.GetResponse<IOperationResult<IGetUsersDataResponse>>(It.IsAny<object>(), default, default), Times.Once());
+            _mocker.Verify<IUserInfoMapper>(m => m.Map(It.IsAny<UserData>()), Times.Once());
+            _mocker.Verify<IRoleInfoMapper>(m =>
+                m.Map(_dbRole, It.Is<List<RightResponse>>(lr => lr[0] == _rightResponse), It.Is<List<UserInfo>>(lu => lu[0] == _userInfo)),
+                Times.Once());
         }
     }
 }
