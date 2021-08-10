@@ -1,89 +1,143 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Business.Role;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Data.Provider;
-using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto;
-using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Moq.AutoMock;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.RightsService.Mappers.Interfaces;
+using LT.DigitalOffice.RightsService.Validation.Interfaces;
+using LT.DigitalOffice.Kernel.Enums;
+using FluentValidation;
+using LT.DigitalOffice.UnitTestKernel;
 
 namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
 {
     internal class CreateRoleCommandTests
     {
-        private AutoMocker _mocker;
+        private AutoMocker _autoMocker;
         private DbRole _dbRole;
         private CreateRoleRequest _newRequest;
         private ICreateRoleCommand _command;
-        private OperationResultResponse<Guid> _response;
+        private OperationResultResponse<Guid> _goodResponse;
+        private IDictionary<object, object> _items;
 
-        private readonly Guid _authorId = Guid.NewGuid();
-        private readonly Guid _roleId = Guid.NewGuid();
-        private readonly int _rightId = 123;
-        private readonly Guid _userId = Guid.NewGuid();
+        private Guid _userId = Guid.NewGuid();
+        private Guid _roleId = Guid.NewGuid();
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+
+        [SetUp]
+        public void SetUp()
         {
-            _mocker = new AutoMocker();
-            _command = _mocker.CreateInstance<CreateRoleCommand>();
+            _autoMocker = new AutoMocker();
+
+            _items = new Dictionary<object, object>();
+            _items.Add("UserId", _userId);
 
             _newRequest = new CreateRoleRequest
             {
-                Name = "Create Smth",
-                Description = "Create smth in somewhere",
-                Rights = new List<int> { _rightId }
-            };
-
-            var dbUser = new DbUser {
-                UserId = _userId,
-                Role = new DbRole { Id = _roleId }
-            };
-            var dbRoleRight = new DbRoleRight {
-                Id = Guid.NewGuid(),
-                Role = new DbRole { Id = _roleId },
-                Right = new DbRight { Id = _rightId }
+                Name = "Name",
+                Description = "Description",
+                Rights = new List<int> {1}
             };
 
             _dbRole = new DbRole
             {
-                Id = Guid.NewGuid(),
-                Name = "Create Smth",
-                Description = "Create smth in somewhere",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = _authorId,
-                Rights = new List<DbRoleRight> { dbRoleRight },
-                Users = new List<DbUser> { dbUser }
+                Id = _roleId
             };
 
-            _response = new OperationResultResponse<Guid>
+            _goodResponse = new OperationResultResponse<Guid>
             {
                 Body = _dbRole.Id,
                 Status = OperationResultStatusType.FullSuccess,
                 Errors = new List<string>()
             };
-        }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mocker.GetMock<ICreateRoleRequestValidator>().Reset();
-            _mocker.GetMock<IAccessValidator>().Reset();
-            _mocker.GetMock<IDbRoleMapper>().Reset();
-            _mocker.GetMock<IRoleRepository>().Reset();
-            _mocker.GetMock<IHttpContextAccessor>().Reset();
-            _mocker.GetMock<IDataProvider>().Reset();
+            _autoMocker
+                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
+                .Returns(_items);
+
+            _autoMocker
+                .Setup<IRoleRepository, Guid>(x => x.Create(_dbRole))
+                .Returns(_roleId);
+
+            _autoMocker
+                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
+
+            _autoMocker
+                .Setup<IDbRoleMapper, DbRole>(x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()))
+                .Returns(_dbRole);
+            _autoMocker
+                .Setup<IDbRoleMapper, DbRole>(x => x.Map(It.Is<CreateRoleRequest>(x => x == null), It.IsAny<Guid>()))
+                .Throws(new ArgumentNullException("CreateRoleRequest"));
+
+            _autoMocker
+                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
+                .Returns(true);
+
+            _command = new CreateRoleCommand(
+                _autoMocker.GetMock<IHttpContextAccessor>().Object,
+                _autoMocker.GetMock<IRoleRepository>().Object,
+                _autoMocker.GetMock<ICreateRoleRequestValidator>().Object,
+                _autoMocker.GetMock<IDbRoleMapper>().Object,
+                _autoMocker.GetMock<IAccessValidator>().Object);
         }
 
         // TODO
+        [Test]
+        public void ThrowsForbiddenExceptionWhenAccessValidatorIsFalse()
+        {
+            _autoMocker
+                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
+                .Returns(false);
+
+            Assert.Throws<ForbiddenException>(
+                () => _command.Execute(_newRequest), "Not enough rights.");
+        }
+
+        [Test]
+        public void ThrowsValidatorException()
+        {
+            _autoMocker
+                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(false);
+
+            Assert.Throws<ValidationException>(
+                () => _command.Execute(_newRequest), "CreateRoleRequest");
+        }
+
+        [Test]
+        public void ThrowsHttpContextException()
+        {
+            _autoMocker
+                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
+                .Throws(new ArgumentException("HttpContext exception"));
+
+            Assert.Throws<ArgumentException>(
+                () => _command.Execute(_newRequest), "HttpContext exception");
+        }
+
+        [Test]
+        public void ThrowsArgumentNullExceptionWhenRequestIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => _command.Execute(null));
+        }
+
+        [Test]
+        public void SuccessTest()
+        {
+            OperationResultResponse<Guid> response = _command.Execute(_newRequest);
+
+            SerializerAssert.AreEqual(response, _goodResponse);
+        }
     }
 }
