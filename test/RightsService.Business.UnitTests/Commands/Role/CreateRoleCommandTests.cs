@@ -32,9 +32,8 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         private Guid _userId = Guid.NewGuid();
         private Guid _roleId = Guid.NewGuid();
 
-
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             _autoMocker = new AutoMocker();
 
@@ -45,7 +44,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             {
                 Name = "Name",
                 Description = "Description",
-                Rights = new List<int> {1}
+                Rights = new List<int> { 1 }
             };
 
             _dbRole = new DbRole
@@ -69,19 +68,11 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 .Returns(_roleId);
 
             _autoMocker
-                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
-
-            _autoMocker
                 .Setup<IDbRoleMapper, DbRole>(x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()))
                 .Returns(_dbRole);
             _autoMocker
                 .Setup<IDbRoleMapper, DbRole>(x => x.Map(It.Is<CreateRoleRequest>(x => x == null), It.IsAny<Guid>()))
                 .Throws(new ArgumentNullException("CreateRoleRequest"));
-
-            _autoMocker
-                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
-                .Returns(true);
 
             _command = new CreateRoleCommand(
                 _autoMocker.GetMock<IHttpContextAccessor>().Object,
@@ -91,7 +82,18 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 _autoMocker.GetMock<IAccessValidator>().Object);
         }
 
-        // TODO
+        [SetUp]
+        public void SetUp()
+        {
+            _autoMocker
+                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
+
+            _autoMocker
+                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
+                .Returns(true);
+        }
+
         [Test]
         public void ThrowsForbiddenExceptionWhenAccessValidatorIsFalse()
         {
