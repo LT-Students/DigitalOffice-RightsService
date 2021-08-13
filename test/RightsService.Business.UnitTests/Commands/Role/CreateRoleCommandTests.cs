@@ -95,7 +95,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         }
 
         [Test]
-        public void ThrowsForbiddenExceptionWhenAccessValidatorIsFalse()
+        public void ShouldThrowForbiddenExceptionWhenAccessValidatorIsFalse()
         {
             _autoMocker
                 .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
@@ -106,7 +106,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         }
 
         [Test]
-        public void ThrowsValidatorException()
+        public void ShouldThrowValidatorException()
         {
             _autoMocker
                 .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
@@ -117,7 +117,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         }
 
         [Test]
-        public void ThrowsHttpContextException()
+        public void ShouldThrowHttpContextException()
         {
             _autoMocker
                 .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
@@ -128,14 +128,14 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         }
 
         [Test]
-        public void ThrowsArgumentNullExceptionWhenRequestIsNull()
+        public void ShouldThrowArgumentNullExceptionWhenRequestIsNull()
         {
             Assert.Throws<ArgumentNullException>(
                 () => _command.Execute(null));
         }
 
         [Test]
-        public void SuccessTest()
+        public void SholdThrowNoExceptions()
         {
             OperationResultResponse<Guid> response = _command.Execute(_newRequest);
 
