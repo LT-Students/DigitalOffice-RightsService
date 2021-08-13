@@ -62,5 +62,12 @@ namespace LT.DigitalOffice.RightsService.Data
                 .Include(x => x.Rights)
                 .Include(x => x.Users);
         }
+
+        public IEnumerable<DbRole> GetAll()
+        {
+            return _provider.Roles
+                .Include(x => x.Rights)
+                .Include(x => x.Users);
+        }
     }
 }

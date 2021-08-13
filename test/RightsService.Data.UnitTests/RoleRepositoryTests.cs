@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Collections;
 
 namespace LT.DigitalOffice.RightsService.Data.UnitTests
 {
@@ -104,6 +105,17 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
             _repository.Create(newDbRole);
 
             Assert.That(_provider.Roles.FirstOrDefault(x => x.Id == newDbRole.Id) == newDbRole);
+        }
+
+        #endregion
+
+        #region GetAll
+
+        [Test]
+        public void SholdGetAllRoles()
+        {
+            IEnumerable roles = _provider.Roles;
+            Assert.That(_repository.GetAll(), Is.EquivalentTo(roles));
         }
 
         #endregion
