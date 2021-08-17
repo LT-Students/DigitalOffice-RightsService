@@ -32,6 +32,7 @@ namespace LT.DigitalOffice.RightsService.Data
             var dbRole = _provider.Roles
                 .Include(x => x.Users)
                 .Include(x => x.Rights)
+                .ThenInclude(r => r.Right)
                 .FirstOrDefault(x => x.Id == roleId);
 
             if (dbRole == null)
