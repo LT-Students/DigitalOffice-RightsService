@@ -74,12 +74,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 .Setup<IDbRoleMapper, DbRole>(x => x.Map(It.Is<CreateRoleRequest>(x => x == null), It.IsAny<Guid>()))
                 .Throws(new ArgumentNullException("CreateRoleRequest"));
 
-            _command = new CreateRoleCommand(
-                _autoMocker.GetMock<IHttpContextAccessor>().Object,
-                _autoMocker.GetMock<IRoleRepository>().Object,
-                _autoMocker.GetMock<ICreateRoleRequestValidator>().Object,
-                _autoMocker.GetMock<IDbRoleMapper>().Object,
-                _autoMocker.GetMock<IAccessValidator>().Object);
+            _command = _autoMocker.CreateInstance<CreateRoleCommand>();
         }
 
         [SetUp]
@@ -102,7 +97,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 .Returns(false);
 
             Assert.Throws<ForbiddenException>(
-                () => _command.Execute(_newRequest), "Not enough rights.");
+                () => _command.Execute(_newRequest));
         }
 
         [Test]
@@ -113,7 +108,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 .Returns(false);
 
             Assert.Throws<ValidationException>(
-                () => _command.Execute(_newRequest), "CreateRoleRequest");
+                () => _command.Execute(_newRequest));
         }
 
         [Test]
@@ -135,7 +130,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         }
 
         [Test]
-        public void SholdThrowNoExceptions()
+        public void ShouldWorkCorrectly()
         {
             OperationResultResponse<Guid> response = _command.Execute(_newRequest);
 
