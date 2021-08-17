@@ -60,10 +60,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             };
 
             _autoMocker
-                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
-                .Returns(_items);
-
-            _autoMocker
                 .Setup<IRoleRepository, Guid>(x => x.Create(_dbRole))
                 .Returns(_roleId);
 
@@ -87,6 +83,10 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             _autoMocker
                 .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
                 .Returns(true);
+
+            _autoMocker
+                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
+                .Returns(_items);
         }
 
         [Test]
