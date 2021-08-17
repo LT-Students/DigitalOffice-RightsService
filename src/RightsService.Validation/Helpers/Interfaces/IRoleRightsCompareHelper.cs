@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.RightsService.Validation.Helpers.Interfaces
     [AutoInject]
     public interface IRoleRightsCompareHelper
     {
-        public bool Compare(List<int> addedRights, IRoleRepository repository);
+        public bool Compare(List<int> addedRights);
     }
 }

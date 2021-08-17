@@ -3,12 +3,13 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
-    <PackageReference Include="Moq.AutoMock" Version="2.3.0" />
+    <ProjectReference Include="..\..\src\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
+    <ProjectReference Include="..\..\src\RightsService.Validation\RightsService.Validation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
-    <ProjectReference Include="..\..\src\RightsService.Validation\RightsService.Validation.csproj" />
+    <PackageReference Update="LT.DigitalOffice.UnitTestKernel" Version="1.0.4" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.9.4" />
   </ItemGroup>
 
 </Project>

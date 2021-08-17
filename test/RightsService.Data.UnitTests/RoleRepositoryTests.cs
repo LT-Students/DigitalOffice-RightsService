@@ -112,7 +112,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         #region GetAll
 
         [Test]
-        public void SholdGetAllRoles()
+        public void ShouldGetAllRoles()
         {
             IEnumerable roles = _provider.Roles;
             Assert.That(_repository.GetAll(), Is.EquivalentTo(roles));

@@ -64,11 +64,7 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
                 .Setup<IMemoryCache, ICacheEntry>(x => x.CreateEntry(It.IsAny<object>()))
                 .Returns(_autoMocker.GetMock<ICacheEntry>().Object);
 
-            _validator = new CreateRoleRequestValidator(
-                _autoMocker.GetMock<IRightRepository>().Object,
-                _autoMocker.GetMock<IRoleRepository>().Object,
-                _autoMocker.GetMock<IRoleRightsCompareHelper>().Object,
-                _autoMocker.GetMock<IMemoryCache>().Object);
+            _validator = _autoMocker.CreateInstance<CreateRoleRequestValidator>();
         }
 
         [SetUp]
@@ -79,7 +75,7 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
                 .Returns(true);
 
             _autoMocker
-                .Setup<IRoleRightsCompareHelper, bool>(x => x.Compare(It.IsAny<List<int>>(), It.IsAny<IRoleRepository>()))
+                .Setup<IRoleRightsCompareHelper, bool>(x => x.Compare(It.IsAny<List<int>>()))
                 .Returns(true);
         }
 
@@ -131,7 +127,7 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
         public void ShouldHaveValidationErrorWhenRightsSetIsNotUnique()
         {
             _autoMocker
-                .Setup<IRoleRightsCompareHelper, bool>(x => x.Compare(It.IsAny<List<int>>(), It.IsAny<IRoleRepository>()))
+                .Setup<IRoleRightsCompareHelper, bool>(x => x.Compare(It.IsAny<List<int>>()))
                 .Returns(false);
 
             _validator.TestValidate(_goodCreateRoleRequest)

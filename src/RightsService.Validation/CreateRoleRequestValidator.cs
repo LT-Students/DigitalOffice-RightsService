@@ -13,12 +13,12 @@ namespace LT.DigitalOffice.RightsService.Validation
     {
         public CreateRoleRequestValidator(
             IRightRepository rightRepository,
-            IRoleRepository roleRepository,
             IRoleRightsCompareHelper compareHelper,
             IMemoryCache cache)
         {
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Role name must not be empty.");
+                .NotEmpty()
+                .WithMessage("Role name must not be empty.");
 
             RuleFor(x => x.Rights)
                 .Cascade(CascadeMode.Stop)
@@ -34,7 +34,7 @@ namespace LT.DigitalOffice.RightsService.Validation
                 .WithMessage("Right number can not be less than zero.")
                 .Must(rightsIds => CheckRightsHelper.DoesExist(rightsIds, cache, rightRepository))
                 .WithMessage("Some rights does not exist.")
-                .Must(x => compareHelper.Compare(x, roleRepository))
+                .Must(x => compareHelper.Compare(x))
                 .WithMessage("Set of rights in this role already exists in other role");
         }
     }
