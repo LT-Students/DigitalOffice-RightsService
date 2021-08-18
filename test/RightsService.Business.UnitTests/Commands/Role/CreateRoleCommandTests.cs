@@ -35,8 +35,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _autoMocker = new AutoMocker();
-
             _items = new Dictionary<object, object>();
             _items.Add("UserId", _userId);
 
@@ -58,6 +56,24 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
                 Status = OperationResultStatusType.FullSuccess,
                 Errors = new List<string>()
             };
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            _autoMocker = new AutoMocker();
+
+            _autoMocker
+                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
+
+            _autoMocker
+                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
+                .Returns(true);
+
+            _autoMocker
+                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
+                .Returns(_items);
 
             _autoMocker
                 .Setup<IRoleRepository, Guid>(x => x.Create(_dbRole))
@@ -73,22 +89,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             _command = _autoMocker.CreateInstance<CreateRoleCommand>();
         }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _autoMocker
-                .Setup<ICreateRoleRequestValidator, bool>(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
-                .Returns(true);
-
-            _autoMocker
-                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
-                .Returns(true);
-
-            _autoMocker
-                .Setup<IHttpContextAccessor, IDictionary<object, object>>(x => x.HttpContext.Items)
-                .Returns(_items);
-        }
-
         [Test]
         public void ShouldThrowForbiddenExceptionWhenAccessValidatorIsFalse()
         {
@@ -98,6 +98,22 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
 
             Assert.Throws<ForbiddenException>(
                 () => _command.Execute(_newRequest));
+
+            _autoMocker.Verify<ICreateRoleRequestValidator, bool>(
+                x => x.Validate(It.IsAny<IValidationContext>()).IsValid,
+                Times.Never);
+
+            _autoMocker.Verify<IHttpContextAccessor, IDictionary<object, object>>(
+                x => x.HttpContext.Items,
+                Times.Never);
+
+            _autoMocker.Verify<IDbRoleMapper, DbRole>(
+                x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()),
+                Times.Never);
+
+            _autoMocker.Verify<IRoleRepository, Guid>(
+                x => x.Create(_dbRole),
+                Times.Never);
         }
 
         [Test]
@@ -109,6 +125,18 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
 
             Assert.Throws<ValidationException>(
                 () => _command.Execute(_newRequest));
+
+            _autoMocker.Verify<IHttpContextAccessor, IDictionary<object, object>>(
+                x => x.HttpContext.Items,
+                Times.Never);
+
+            _autoMocker.Verify<IDbRoleMapper, DbRole>(
+                x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()),
+                Times.Never);
+
+            _autoMocker.Verify<IRoleRepository, Guid>(
+                x => x.Create(_dbRole),
+                Times.Never);
         }
 
         [Test]
@@ -120,6 +148,14 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
 
             Assert.Throws<ArgumentException>(
                 () => _command.Execute(_newRequest), "HttpContext exception");
+
+            _autoMocker.Verify<IDbRoleMapper, DbRole>(
+                x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()),
+                Times.Never);
+
+            _autoMocker.Verify<IRoleRepository, Guid>(
+                x => x.Create(_dbRole),
+                Times.Never);
         }
 
         [Test]
@@ -127,6 +163,10 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
         {
             Assert.Throws<ArgumentNullException>(
                 () => _command.Execute(null));
+
+            _autoMocker.Verify<IRoleRepository, Guid>(
+                x => x.Create(_dbRole),
+                Times.Never);
         }
 
         [Test]
@@ -135,6 +175,26 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Role
             OperationResultResponse<Guid> response = _command.Execute(_newRequest);
 
             SerializerAssert.AreEqual(response, _goodResponse);
+
+            _autoMocker.Verify<IAccessValidator, bool>(
+                x => x.IsAdmin(null),
+                Times.Once);
+
+            _autoMocker.Verify<ICreateRoleRequestValidator, bool>(
+                x => x.Validate(It.IsAny<IValidationContext>()).IsValid,
+                Times.Once);
+
+            _autoMocker.Verify<IHttpContextAccessor, IDictionary<object, object>>(
+                x => x.HttpContext.Items,
+                Times.Exactly(2));
+
+            _autoMocker.Verify<IDbRoleMapper, DbRole>(
+                x => x.Map(It.IsAny<CreateRoleRequest>(), It.IsAny<Guid>()),
+                Times.Once);
+
+            _autoMocker.Verify<IRoleRepository, Guid>(
+                x => x.Create(_dbRole),
+                Times.Once);
         }
     }
 }
