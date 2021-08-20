@@ -19,16 +19,11 @@ namespace LT.DigitalOffice.RightsService.Validation
 
             RuleFor(x => x.Rights)
                 .Cascade(CascadeMode.Stop)
-                .Must(rightsIds =>
-                {
-                    if (rightsIds == null)
-                    {
-                        return true;
-                    }
-
-                    return rightsIds.All(r => r > 0);
-                }).WithMessage("Right number can not be less than zero.")
-                .Must(rightsIds => CheckRightsHelper.DoesExist(rightsIds, cache, repository)).WithMessage("Some rights does not exist.");
+                .NotEmpty()
+                .Must(rightsIds => rightsIds.All(r => r > 0))
+                .WithMessage("Right number can not be less than zero.")
+                .Must(rightsIds => CheckRightsHelper.DoesExist(rightsIds, cache, repository))
+                .WithMessage("Some rights does not exist.");
         }
     }
 }
