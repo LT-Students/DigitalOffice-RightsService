@@ -36,7 +36,11 @@ namespace LT.DigitalOffice.RightsService.Controllers
         {
             var result = command.Execute(role);
 
-            if (result.Status != Kernel.Enums.OperationResultStatusType.Failed)
+            if (result.Status == Kernel.Enums.OperationResultStatusType.Conflict)
+            {
+                _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+            }
+            else if (result.Status != Kernel.Enums.OperationResultStatusType.Failed)
             {
                 _context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
             }

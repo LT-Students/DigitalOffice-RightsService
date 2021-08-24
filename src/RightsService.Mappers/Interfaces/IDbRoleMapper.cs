@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Interfaces
     [AutoInject]
     public interface IDbRoleMapper
     {
-        DbRole Map(CreateRoleRequest value, Guid userId);
+        DbRole Map(CreateRoleRequest value);
     }
 }

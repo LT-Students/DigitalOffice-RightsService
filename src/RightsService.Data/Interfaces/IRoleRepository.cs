@@ -28,5 +28,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
         /// </summary>
         /// <returns>List of all added roles.</returns>
         IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount);
+
+        bool DoesNameExist(string name);
     }
 }
