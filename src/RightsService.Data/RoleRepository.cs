@@ -64,9 +64,9 @@ namespace LT.DigitalOffice.RightsService.Data
                 .Include(x => x.Users);
         }
 
-        public List<string> GetNames()
+        public bool DoesNameExist(string name)
         {
-            return _provider.Roles.Select(r => r.Name).ToList();
+            return _provider.Roles.Any(r => r.Name == name);
         }
     }
 }

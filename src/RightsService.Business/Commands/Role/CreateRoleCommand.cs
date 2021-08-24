@@ -8,12 +8,9 @@ using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
-using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
@@ -49,9 +46,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             _validator.ValidateAndThrowCustom(request);
 
-            List<string> roleNames = _repository.GetNames();
-
-            if (roleNames.Contains(request.Name))
+            if (_repository.DoesNameExist(request.Name))
             {
                 return new OperationResultResponse<Guid>
                 {
@@ -62,8 +57,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             var userId = _httpContextAccessor.HttpContext.GetUserId();
             var roleId = _repository.Create(_mapper.Map(request, userId));
-
-            roleNames.Add(request.Name);
 
             return new OperationResultResponse<Guid>
             {
