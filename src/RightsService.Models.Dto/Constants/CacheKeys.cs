@@ -3,6 +3,5 @@
     public static class CacheKeys
     {
         public const string RightsIds = "RightsIds";
-        public const string RoleNames = "RoleNames";
     }
 }
