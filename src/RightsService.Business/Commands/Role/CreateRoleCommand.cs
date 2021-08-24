@@ -55,8 +55,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
                 };
             }
 
-            var userId = _httpContextAccessor.HttpContext.GetUserId();
-            var roleId = _repository.Create(_mapper.Map(request, userId));
+            var roleId = _repository.Create(_mapper.Map(request));
 
             return new OperationResultResponse<Guid>
             {
