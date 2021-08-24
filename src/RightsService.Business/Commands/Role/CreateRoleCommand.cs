@@ -55,11 +55,9 @@ namespace LT.DigitalOffice.RightsService.Business.Role
                 };
             }
 
-            var roleId = _repository.Create(_mapper.Map(request));
-
             return new OperationResultResponse<Guid>
             {
-                Body = roleId,
+                Body = _repository.Create(_mapper.Map(request)),
                 Status = OperationResultStatusType.FullSuccess
             };
         }
