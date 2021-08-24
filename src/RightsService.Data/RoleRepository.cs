@@ -63,5 +63,10 @@ namespace LT.DigitalOffice.RightsService.Data
                 .Include(x => x.Rights)
                 .Include(x => x.Users);
         }
+
+        public List<string> GetNames()
+        {
+            return _provider.Roles.Select(r => r.Name).ToList();
+        }
     }
 }

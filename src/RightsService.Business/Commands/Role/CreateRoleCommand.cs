@@ -8,11 +8,12 @@ using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
@@ -24,19 +25,38 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         private readonly ICreateRoleRequestValidator _validator;
         private readonly IDbRoleMapper _mapper;
         private readonly IAccessValidator _accessValidator;
+        private readonly IMemoryCache _memoryCache;
+
+        private bool CheckNameUniqueness(string name, out List<string> roleName)
+        {
+            List<string> names = _memoryCache.Get<List<string>>(CacheKeys.RoleNames);
+
+            if (names == null)
+            {
+                names = _repository.GetNames();
+
+                _memoryCache.Set(CacheKeys.RoleNames, names);
+            }
+
+            roleName = names;
+
+            return !names.Contains(name);
+        }
 
         public CreateRoleCommand(
             IHttpContextAccessor httpContextAccessor,
             IRoleRepository repository,
             ICreateRoleRequestValidator validator,
             IDbRoleMapper mapper,
-            IAccessValidator accessValidator)
+            IAccessValidator accessValidator,
+            IMemoryCache memoryCache)
         {
             _validator = validator;
             _httpContextAccessor = httpContextAccessor;
             _repository = repository;
             _mapper = mapper;
             _accessValidator = accessValidator;
+            _memoryCache = memoryCache;
         }
 
         public OperationResultResponse<Guid> Execute(CreateRoleRequest request)
@@ -48,8 +68,19 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             _validator.ValidateAndThrowCustom(request);
 
+            if (!CheckNameUniqueness(request.Name, out List<string> roleNames))
+            {
+                return new OperationResultResponse<Guid>
+                {
+                    Status = OperationResultStatusType.Conflict,
+                    Errors = new() { $"Role with name: '{request.Name}' already exists." }
+                };
+            }
+
             var userId = _httpContextAccessor.HttpContext.GetUserId();
             var roleId = _repository.Create(_mapper.Map(request, userId));
+
+            roleNames.Add(request.Name);
 
             return new OperationResultResponse<Guid>
             {
