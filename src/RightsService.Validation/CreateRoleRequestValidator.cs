@@ -15,6 +15,7 @@ namespace LT.DigitalOffice.RightsService.Validation
                 .MaximumLength(100);
 
             RuleFor(x => x.Rights)
+                .NotEmpty()
                 .SetValidator(rightsIdsValidator);
         }
     }
