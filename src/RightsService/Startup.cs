@@ -16,6 +16,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace LT.DigitalOffice.RightsService
 {
@@ -40,7 +41,7 @@ namespace LT.DigitalOffice.RightsService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.3.0";
+            Version = "1.3.1.0";
             Description = "RightsService is an API intended to work with the user rights.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
@@ -67,7 +68,12 @@ namespace LT.DigitalOffice.RightsService
 
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                })
+                .AddNewtonsoftJson(); ;
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
 

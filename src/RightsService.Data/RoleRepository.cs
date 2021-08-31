@@ -50,9 +50,9 @@ namespace LT.DigitalOffice.RightsService.Data
                 throw new BadRequestException("Skip count can't be less than 0.");
             }
 
-            if (takeCount <= 0)
+            if (takeCount < 1)
             {
-                throw new BadRequestException("Take count can't be equal or less than 0.");
+                throw new BadRequestException("Take count can't be less than 1.");
             }
 
             totalCount = _provider.Roles.Count();
@@ -62,6 +62,11 @@ namespace LT.DigitalOffice.RightsService.Data
                 .Take(takeCount)
                 .Include(x => x.Rights)
                 .Include(x => x.Users);
+        }
+
+        public bool DoesNameExist(string name)
+        {
+            return _provider.Roles.Any(r => r.Name == name);
         }
     }
 }

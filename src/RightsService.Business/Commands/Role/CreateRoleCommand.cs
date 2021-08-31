@@ -11,8 +11,6 @@ using LT.DigitalOffice.RightsService.Models.Dto;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
@@ -48,12 +46,18 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
             _validator.ValidateAndThrowCustom(request);
 
-            var userId = _httpContextAccessor.HttpContext.GetUserId();
-            var roleId = _repository.Create(_mapper.Map(request, userId));
+            if (_repository.DoesNameExist(request.Name))
+            {
+                return new OperationResultResponse<Guid>
+                {
+                    Status = OperationResultStatusType.Conflict,
+                    Errors = new() { $"Role with name: '{request.Name}' already exists." }
+                };
+            }
 
             return new OperationResultResponse<Guid>
             {
-                Body = roleId,
+                Body = _repository.Create(_mapper.Map(request)),
                 Status = OperationResultStatusType.FullSuccess
             };
         }
