@@ -32,6 +32,7 @@ namespace LT.DigitalOffice.RightsService.Data
             var dbRole = _provider.Roles
                 .Include(x => x.Users)
                 .Include(x => x.Rights)
+                .ThenInclude(r => r.Right)
                 .FirstOrDefault(x => x.Id == roleId);
 
             if (dbRole == null)
@@ -44,13 +45,28 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount)
         {
+            if (skipCount < 0)
+            {
+                throw new BadRequestException("Skip count can't be less than 0.");
+            }
+
+            if (takeCount < 1)
+            {
+                throw new BadRequestException("Take count can't be less than 1.");
+            }
+
             totalCount = _provider.Roles.Count();
 
             return _provider.Roles
-                .Skip(skipCount * takeCount)
+                .Skip(skipCount)
                 .Take(takeCount)
                 .Include(x => x.Rights)
                 .Include(x => x.Users);
+        }
+
+        public bool DoesNameExist(string name)
+        {
+            return _provider.Roles.Any(r => r.Name == name);
         }
     }
 }
