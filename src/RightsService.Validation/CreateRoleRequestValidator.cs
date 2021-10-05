@@ -8,8 +8,8 @@ namespace LT.DigitalOffice.RightsService.Validation
   public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>, ICreateRoleRequestValidator
   {
     public CreateRoleRequestValidator(
-        IRightsIdsValidator rightsIdsValidator,
-        ICreateRoleLocalizationRequestValidator localizationRequestValidator)
+      IRightsIdsValidator rightsIdsValidator,
+      ICreateRoleLocalizationRequestValidator localizationRequestValidator)
     {
       RuleFor(x => x.Localizations)
         .Cascade(CascadeMode.Stop)

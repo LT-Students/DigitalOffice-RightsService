@@ -64,6 +64,7 @@ namespace LT.DigitalOffice.RightsService.Data
          join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
          where (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
            && (rightLocalization.Locale == filter.Locale || rightLocalization.Locale == null)
+         orderby role.Id
          select new
          {
            Role = role,

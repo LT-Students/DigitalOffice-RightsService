@@ -1,4 +1,4 @@
-﻿//using LT.DigitalOffice.Kernel.Broker;
+﻿﻿//using LT.DigitalOffice.Kernel.Broker;
 //using LT.DigitalOffice.Kernel.Exceptions.Models;
 //using LT.DigitalOffice.Models.Broker.Models;
 //using LT.DigitalOffice.Models.Broker.Requests.User;
@@ -168,8 +168,8 @@
 //            _mocker.Verify<IRequestClient<IGetUsersDataRequest>>(r =>
 //                r.GetResponse<IOperationResult<IGetUsersDataResponse>>(It.IsAny<object>(), default, default), Times.Once());
 //            _mocker.Verify<IUserInfoMapper>(m => m.Map(It.IsAny<UserData>()), Times.Never());
-//            _mocker.Verify<IRoleInfoMapper>(m => 
-//                m.Map(_dbRole, It.Is<List<RightResponse>>(lr => lr[0] == _rightResponse), It.Is<List<UserInfo>>(lu => lu.Count == 0)), 
+//            _mocker.Verify<IRoleInfoMapper>(m =>
+//                m.Map(_dbRole, It.Is<List<RightResponse>>(lr => lr[0] == _rightResponse), It.Is<List<UserInfo>>(lu => lu.Count == 0)),
 //                Times.Once());
 //        }
 

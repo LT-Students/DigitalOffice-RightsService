@@ -16,7 +16,8 @@ namespace LT.DigitalOffice.RightsService.Validation
         .Length(2);
 
       RuleFor(x => x.Name)
-        .NotEmpty();
+        .NotEmpty()
+        .MaximumLength(100);
 
       When(x => x.Name != null && x.Locale != null, () =>
       {

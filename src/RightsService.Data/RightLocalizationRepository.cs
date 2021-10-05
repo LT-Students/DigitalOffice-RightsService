@@ -1,4 +1,4 @@
-using LT.DigitalOffice.Kernel.Broker;
+﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
@@ -13,13 +13,13 @@ using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Data
 {
-    /// <inheritdoc cref="IRightRepository"/>
-    public class RightRepository : IRightRepository
+    /// <inheritdoc cref="IRightLocalizationRepository"/>
+    public class RightLocalizationRepository : IRightLocalizationRepository
     {
         private readonly IDataProvider _provider;
         private readonly IRequestClient<IGetUserDataRequest> _client;
 
-        public RightRepository(
+        public RightLocalizationRepository(
             IDataProvider provider,
             IRequestClient<IGetUserDataRequest> client)
         {
@@ -34,7 +34,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
         public List<DbRightsLocalization> GetRightsList(string locale)
         {
-            return _provider.RightsLocalizations.Where(r => r.Locale == locale).ToList();
+            return _provider.RightsLocalizations.Where(r => r.Locale == locale).OrderBy(r => r.RightId).ToList();
         }
 
         //TODO rework

@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
 {
   public class GetRightsListCommandTests
   {
-    private Mock<IRightRepository> repositoryMock;
+    private Mock<IRightLocalizationRepository> repositoryMock;
     private Mock<IRightInfoMapper> mapperMock;
     private IGetRightsListCommand command;
     private List<DbRightsLocalization> dbRightsList;
@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
     public void Setup()
     {
       mapperMock = new Mock<IRightInfoMapper>();
-      repositoryMock = new Mock<IRightRepository>();
+      repositoryMock = new Mock<IRightLocalizationRepository>();
       command = new GetRightsListCommand(repositoryMock.Object, mapperMock.Object);
       dbRight = new DbRightsLocalization { RightId = 0, Locale = Locale, Name = "Right", Description = "Allows you everything" };
       right = new RightInfo { RightId = 0, Name = "Right", Description = "Allows you everything" };

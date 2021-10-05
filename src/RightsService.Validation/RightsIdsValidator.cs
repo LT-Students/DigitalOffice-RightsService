@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Validation
   public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>, IRightsIdsValidator
   {
     private List<int> GetRightIds(
-      IRightRepository repository,
+      IRightLocalizationRepository repository,
       IMemoryCache cache)
     {
       if (repository is null)
@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.RightsService.Validation
     }
 
     public RightsIdsValidator(
-      IRightRepository repository,
+      IRightLocalizationRepository repository,
       IMemoryCache cache)
     {
       List<int> rights = GetRightIds(repository, cache);

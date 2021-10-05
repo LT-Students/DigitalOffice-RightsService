@@ -10,11 +10,11 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
   /// <inheritdoc cref="IGetRightsListCommand"/>
   public class GetRightsListCommand : IGetRightsListCommand
     {
-        private readonly IRightRepository _repository;
+        private readonly IRightLocalizationRepository _repository;
         private readonly IRightInfoMapper _mapper;
 
         public GetRightsListCommand(
-            IRightRepository repository,
+            IRightLocalizationRepository repository,
             IRightInfoMapper mapper)
         {
             _repository = repository;

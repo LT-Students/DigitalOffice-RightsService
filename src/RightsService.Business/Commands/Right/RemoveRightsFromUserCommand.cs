@@ -12,12 +12,12 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     /// <inheritdoc cref="IRemoveRightsFromUserCommand"/>
     public class RemoveRightsFromUserCommand : IRemoveRightsFromUserCommand
     {
-        private readonly IRightRepository _repository;
+        private readonly IRightLocalizationRepository _repository;
         private readonly IRightsIdsValidator _validator;
         private readonly IAccessValidator _accessValidator;
 
         public RemoveRightsFromUserCommand(
-            IRightRepository repository,
+            IRightLocalizationRepository repository,
             IRightsIdsValidator validator,
             IAccessValidator accessValidator)
         {

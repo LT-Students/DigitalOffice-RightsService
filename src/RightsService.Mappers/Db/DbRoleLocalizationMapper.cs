@@ -29,8 +29,8 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         Id = Guid.NewGuid(),
         RoleId = request.RoleId.Value,
         Locale = request.Locale,
-        Name = request.Name,
-        Description = request.Description,
+        Name = request.Name.Trim(),
+        Description = string.IsNullOrEmpty(request.Description?.Trim()) ? null : request.Description?.Trim(),
         CreatedBy = _httpContextAccessor.HttpContext.GetUserId(),
         CreatedAtUtc = DateTime.UtcNow,
         IsActive = true
@@ -50,7 +50,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         RoleId = roleId,
         Locale = request.Locale,
         Name = request.Name,
-        Description = request.Description,
+        Description = string.IsNullOrEmpty(request.Description?.Trim()) ? null : request.Description?.Trim(),
         CreatedBy = _httpContextAccessor.HttpContext.GetUserId(),
         CreatedAtUtc = DateTime.UtcNow,
         IsActive = true
