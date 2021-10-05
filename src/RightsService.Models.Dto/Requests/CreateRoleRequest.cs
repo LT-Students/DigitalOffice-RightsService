@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace LT.DigitalOffice.RightsService.Models.Dto
+namespace LT.DigitalOffice.RightsService.Models.Dto.Requests
 {
-    public record CreateRoleRequest
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public List<int> Rights { get; set; }
-    }
+  public record CreateRoleRequest
+  {
+    public List<CreateRoleLocalizationRequest> Localizations { get; set; }
+    public List<int> Rights { get; set; }
+  }
 }

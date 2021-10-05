@@ -1,22 +1,27 @@
 ﻿using FluentValidation;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
+using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
-    public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>, ICreateRoleRequestValidator
+  public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>, ICreateRoleRequestValidator
+  {
+    public CreateRoleRequestValidator(
+        IRightsIdsValidator rightsIdsValidator,
+        ICreateRoleLocalizationRequestValidator localizationRequestValidator)
     {
-        public CreateRoleRequestValidator(
-            IRightsIdsValidator rightsIdsValidator)
-        {
-            RuleFor(x => x.Name)
-                .NotEmpty()
-                .WithMessage("Role name must not be empty.")
-                .MaximumLength(100);
+      RuleFor(x => x.Localizations)
+        .Cascade(CascadeMode.Stop)
+        .NotNull()
+        .Must(x => x.Any());
 
-            RuleFor(x => x.Rights)
-                .NotEmpty()
-                .SetValidator(rightsIdsValidator);
-        }
+      RuleForEach(x => x.Localizations)
+        .SetValidator(localizationRequestValidator);
+
+      RuleFor(x => x.Rights)
+        .NotEmpty()
+        .SetValidator(rightsIdsValidator);
     }
+  }
 }

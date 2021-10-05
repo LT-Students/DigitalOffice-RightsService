@@ -16,7 +16,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
         bool CheckRights(Guid userId, params int[] rightIds);
 
-        List<DbUser> Get(List<Guid> userId);
+        List<DbUser> Get(List<Guid> userId, string locale);
 
         void Remove(Guid userId);
     }

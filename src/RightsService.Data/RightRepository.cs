@@ -27,11 +27,17 @@ namespace LT.DigitalOffice.RightsService.Data
             _client = client;
         }
 
-        public List<DbRight> GetRightsList()
+        public List<DbRightsLocalization> GetRightsList()
         {
-            return _provider.Rights.ToList();
+            return _provider.RightsLocalizations.ToList();
         }
 
+        public List<DbRightsLocalization> GetRightsList(string locale)
+        {
+            return _provider.RightsLocalizations.Where(r => r.Locale == locale).ToList();
+        }
+
+        //TODO rework
         private bool SentRequestInUserService(Guid userId)
         {
             var brokerResponse = _client.GetResponse<IOperationResult<IGetUserDataResponse>>(new
@@ -51,11 +57,12 @@ namespace LT.DigitalOffice.RightsService.Data
 
             foreach (var rightId in rightsIds)
             {
-                var dbRight = _provider.Rights.FirstOrDefault(right => right.Id == rightId);
+                //TODO rework
+                var dbRight = _provider.RightsLocalizations.FirstOrDefault(right => right.RightId == rightId);
 
                 if (dbRight == null)
                 {
-                    throw new BadRequestException("Right doesn't exist.");
+                    continue;
                 }
 
                 var dbRightUser = _provider.UserRights.FirstOrDefault(rightUser =>
@@ -66,7 +73,6 @@ namespace LT.DigitalOffice.RightsService.Data
                     _provider.UserRights.Add(new DbUserRight
                     {
                         UserId = userId,
-                        Right = dbRight,
                         RightId = rightId,
                     });
                 }

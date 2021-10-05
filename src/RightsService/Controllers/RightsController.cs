@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
-using LT.DigitalOffice.RightsService.Models.Dto.Responses;
+using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,7 +9,7 @@ using System.Net;
 
 namespace LT.DigitalOffice.RightsService.Controllers
 {
-    [Route("[controller]")]
+  [Route("[controller]")]
     [ApiController]
     public class RightsController : ControllerBase
     {
@@ -21,10 +21,11 @@ namespace LT.DigitalOffice.RightsService.Controllers
         }
 
         [HttpGet("getRightsList")]
-        public List<RightResponse> GetRightsList(
+        public List<RightInfo> GetRightsList(
+            [FromQuery] string locale,
             [FromServices] IGetRightsListCommand command)
         {
-            return command.Execute();
+            return command.Execute(locale);
         }
 
         [HttpPost("addRightsForUser")]

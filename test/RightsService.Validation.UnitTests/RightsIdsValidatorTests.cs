@@ -13,12 +13,12 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
     public class RightsIdsValidatorTests
     {
         private IValidator<IEnumerable<int>> validator;
-        private List<DbRight> existingRightsList;
+        private List<DbRightsLocalization> existingRightsList;
         private Mock<IRightRepository> repositoryMock;
         private Mock<IMemoryCache> cacheMock;
 
         private int rightId;
-        private DbRight dbRight;
+        private DbRightsLocalization dbRight;
         private object right;
 
         [SetUp]
@@ -28,8 +28,8 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
             cacheMock = new Mock<IMemoryCache>();
 
             rightId = 1;
-            dbRight = new DbRight { Id = rightId };
-            existingRightsList = new List<DbRight>() { dbRight };
+            dbRight = new DbRightsLocalization { RightId = rightId };
+            existingRightsList = new List<DbRightsLocalization>() { dbRight };
 
             repositoryMock
                 .Setup(r => r.GetRightsList())

@@ -16,7 +16,14 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
         /// Returns a list of all added rights to the database.
         /// </summary>
         /// <returns>List of all added rights.</returns>
-        List<DbRight> GetRightsList();
+        List<DbRightsLocalization> GetRightsList();
+
+        /// <summary>
+        /// Returns a list of all added rights with a certain localization to the database.
+        /// </summary>
+        /// <param name="locale">Requested localization.</param>
+        /// <returns>List of all added rights with a certain localization</returns>
+        List<DbRightsLocalization> GetRightsList(string locale);
 
         /// <summary>
         /// Adds rights for user.
