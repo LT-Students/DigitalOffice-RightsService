@@ -61,6 +61,8 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         };
       }
 
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
       return new OperationResultResponse<Guid>
       {
         Body = _repository.Create(_mapper.Map(request)),
