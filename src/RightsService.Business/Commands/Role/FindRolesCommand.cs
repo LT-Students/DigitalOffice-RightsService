@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.Kernel.Validators.Interfaces;
@@ -91,7 +92,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
         return new FindResultResponse<RoleInfo>
         {
-          Status = Kernel.Enums.OperationResultStatusType.Failed,
+          Status = OperationResultStatusType.Failed,
           Errors = errors
         };
       }
