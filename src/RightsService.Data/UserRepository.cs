@@ -18,22 +18,6 @@ namespace LT.DigitalOffice.RightsService.Data
       _provider = provider;
     }
 
-    public void Add(DbUser user)
-    {
-      if (user == null)
-      {
-        return;
-      }
-
-      _provider.Users.Add(user);
-      _provider.Save();
-    }
-
-    public DbUser Get(Guid userId)
-    {
-      return _provider.Users.FirstOrDefault(x => x.UserId == userId);
-    }
-
     public void AssignRole(Guid userId, Guid roleId, Guid assignedBy)
     {
       var editedUser = _provider.Users.FirstOrDefault(x => x.UserId == userId);

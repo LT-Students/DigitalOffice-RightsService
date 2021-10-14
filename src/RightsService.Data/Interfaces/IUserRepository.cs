@@ -8,10 +8,6 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     [AutoInject]
     public interface IUserRepository
     {
-        void Add(DbUser user);
-
-        DbUser Get(Guid userId);
-
         void AssignRole(Guid userId, Guid roleId, Guid assignedBy);
 
         bool CheckRights(Guid userId, params int[] rightIds);
