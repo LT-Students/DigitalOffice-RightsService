@@ -72,7 +72,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<OperationResultResponse<RoleResponse>> Execute(GetRoleFilter filter)
+    public async Task<OperationResultResponse<RoleResponse>> ExecuteAsync(GetRoleFilter filter)
     {
       OperationResultResponse<RoleResponse> result = new();
 

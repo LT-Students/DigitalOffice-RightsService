@@ -16,6 +16,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
         /// <summary>
         /// Returns the list of role models using pagination.
         /// </summary>
-        Task<FindResultResponse<RoleInfo>> Execute(FindRolesFilter filter);
+        Task<FindResultResponse<RoleInfo>> ExecuteAsync(FindRolesFilter filter);
     }
 }
