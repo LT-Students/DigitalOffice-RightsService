@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
   [AutoInject]
     public interface IGetRoleCommand
     {
-      Task<OperationResultResponse<RoleResponse>> Execute(GetRoleFilter filter);
+      Task<OperationResultResponse<RoleResponse>> ExecuteAsync(GetRoleFilter filter);
     }
 }

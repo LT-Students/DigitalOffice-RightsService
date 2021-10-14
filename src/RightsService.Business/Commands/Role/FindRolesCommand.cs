@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     private readonly IBaseFindFilterValidator _findFilterValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    private async Task<List<UserData>> GetUsers(List<Guid> usersIds, List<string> errors)
+    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
       if (usersIds == null || !usersIds.Any())
       {
@@ -84,7 +84,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<FindResultResponse<RoleInfo>> Execute(FindRolesFilter filter)
+    public async Task<FindResultResponse<RoleInfo>> ExecuteAsync(FindRolesFilter filter)
     {
       if (!_findFilterValidator.ValidateCustom(filter, out List<string> errors))
       {
@@ -115,10 +115,16 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         }
       }
 
-      List<UserInfo> usersInfos = (await GetUsers(usersIds, errors)).Select(_userInfoMapper.Map).ToList();
+      List<UserInfo> usersInfos = (await GetUsersAsync(usersIds?.Distinct().ToList(), errors))?
+        .Select(_userInfoMapper.Map)
+        .ToList();
 
       result.Body = roles.Select(
         pair => _roleInfoMapper.Map(pair.role, pair.rights.Select(_rightMapper.Map).ToList(), usersInfos)).ToList();
+
+      result.Status = errors.Any() ?
+        OperationResultStatusType.PartialSuccess :
+        OperationResultStatusType.FullSuccess;
 
       return result;
     }
