@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Data
     {
       if (user == null)
       {
-        throw new ArgumentNullException(nameof(user));
+        return;
       }
 
       _provider.Users.Add(user);
@@ -31,8 +31,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public DbUser Get(Guid userId)
     {
-      return _provider.Users.FirstOrDefault(x => x.UserId == userId)
-        ?? throw new NotFoundException($"No user with id '{userId}'");
+      return _provider.Users.FirstOrDefault(x => x.UserId == userId);
     }
 
     public void AssignRole(Guid userId, Guid roleId, Guid assignedBy)
