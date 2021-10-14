@@ -1,15 +1,15 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using System;
 
 namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {
-    /// <summary>
-    /// Represents interface for a command in command pattern.
-    /// Provides method for creating a new role.
-    /// </summary>
-    [AutoInject]
+  /// <summary>
+  /// Represents interface for a command in command pattern.
+  /// Provides method for creating a new role.
+  /// </summary>
+  [AutoInject]
     public interface ICreateRoleCommand
     {
         /// <summary>

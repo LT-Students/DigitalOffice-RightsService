@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Dto;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.RightsService.Validation.Interfaces
 {
-    [AutoInject]
+  [AutoInject]
     public interface ICreateRoleRequestValidator : IValidator<CreateRoleRequest>
     {
     }

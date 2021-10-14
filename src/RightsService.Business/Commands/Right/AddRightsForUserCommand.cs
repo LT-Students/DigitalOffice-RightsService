@@ -14,12 +14,12 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     /// <inheritdoc cref="IAddRightsForUserCommand"/>
     public class AddRightsForUserCommand : IAddRightsForUserCommand
     {
-        private readonly IRightRepository _repository;
+        private readonly IRightLocalizationRepository _repository;
         private readonly IRightsIdsValidator _validator;
         private readonly IAccessValidator _accessValidator;
 
         public AddRightsForUserCommand(
-            IRightRepository repository,
+            IRightLocalizationRepository repository,
             IRightsIdsValidator validator,
             IAccessValidator accessValidator)
         {

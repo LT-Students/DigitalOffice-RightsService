@@ -12,8 +12,8 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
             migrationBuilder.InsertData
             (
-                table: DbRight.TableName,
-                columns: new[] { nameof(DbRight.Id), nameof(DbRight.Name), nameof(DbRight.Description) },
+                table: "Rights",
+                columns: new[] { nameof(DbRightsLocalization.Id), nameof(DbRightsLocalization.Name), nameof(DbRightsLocalization.Description) },
                 columnTypes: new string[]
                 {
                     "int",
@@ -28,8 +28,8 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
             migrationBuilder.DeleteData
             (
-                table: DbRight.TableName,
-                keyColumn: nameof(DbRight.Id),
+                table: "Rights",
+                keyColumn: nameof(DbRightsLocalization.Id),
                 keyValue: 7
             );
         }

@@ -9,8 +9,9 @@ namespace LT.DigitalOffice.RightsService.Data.Provider
     [AutoInject(InjectType.Scoped)]
     public interface IDataProvider : IBaseDataProvider
     {
-        DbSet<DbRight> Rights { get; set; }
+        DbSet<DbRightsLocalization> RightsLocalizations { get; set; }
         DbSet<DbRole> Roles { get; set; }
+        DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
         DbSet<DbRoleRight> RoleRights { get; set;}
         DbSet<DbUser> Users { get; set; }
         DbSet<DbUserRight> UserRights { get; set; }

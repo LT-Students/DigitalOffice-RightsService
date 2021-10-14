@@ -1,18 +1,21 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Dto.Responses;
+﻿using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.RightsService.Models.Dto.Models;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
 
 namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {
-    /// <summary>
-    /// Represents interface for a command in command pattern.
-    /// Provides method for getting list of role models with pagination.
-    /// </summary>
-    [AutoInject]
+  /// <summary>
+  /// Represents interface for a command in command pattern.
+  /// Provides method for getting list of role models with pagination.
+  /// </summary>
+  [AutoInject]
     public interface IFindRolesCommand
     {
         /// <summary>
         /// Returns the list of role models using pagination.
         /// </summary>
-        FindResponse Execute(int skipCount, int takeCount);
+        Task<FindResultResponse<RoleInfo>> Execute(FindRolesFilter filter);
     }
 }

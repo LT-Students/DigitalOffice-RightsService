@@ -7,8 +7,9 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef
 {
     public class RightsServiceDbContext : DbContext, IDataProvider
     {
-        public DbSet<DbRight> Rights { get; set; }
+        public DbSet<DbRightsLocalization> RightsLocalizations { get; set; }
         public DbSet<DbRole> Roles { get; set; }
+        public DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
         public DbSet<DbRoleRight> RoleRights { get; set; }
         public DbSet<DbUser> Users { get; set; }
         public DbSet<DbUserRight> UserRights { get; set; }

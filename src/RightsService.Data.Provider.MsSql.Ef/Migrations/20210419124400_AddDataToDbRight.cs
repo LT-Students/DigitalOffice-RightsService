@@ -11,8 +11,8 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.InsertData(
-                table: DbRight.TableName,
-                columns: new[] { nameof(DbRight.Id), nameof(DbRight.Name), nameof(DbRight.Description) },
+                table: "Rights",
+                columns: new[] { "Id", "Name", "Description" },
                 columnTypes: new string[]
                 {
                     "int",
@@ -22,9 +22,9 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 values: new object[] { 5, "Add/Edit/Remove news", null });
 
             migrationBuilder.InsertData(
-                table: DbRight.TableName,
-                columns: new[] { nameof(DbRight.Id), nameof(DbRight.Name), nameof(DbRight.Description) },
-                                columnTypes: new string[]
+                table: "Rights",
+                columns: new[] { "Id", "Name", "Description" },
+                columnTypes: new string[]
                 {
                     "int",
                     "nvarchar(max)",
@@ -36,13 +36,13 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
-                table: DbRight.TableName,
-                keyColumn: nameof(DbRight.Id),
+                table: "Rights",
+                keyColumn: "Id",
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: DbRight.TableName,
-                keyColumn: nameof(DbRight.Id),
+                table: "Rights",
+                keyColumn: "Id",
                 keyValue: 6);
         }
     }
