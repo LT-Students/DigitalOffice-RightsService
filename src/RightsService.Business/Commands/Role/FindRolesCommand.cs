@@ -115,7 +115,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         }
       }
 
-      List<UserInfo> usersInfos = (await GetUsersAsync(usersIds?.Distinct().ToList(), errors))?
+      List<UserInfo> usersInfos = (await GetUsersAsync(usersIds.Distinct().ToList(), errors))?
         .Select(_userInfoMapper.Map)
         .ToList();
 
