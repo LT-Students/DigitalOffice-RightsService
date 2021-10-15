@@ -10,9 +10,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     {
         private readonly IUserRepository _userRepository;
 
-        private object ChangeRole(IChangeUserRoleRequest request)
+        private async Task<bool> ChangeRole(IChangeUserRoleRequest request)
         {
-            _userRepository.AssignRoleAsync(request.UserId, request.RoleId, request.ChangedBy);
+            await _userRepository.AssignRoleAsync(request.UserId, request.RoleId, request.ChangedBy);
 
             return true;
         }
