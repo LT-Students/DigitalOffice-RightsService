@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
     public async Task<OperationResultResponse<bool>> Create(
       [FromServices] ICreateUserRightsCommand command,
       [FromQuery] Guid userId,
-      [FromQuery] IEnumerable<int> rightsIds)
+      [FromBody] IEnumerable<int> rightsIds)
     {
       return await command.ExecuteAsync(userId, rightsIds);
     }
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
     public async Task<OperationResultResponse<bool>> Remove(
       [FromServices] IRemoveRightsFromUserCommand command,
       [FromQuery] Guid userId,
-      [FromQuery] IEnumerable<int> rightsIds)
+      [FromBody] IEnumerable<int> rightsIds)
     {
       return await command.ExecuteAsync(userId, rightsIds);
     }

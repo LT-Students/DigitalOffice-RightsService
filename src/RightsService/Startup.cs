@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.RightsService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.3.2.0";
+            Version = "1.3.3.0";
             Description = "RightsService is an API intended to work with the user rights.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
