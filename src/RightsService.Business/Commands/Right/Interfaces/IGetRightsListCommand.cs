@@ -1,6 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
 {
@@ -15,6 +17,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces
         /// Returns all added rights.
         /// </summary>
         /// <returns>All added rights.</returns>
-        List<RightInfo> Execute(string locale);
+        Task<OperationResultResponse<List<RightInfo>>> ExecuteAsync(string locale);
     }
 }

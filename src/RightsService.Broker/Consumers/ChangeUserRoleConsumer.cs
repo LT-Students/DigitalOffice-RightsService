@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
         private object ChangeRole(IChangeUserRoleRequest request)
         {
-            _userRepository.AssignRole(request.UserId, request.RoleId, request.ChangedBy);
+            _userRepository.AssignRoleAsync(request.UserId, request.RoleId, request.ChangedBy);
 
             return true;
         }

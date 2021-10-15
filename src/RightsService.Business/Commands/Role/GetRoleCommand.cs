@@ -76,7 +76,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     {
       OperationResultResponse<RoleResponse> result = new();
 
-      (DbRole role, List<DbUser> users, List<DbRightsLocalization> rights) = _roleRepository.Get(filter);
+      (DbRole role, List<DbUser> users, List<DbRightsLocalization> rights) = await _roleRepository.GetAsync(filter);
 
       if (role == null)
       {

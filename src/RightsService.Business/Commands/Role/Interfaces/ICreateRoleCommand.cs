@@ -2,6 +2,7 @@
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using System;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
 {
@@ -15,6 +16,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role.Interfaces
         /// <summary>
         /// Create a new role. Returns true if it succeeded to create a role, otherwise false.
         /// </summary>
-        OperationResultResponse<Guid> Execute(CreateRoleRequest request);
+        Task<OperationResultResponse<Guid>> ExecuteAsync(CreateRoleRequest request);
     }
 }

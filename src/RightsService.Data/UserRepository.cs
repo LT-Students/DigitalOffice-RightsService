@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
+using System.Threading.Tasks;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.RightsService.Data
       _provider = provider;
     }
 
-    public void AssignRole(Guid userId, Guid roleId, Guid assignedBy)
+    public async Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy)
     {
       var editedUser = _provider.Users.FirstOrDefault(x => x.UserId == userId);
 
@@ -41,20 +41,20 @@ namespace LT.DigitalOffice.RightsService.Data
           IsActive = true
         });
 
-      _provider.Save();
+      await _provider.SaveAsync();
     }
 
-    public bool CheckRights(Guid userId, params int[] rightIds)
+    public async Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds)
     {
       if (rightIds == null)
       {
-        throw new ArgumentNullException(nameof(rightIds));
+        return false;
       }
 
-      DbUser user = _provider.Users
+      DbUser user = await _provider.Users
         .Include(u => u.Role)
           .ThenInclude(r => r.RoleRights)
-        .Include(u => u.Rights).FirstOrDefault(u => u.UserId == userId);
+        .Include(u => u.Rights).FirstOrDefaultAsync(u => u.UserId == userId);
 
       if (user == null)
       {
@@ -74,22 +74,65 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public List<DbUser> Get(List<Guid> userId, string locale)
+    public async Task<List<DbUser>> GetAsync(List<Guid> userId, string locale)
     {
-      return _provider.Users
+      return await _provider.Users
         .Where(u => userId.Contains(u.UserId))
         .Include(u => u.Role)
         .ThenInclude(r => r.RoleLocalizations.Where(rl => rl.Locale == locale))
-        .ToList();
+        .ToListAsync();
     }
 
-    public void Remove(Guid userId)
+    public async Task RemoveAsync(Guid userId)
     {
-      DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId)
-        ?? throw new NotFoundException($"No user with id {userId}.");
+      DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
+
+      if (user == null)
+      {
+        return;
+      }
 
       user.IsActive = false;
-      _provider.Save();
+      await _provider.SaveAsync();
+    }
+
+    public async Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightsIds)
+    {
+      foreach (var rightId in rightsIds)
+      {
+        //TODO rework
+        var dbRight = _provider.RightsLocalizations.FirstOrDefault(right => right.RightId == rightId);
+
+        if (dbRight == null)
+        {
+          continue;
+        }
+
+        var dbRightUser = _provider.UserRights.FirstOrDefault(rightUser =>
+            rightUser.RightId == rightId && rightUser.UserId == userId);
+
+        if (dbRightUser == null)
+        {
+          _provider.UserRights.Add(new DbUserRight
+          {
+            UserId = userId,
+            RightId = rightId,
+          });
+        }
+      }
+      await _provider.SaveAsync();
+    }
+
+    public async Task<bool> RemoveUserRightsAsync(Guid userId, IEnumerable<int> rightsIds)
+    {
+      var userRights = _provider.UserRights.Where(ru =>
+          ru.UserId == userId && rightsIds.Contains(ru.RightId));
+
+      _provider.UserRights.RemoveRange(userRights);
+
+      await _provider.SaveAsync();
+
+      return true;
     }
   }
 }

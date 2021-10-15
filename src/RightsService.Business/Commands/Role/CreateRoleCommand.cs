@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -37,9 +38,9 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _accessValidator = accessValidator;
     }
 
-    public OperationResultResponse<Guid> Execute(CreateRoleRequest request)
+    public async Task<OperationResultResponse<Guid>> ExecuteAsync(CreateRoleRequest request)
     {
-      if (!_accessValidator.IsAdmin())
+      if (!await _accessValidator.IsAdminAsync())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -65,7 +66,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       return new OperationResultResponse<Guid>
       {
-        Body = _repository.Create(_mapper.Map(request)),
+        Body = await _repository.CreateAsync(_mapper.Map(request)),
         Status = OperationResultStatusType.FullSuccess
       };
     }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentValidation;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto.Constants;
@@ -11,21 +11,18 @@ namespace LT.DigitalOffice.RightsService.Validation
 {
   public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>, IRightsIdsValidator
   {
-    private List<int> GetRightIds(
-      IRightLocalizationRepository repository,
-      IMemoryCache cache)
-    {
-      if (repository is null)
-      {
-        throw new ArgumentNullException(nameof(repository));
-      }
+    private readonly IRightLocalizationRepository _repository;
+    private readonly IMemoryCache _cache;
 
-      List<int> rights = cache.Get<List<int>>(CacheKeys.RightsIds);
+    // todo rework
+    private async Task<List<int>> GetRightIdsAsync()
+    {
+      List<int> rights = _cache.Get<List<int>>(CacheKeys.RightsIds);
 
       if (rights == null)
       {
-        rights = repository.GetRightsList().Select(r => r.RightId).ToList();
-        cache.Set(CacheKeys.RightsIds, rights);
+        rights = (await _repository.GetRightsListAsync()).Select(r => r.RightId).ToList();
+        _cache.Set(CacheKeys.RightsIds, rights);
       }
 
       return rights;
@@ -35,14 +32,15 @@ namespace LT.DigitalOffice.RightsService.Validation
       IRightLocalizationRepository repository,
       IMemoryCache cache)
     {
-      List<int> rights = GetRightIds(repository, cache);
+      _repository = repository;
+      _cache = cache;
 
       RuleFor(rightsIds => rightsIds)
         .NotEmpty()
         .WithMessage("Rights list can not be empty");
 
       RuleForEach(rightsIds => rightsIds)
-        .Must(id => rights.Contains(id))
+        .MustAsync(async (id, _) => (await GetRightIdsAsync()).Contains(id))
         .WithMessage("Element: {CollectionIndex} of rights list is not correct.");
     }
   }

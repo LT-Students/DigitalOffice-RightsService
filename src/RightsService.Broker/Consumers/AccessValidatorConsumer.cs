@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
         private object HasRight(ICheckUserRightsRequest request)
         {
-            return _repository.CheckRights(request.UserId, request.RightIds);
+            return _repository.CheckRightsAsync(request.UserId, request.RightIds);
         }
     }
 }

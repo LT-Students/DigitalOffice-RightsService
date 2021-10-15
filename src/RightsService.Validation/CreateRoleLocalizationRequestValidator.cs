@@ -22,14 +22,14 @@ namespace LT.DigitalOffice.RightsService.Validation
       When(x => x.Name != null && x.Locale != null, () =>
       {
         RuleFor(x => x)
-          .Must(x => !localizationRepository.DoesNameExist(x.Locale, x.Name))
+          .MustAsync(async (x, _) => !await localizationRepository.DoesNameExistAsync(x.Locale, x.Name))
           .WithMessage("Role name should be unique.");
       });
 
       When(x => x.RoleId.HasValue, () =>
       {
         RuleFor(x => x.RoleId)
-          .Must(id => roleRepository.DoesRoleExist(id.Value))
+          .MustAsync(async (id, _) => await roleRepository.DoesRoleExistAsync(id.Value))
           .WithMessage("Role must exist.");
       });
     }
