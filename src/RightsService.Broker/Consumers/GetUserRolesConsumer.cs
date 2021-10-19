@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
   {
     private readonly IUserRepository _repository;
 
-    private async Task<object> GetRoles(IGetUserRolesRequest request)
+    private async Task<object> GetRolesAsync(IGetUserRolesRequest request)
     {
       List<DbUser> users = await _repository.GetAsync(request.UserIds, request.Locale);
 
@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     public async Task Consume(ConsumeContext<IGetUserRolesRequest> context)
     {
-      object response = OperationResultWrapper.CreateResponse(GetRoles, context.Message);
+      object response = OperationResultWrapper.CreateResponse(GetRolesAsync, context.Message);
 
       await context.RespondAsync<IOperationResult<IGetUserRolesResponse>>(response);
     }

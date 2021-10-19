@@ -14,6 +14,7 @@ using LT.DigitalOffice.RightsService.Business.Commands.UserRights.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
@@ -27,6 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IResponseCreater _responseCreater;
     private readonly IRequestClient<ICheckUsersExistence> _rcCheckUser;
     private readonly ILogger<CreateUserRightsCommand> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private async Task<bool> CheckUserExistenceAsync(Guid userId, List<string> erros)
     {
@@ -60,7 +62,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IAccessValidator accessValidator,
       IResponseCreater responseCreater,
       IRequestClient<ICheckUsersExistence> rcCheckUser,
-      ILogger<CreateUserRightsCommand> logger)
+      ILogger<CreateUserRightsCommand> logger,
+      IHttpContextAccessor httpContextAccessor)
     {
       _repository = repository;
       _validator = validator;
@@ -68,6 +71,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       _responseCreater = responseCreater;
       _rcCheckUser = rcCheckUser;
       _logger = logger;
+      _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid userId, IEnumerable<int> rightsIds)
@@ -87,6 +91,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       }
 
       await _repository.AddUserRightsAsync(userId, rightsIds);
+
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       return new OperationResultResponse<bool>
       {
