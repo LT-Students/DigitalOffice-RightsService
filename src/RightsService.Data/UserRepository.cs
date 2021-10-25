@@ -108,12 +108,12 @@ namespace LT.DigitalOffice.RightsService.Data
           continue;
         }
 
-        var dbRightUser = _provider.UserRights.FirstOrDefault(rightUser =>
+        var dbRightUser = _provider.UsersRights.FirstOrDefault(rightUser =>
             rightUser.RightId == rightId && rightUser.UserId == userId);
 
         if (dbRightUser == null)
         {
-          _provider.UserRights.Add(new DbUserRight
+          _provider.UsersRights.Add(new DbUserRight
           {
             UserId = userId,
             RightId = rightId,
@@ -125,10 +125,10 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<bool> RemoveUserRightsAsync(Guid userId, IEnumerable<int> rightsIds)
     {
-      var userRights = _provider.UserRights.Where(ru =>
+      var userRights = _provider.UsersRights.Where(ru =>
           ru.UserId == userId && rightsIds.Contains(ru.RightId));
 
-      _provider.UserRights.RemoveRange(userRights);
+      _provider.UsersRights.RemoveRange(userRights);
 
       await _provider.SaveAsync();
 

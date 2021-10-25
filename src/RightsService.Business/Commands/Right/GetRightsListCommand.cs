@@ -18,25 +18,25 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     private readonly IRightLocalizationRepository _repository;
     private readonly IRightInfoMapper _mapper;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreater;
+    private readonly IResponseCreater _responseCreator;
 
     public GetRightsListCommand(
       IRightLocalizationRepository repository,
       IRightInfoMapper mapper,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater)
+      IResponseCreater responseCreator)
     {
       _repository = repository;
       _mapper = mapper;
       _accessValidator = accessValidator;
-      _responseCreater = responseCreater;
+      _responseCreator = responseCreator;
     }
 
     public async Task<OperationResultResponse<List<RightInfo>>> ExecuteAsync(string locale)
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreater.CreateFailureResponse<List<RightInfo>>(HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<List<RightInfo>>(HttpStatusCode.Forbidden);
       }
 
       return new()

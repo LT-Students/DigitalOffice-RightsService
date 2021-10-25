@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef
     public DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
     public DbSet<DbRoleRight> RoleRights { get; set; }
     public DbSet<DbUser> Users { get; set; }
-    public DbSet<DbUserRight> UserRights { get; set; }
+    public DbSet<DbUserRight> UsersRights { get; set; }
 
     public RightsServiceDbContext(DbContextOptions<RightsServiceDbContext> options) : base(options) { }
 
