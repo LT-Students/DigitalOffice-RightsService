@@ -14,6 +14,6 @@ namespace LT.DigitalOffice.RightsService.Data.Provider
         DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
         DbSet<DbRoleRight> RoleRights { get; set;}
         DbSet<DbUser> Users { get; set; }
-        DbSet<DbUserRight> UserRights { get; set; }
+        DbSet<DbUserRight> UsersRights { get; set; }
     }
 }

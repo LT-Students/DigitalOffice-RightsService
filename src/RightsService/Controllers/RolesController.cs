@@ -23,11 +23,11 @@ namespace LT.DigitalOffice.RightsService.Controllers
     }
 
     [HttpPost("create")]
-    public OperationResultResponse<Guid> Create(
+    public async Task<OperationResultResponse<Guid>> Create(
       [FromServices] ICreateRoleCommand command,
       [FromBody] CreateRoleRequest role)
     {
-      return command.Execute(role);
+      return await command.ExecuteAsync(role);
     }
 
     [HttpGet("get")]

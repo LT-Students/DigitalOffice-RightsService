@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Data
 {
@@ -14,9 +16,9 @@ namespace LT.DigitalOffice.RightsService.Data
       _provider = provider;
     }
 
-    public bool DoesNameExist(string locale, string name)
+    public async Task<bool> DoesNameExistAsync(string locale, string name)
     {
-      return _provider.RolesLocalizations.Any(rl => rl.IsActive && rl.Locale == locale && rl.Name == name);
+      return await _provider.RolesLocalizations.AnyAsync(rl => rl.IsActive && rl.Locale == locale && rl.Name == name);
     }
   }
 }

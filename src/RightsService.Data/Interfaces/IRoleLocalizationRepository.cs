@@ -1,10 +1,11 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
+﻿using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Attributes;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
   [AutoInject]
   public interface IRoleLocalizationRepository
   {
-    bool DoesNameExist(string locale, string name);
+    Task<bool> DoesNameExistAsync(string locale, string name);
   }
 }

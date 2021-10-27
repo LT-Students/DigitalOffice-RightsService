@@ -115,7 +115,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
         CreatedBy = Guid.NewGuid()
       };
 
-      _repository.Create(newDbRole);
+      _repository.CreateAsync(newDbRole);
 
       Assert.That(_provider.Roles.FirstOrDefault(x => x.Id == newDbRole.Id) == newDbRole);
     }

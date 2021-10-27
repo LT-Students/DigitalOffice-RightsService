@@ -1,46 +1,52 @@
-﻿using LT.DigitalOffice.RightsService.Models.Db;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Database;
+using LT.DigitalOffice.RightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef
 {
-    public class RightsServiceDbContext : DbContext, IDataProvider
+  public class RightsServiceDbContext : DbContext, IDataProvider
+  {
+    public DbSet<DbRightsLocalization> RightsLocalizations { get; set; }
+    public DbSet<DbRole> Roles { get; set; }
+    public DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
+    public DbSet<DbRoleRight> RoleRights { get; set; }
+    public DbSet<DbUser> Users { get; set; }
+    public DbSet<DbUserRight> UsersRights { get; set; }
+
+    public RightsServiceDbContext(DbContextOptions<RightsServiceDbContext> options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<DbRightsLocalization> RightsLocalizations { get; set; }
-        public DbSet<DbRole> Roles { get; set; }
-        public DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
-        public DbSet<DbRoleRight> RoleRights { get; set; }
-        public DbSet<DbUser> Users { get; set; }
-        public DbSet<DbUserRight> UserRights { get; set; }
-
-        public RightsServiceDbContext(DbContextOptions<RightsServiceDbContext> options) : base(options) { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("LT.DigitalOffice.RightsService.Models.Db"));
-        }
-
-        public object MakeEntityDetached(object obj)
-        {
-            Entry(obj).State = EntityState.Detached;
-
-            return Entry(obj).State;
-        }
-
-        void IBaseDataProvider.Save()
-        {
-            SaveChanges();
-        }
-
-        public void EnsureDeleted()
-        {
-            Database.EnsureDeleted();
-        }
-
-        public bool IsInMemory()
-        {
-            return Database.IsInMemory();
-        }
+      modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("LT.DigitalOffice.RightsService.Models.Db"));
     }
+
+    public object MakeEntityDetached(object obj)
+    {
+      Entry(obj).State = EntityState.Detached;
+
+      return Entry(obj).State;
+    }
+
+    void IBaseDataProvider.Save()
+    {
+      SaveChanges();
+    }
+
+    public void EnsureDeleted()
+    {
+      Database.EnsureDeleted();
+    }
+
+    public bool IsInMemory()
+    {
+      return Database.IsInMemory();
+    }
+
+    public async Task SaveAsync()
+    {
+      await SaveChangesAsync();
+    }
+  }
 }

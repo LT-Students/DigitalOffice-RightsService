@@ -99,7 +99,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       FindResultResponse<RoleInfo> result = new();
 
-      List<(DbRole role, List<DbRightsLocalization> rights)> roles = _roleRepository.Find(filter, out int totalCount);
+      (List<(DbRole role, List<DbRightsLocalization> rights)> roles, int totalCount) = await _roleRepository.FindAsync(filter);
 
       result.TotalCount = totalCount;
 

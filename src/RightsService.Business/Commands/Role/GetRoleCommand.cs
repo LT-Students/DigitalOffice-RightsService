@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    private async Task<List<UserData>> GetUsers(List<Guid> usersIds, List<string> errors)
+    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
       if (usersIds == null || !usersIds.Any())
       {
@@ -76,7 +76,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     {
       OperationResultResponse<RoleResponse> result = new();
 
-      (DbRole role, List<DbUser> users, List<DbRightsLocalization> rights) = _roleRepository.Get(filter);
+      (DbRole role, List<DbUser> users, List<DbRightsLocalization> rights) = await _roleRepository.GetAsync(filter);
 
       if (role == null)
       {
@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
         usersIds.Add(role.ModifiedBy.Value);
       }
 
-      List<UserData> usersDatas = await GetUsers(usersIds, result.Errors);
+      List<UserData> usersDatas = await GetUsersAsync(usersIds, result.Errors);
 
       result.Body = _roleResponseMapper.Map(role, rights, usersDatas);
 

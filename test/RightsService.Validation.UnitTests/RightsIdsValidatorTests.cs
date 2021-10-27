@@ -1,16 +1,13 @@
 ﻿using FluentValidation;
-using FluentValidation.TestHelper;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
-using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Validation.UnitTests
 {
-    public class RightsIdsValidatorTests
+  public class RightsIdsValidatorTests
     {
         private IValidator<IEnumerable<int>> validator;
         private List<DbRightsLocalization> existingRightsList;
@@ -21,22 +18,22 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
         private DbRightsLocalization dbRight;
         private object right;
 
-        [SetUp]
-        public void SetUp()
-        {
-            repositoryMock = new Mock<IRightLocalizationRepository>();
-            cacheMock = new Mock<IMemoryCache>();
+        //[SetUp]
+        //public void SetUp()
+        //{
+        //    repositoryMock = new Mock<IRightLocalizationRepository>();
+        //    cacheMock = new Mock<IMemoryCache>();
 
-            rightId = 1;
-            dbRight = new DbRightsLocalization { RightId = rightId };
-            existingRightsList = new List<DbRightsLocalization>() { dbRight };
+        //    rightId = 1;
+        //    dbRight = new DbRightsLocalization { RightId = rightId };
+        //    existingRightsList = new List<DbRightsLocalization>() { dbRight };
 
-            repositoryMock
-                .Setup(r => r.GetRightsList())
-                .Returns(existingRightsList);
+        //    repositoryMock
+        //        .Setup(r => r.GetRightsListAsync())
+        //        .Returns(existingRightsList);
 
-            validator = new RightsIdsValidator(repositoryMock.Object, cacheMock.Object);
-        }
+        //    validator = new RightsIdsValidator(repositoryMock.Object, cacheMock.Object);
+        //}
 
         //[Test]
         //public void ShouldThrowValidationExceptionWhenRightListIsEmpty()
