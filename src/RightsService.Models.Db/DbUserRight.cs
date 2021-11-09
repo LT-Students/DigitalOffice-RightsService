@@ -22,6 +22,9 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public void Configure(EntityTypeBuilder<DbUserRight> builder)
     {
       builder
+        .ToTable(DbUserRight.TableName);
+
+      builder
         .HasKey(r => r.Id);
 
       builder
