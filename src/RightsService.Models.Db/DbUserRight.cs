@@ -22,11 +22,15 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public void Configure(EntityTypeBuilder<DbUserRight> builder)
     {
       builder
+        .ToTable(DbUserRight.TableName);
+
+      builder
         .HasKey(r => r.Id);
 
       builder
         .HasOne(ru => ru.User)
-        .WithMany(u => u.Rights);
+        .WithMany(u => u.Rights)
+        .HasForeignKey(ur => ur.UserId);
     }
   }
 }

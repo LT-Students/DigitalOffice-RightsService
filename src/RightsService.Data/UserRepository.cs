@@ -54,7 +54,8 @@ namespace LT.DigitalOffice.RightsService.Data
       DbUser user = await _provider.Users
         .Include(u => u.Role)
           .ThenInclude(r => r.RoleRights)
-        .Include(u => u.Rights).FirstOrDefaultAsync(u => u.UserId == userId);
+        .Include(u => u.Rights)
+        .FirstOrDefaultAsync(u => u.UserId == userId);
 
       if (user == null)
       {
