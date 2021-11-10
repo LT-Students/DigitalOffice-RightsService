@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.RightsService.Controllers
 {
+  [Route("[controller]")]
   [ApiController]
   public class UserRightsController : ControllerBase
   {
