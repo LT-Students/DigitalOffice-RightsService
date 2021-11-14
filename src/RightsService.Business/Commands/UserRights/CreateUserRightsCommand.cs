@@ -83,11 +83,11 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
 
       ValidationResult validationResult = await _validator.ValidateAsync(rightsIds);
 
-      List<string> erros = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList();
+      List<string> errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList();
 
-      if (!validationResult.IsValid && !await CheckUserExistenceAsync(userId, erros))
+      if (!validationResult.IsValid && !await CheckUserExistenceAsync(userId, errors))
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, erros);
+        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
       await _repository.AddUserRightsAsync(userId, rightsIds);

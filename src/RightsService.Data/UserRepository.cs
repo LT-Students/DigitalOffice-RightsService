@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
+using LT.DigitalOffice.RightsService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,17 @@ namespace LT.DigitalOffice.RightsService.Data
   public class UserRepository : IUserRepository
   {
     private readonly IDataProvider _provider;
+    private readonly IDbUserMapper _dbUserMapper;
+    private readonly IDbUserRightMapper _dbUserRightMapper;
 
-    public UserRepository(IDataProvider provider)
+    public UserRepository(
+      IDataProvider provider,
+      IDbUserMapper dbUserMapper,
+      IDbUserRightMapper dbUserRightMapper)
     {
       _provider = provider;
+      _dbUserMapper = dbUserMapper;
+      _dbUserRightMapper = dbUserRightMapper;
     }
 
     public async Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy)
@@ -30,16 +38,7 @@ namespace LT.DigitalOffice.RightsService.Data
         return;
       }
 
-      _provider.Users.Add(
-        new DbUser
-        {
-          Id = Guid.NewGuid(),
-          UserId = userId,
-          RoleId = roleId,
-          CreatedAtUtc = DateTime.UtcNow,
-          CreatedBy = assignedBy,
-          IsActive = true
-        });
+      _provider.Users.Add(_dbUserMapper.Map(userId, roleId, assignedBy));
 
       await _provider.SaveAsync();
     }
@@ -55,7 +54,7 @@ namespace LT.DigitalOffice.RightsService.Data
         .Include(u => u.Role)
           .ThenInclude(r => r.RoleRights)
         .Include(u => u.Rights)
-        .FirstOrDefaultAsync(u => u.UserId == userId);
+        .FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
 
       if (user == null)
       {
@@ -97,30 +96,17 @@ namespace LT.DigitalOffice.RightsService.Data
       await _provider.SaveAsync();
     }
 
-    public async Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightsIds)
+    public async Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightIds)
     {
-      foreach (var rightId in rightsIds)
+      if (!await _provider.Users.AnyAsync(u => u.IsActive && u.UserId == userId))
       {
-        //TODO rework
-        var dbRight = _provider.RightsLocalizations.FirstOrDefault(right => right.RightId == rightId);
-
-        if (dbRight == null)
-        {
-          continue;
-        }
-
-        var dbRightUser = _provider.UsersRights.FirstOrDefault(rightUser =>
-            rightUser.RightId == rightId && rightUser.UserId == userId);
-
-        if (dbRightUser == null)
-        {
-          _provider.UsersRights.Add(new DbUserRight
-          {
-            UserId = userId,
-            RightId = rightId,
-          });
-        }
+        _provider.Users.Add(_dbUserMapper.Map(userId, null));
       }
+
+      List<int> usersRights =
+        await _provider.UsersRights.Where(r => userId == r.UserId).Select(r => r.RightId).ToListAsync();
+
+      _provider.UsersRights.AddRange(rightIds.Where(right => !usersRights.Contains(right)).Select(right => _dbUserRightMapper.Map(userId, right)));
       await _provider.SaveAsync();
     }
 

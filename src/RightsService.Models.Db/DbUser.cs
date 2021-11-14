@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public Guid RoleId { get; set; }
+    public Guid? RoleId { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public Guid? ModifiedBy { get; set; }
