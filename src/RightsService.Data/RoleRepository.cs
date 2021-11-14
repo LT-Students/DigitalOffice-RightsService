@@ -56,6 +56,11 @@ namespace LT.DigitalOffice.RightsService.Data
          }).FirstOrDefault();
     }
 
+    public async Task<List<DbRole>> GetAllWithRightsAsync()
+    {
+      return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
+    }
+
     public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
@@ -87,6 +92,40 @@ namespace LT.DigitalOffice.RightsService.Data
     public async Task<bool> DoesRoleExistAsync(Guid roleId)
     {
       return await _provider.Roles.AnyAsync(r => r.Id == roleId);
+    }
+
+    public async Task<bool> ChangeStatusAsync(Guid roleId, bool isActive)
+    {
+      DbRole role = _provider.Roles.Where(x => x.Id == roleId).FirstOrDefault();
+
+      if (role == null)
+      {
+        return false;
+      }
+
+      role.IsActive = isActive;
+
+      _provider.Roles.Update(role);
+      await _provider.SaveAsync();
+
+      return true;
+    }
+
+    public async Task<bool> ChangeRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights)
+    {
+      List<DbRoleRight> roleRights = await _provider.RoleRights.Where(x => x.RoleId == roleId).ToListAsync();
+
+      List<int> oldRightsIds =
+        (from oldRightIds in roleRights.Select(x => x.RightId).Intersect(newRights.Select(x => x.RightId))
+          select oldRightIds)
+          .ToList();
+
+      _provider.RoleRights.RemoveRange(roleRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+      _provider.RoleRights.AddRange(newRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+
+      await _provider.SaveAsync();
+
+      return true;
     }
   }
 }
