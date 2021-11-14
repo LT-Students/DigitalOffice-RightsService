@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.RightsService.Validation
       return rights;
     }
 
-    private async Task<bool> CheckRightsUniqueness(IEnumerable<int> rightsIds)
+    private async Task<bool> CheckRightsUniquenessAsync(IEnumerable<int> rightsIds)
     {
       HashSet<int> addedRights = new(rightsIds);
 
@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.RightsService.Validation
       RuleFor(rightsIds => rightsIds)
         .NotEmpty()
         .WithMessage("Rights list can not be empty")
-        .MustAsync(async (rightIds, _) => await CheckRightsUniqueness(rightIds))
+        .MustAsync(async (rightIds, _) => await CheckRightsUniquenessAsync(rightIds))
         .WithMessage("Set of rights must be unique.");
 
       RuleForEach(rightsIds => rightsIds)
