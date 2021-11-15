@@ -29,8 +29,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
       builder
         .HasOne(ru => ru.User)
-        .WithMany(u => u.Rights)
-        .HasForeignKey(ur => ur.UserId);
+        .WithMany(u => u.Rights);
     }
   }
 }
