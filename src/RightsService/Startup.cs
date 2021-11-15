@@ -173,7 +173,7 @@ namespace LT.DigitalOffice.RightsService
 
     private void ConfigureMassTransit(IServiceCollection services)
     {
-
+      (string username, string password) = GetRabbitMqCredentials();
 
       services.AddMassTransit(busConfigurator =>
       {
@@ -186,8 +186,8 @@ namespace LT.DigitalOffice.RightsService
         {
           cfg.Host(_rabbitMqConfig.Host, "/", host =>
           {
-            host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
-            host.Password(_serviceInfoConfig.Id);
+            host.Username(username);
+            host.Password(password);
           });
 
           cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserRightsEndpoint, ep =>
