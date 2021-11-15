@@ -19,7 +19,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 {
-  public class ChangeRoleRightsCommand : IChangeRoleRightsCommand
+  public class EditRoleRightsCommand : IEditRoleRightsCommand
   {
     private readonly IRoleRepository _roleRepository;
     private readonly IDbRoleRightMapper _dbRoleRightMapper;
@@ -48,7 +48,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       _cache.Set(CacheKeys.RolesRights, rights);
     }
 
-    public ChangeRoleRightsCommand(
+    public EditRoleRightsCommand(
       IRoleRepository roleRepository,
       IDbRoleRightMapper dbRoleRightMapper,
       IHttpContextAccessor httpContextAccessor,
@@ -66,7 +66,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       _responseCreator = responseCreator;
     }
 
-    public async Task<OperationResultResponse<bool>> ExecuteAsync(ChangeRoleRightsRequest request)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(EditRoleRightsRequest request)
     {
       if (!await _accessValidator.IsAdminAsync())
       {
@@ -87,7 +87,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 
       OperationResultResponse<bool> response = new();
 
-      response.Body = await _roleRepository.ChangeRoleRightsAsync(
+      response.Body = await _roleRepository.EditRoleRightsAsync(
         request.RoleId,
         _dbRoleRightMapper.Map(request.RoleId, request.Rights));
 

@@ -15,13 +15,13 @@ using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 {
-  public class ChangeRoleStatusCommand : IChangeRoleStatusCommand
+  public class EditRoleStatusCommand : IEditRoleStatusCommand
   {
     private readonly IRoleRepository _roleRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IResponseCreater _responseCreator;
 
-    public ChangeRoleStatusCommand(
+    public EditRoleStatusCommand(
       IRoleRepository roleRepository,
       IAccessValidator accessValidator,
       IResponseCreater responseCreator)
@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 
       OperationResultResponse<bool> response = new();
 
-      response.Body = await _roleRepository.ChangeStatusAsync(roleId, isActive);
+      response.Body = await _roleRepository.EditStatusAsync(roleId, isActive);
 
       if (response.Body == false)
       {

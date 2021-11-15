@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return await _provider.Roles.AnyAsync(r => r.Id == roleId);
     }
 
-    public async Task<bool> ChangeStatusAsync(Guid roleId, bool isActive)
+    public async Task<bool> EditStatusAsync(Guid roleId, bool isActive)
     {
       DbRole role = _provider.Roles.Where(x => x.Id == roleId).FirstOrDefault();
 
@@ -111,7 +111,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public async Task<bool> ChangeRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights)
+    public async Task<bool> EditRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights)
     {
       List<DbRoleRight> roleRights = await _provider.RoleRights.Where(x => x.RoleId == roleId).ToListAsync();
 

@@ -20,8 +20,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<bool> DoesRoleExistAsync(Guid roleId);
 
-    Task<bool> ChangeStatusAsync(Guid roleId, bool isActive);
+    Task<bool> EditStatusAsync(Guid roleId, bool isActive);
 
-    Task<bool> ChangeRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights);
+    Task<bool> EditRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights);
   }
 }

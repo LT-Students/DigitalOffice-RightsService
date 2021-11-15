@@ -7,7 +7,6 @@ using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.RightsService.Controllers
@@ -42,17 +41,17 @@ namespace LT.DigitalOffice.RightsService.Controllers
 
     [HttpGet("changestatus")]
     public async Task<OperationResultResponse<bool>> ChangeRoleStatusAsync(
-      [FromServices] IChangeRoleStatusCommand command,
+      [FromServices] IEditRoleStatusCommand command,
       [FromQuery] Guid roleId,
       [FromQuery] bool isActive)
     {
       return await command.ExecuteAsync(roleId, isActive);
     }
 
-    [HttpPost("changerights")]
-    public async Task<OperationResultResponse<bool>> ChangeRoleRightsAsync(
-      [FromServices] IChangeRoleRightsCommand command,
-      [FromBody] ChangeRoleRightsRequest request)
+    [HttpPost("edit")]
+    public async Task<OperationResultResponse<bool>> EditRoleRightsAsync(
+      [FromServices] IEditRoleRightsCommand command,
+      [FromBody] EditRoleRightsRequest request)
     {
       return await command.ExecuteAsync(request);
     }

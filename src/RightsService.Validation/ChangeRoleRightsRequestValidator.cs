@@ -5,7 +5,7 @@ using LT.DigitalOffice.RightsService.Validation.Interfaces;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
-  public class ChangeRoleRightsRequestValidator : AbstractValidator<ChangeRoleRightsRequest>, IChangeRoleRightsRequestValidator
+  public class ChangeRoleRightsRequestValidator : AbstractValidator<EditRoleRightsRequest>, IChangeRoleRightsRequestValidator
   {
     public ChangeRoleRightsRequestValidator(
       IRoleRepository roleRepository,

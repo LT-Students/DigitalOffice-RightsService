@@ -5,7 +5,7 @@ using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 namespace LT.DigitalOffice.RightsService.Validation.Interfaces
 {
   [AutoInject]
-  public interface IChangeRoleRightsRequestValidator : IValidator<ChangeRoleRightsRequest>
+  public interface IChangeRoleRightsRequestValidator : IValidator<EditRoleRightsRequest>
   {
   }
 }
