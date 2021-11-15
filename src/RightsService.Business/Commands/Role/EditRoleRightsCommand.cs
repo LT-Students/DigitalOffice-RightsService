@@ -73,8 +73,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
         return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.Forbidden,
-          new List<string> { "Not enough rights" });
+          HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _requestValidator.ValidateAsync(request);

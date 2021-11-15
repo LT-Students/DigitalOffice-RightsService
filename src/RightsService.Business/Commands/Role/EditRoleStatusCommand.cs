@@ -35,8 +35,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     {
       if (!await _accessValidator.IsAdminAsync())
       {return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.Forbidden,
-          new List<string> { "Not enough rights" });
+          HttpStatusCode.Forbidden);
       }
 
       OperationResultResponse<bool> response = new();
