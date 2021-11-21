@@ -4,5 +4,6 @@
   {
     public const string RightsIds = "RightsIds";
     public const string RolesRights = "RolesRights";
+    public const string Users = "Users";
   }
 }

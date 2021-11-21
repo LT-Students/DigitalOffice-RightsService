@@ -56,6 +56,11 @@ namespace LT.DigitalOffice.RightsService.Data
          }).FirstOrDefault();
     }
 
+    public async Task<DbRole> GetAsync(Guid roleId)
+    {
+      return await _provider.Roles.Include(role => role.RoleRights).FirstOrDefaultAsync(x => x.Id == roleId);
+    }
+
     public async Task<List<DbRole>> GetAllWithRightsAsync()
     {
       return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
@@ -96,7 +101,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<bool> EditStatusAsync(Guid roleId, bool isActive)
     {
-      DbRole role = _provider.Roles.Where(x => x.Id == roleId).FirstOrDefault();
+      DbRole role = _provider.Roles.FirstOrDefault(x => x.Id == roleId);
 
       if (role == null)
       {

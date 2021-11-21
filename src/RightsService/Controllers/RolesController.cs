@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
       return await command.ExecuteAsync(filter);
     }
 
-    [HttpGet("changestatus")]
+    [HttpPut("changestatus")]
     public async Task<OperationResultResponse<bool>> ChangeRoleStatusAsync(
       [FromServices] IEditRoleStatusCommand command,
       [FromQuery] Guid roleId,
@@ -48,7 +48,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
       return await command.ExecuteAsync(roleId, isActive);
     }
 
-    [HttpPost("edit")]
+    [HttpPost("editrights")]
     public async Task<OperationResultResponse<bool>> EditRoleRightsAsync(
       [FromServices] IEditRoleRightsCommand command,
       [FromBody] EditRoleRightsRequest request)

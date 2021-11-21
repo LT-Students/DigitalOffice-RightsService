@@ -11,6 +11,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
   public class DbRoleRightMapper : IDbRoleRightMapper
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
+
     public DbRoleRightMapper(
       IHttpContextAccessor httpContextAccessor)
     {

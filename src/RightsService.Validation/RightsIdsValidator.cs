@@ -31,15 +31,15 @@ namespace LT.DigitalOffice.RightsService.Validation
       return rights;
     }
 
-    private async Task<List<(Guid, IEnumerable<int>)>> GetRightsListAsync()
+    private async Task<List<(Guid, bool, IEnumerable<int>)>> GetRoleRightsListAsync()
     {
-      List<(Guid roleId, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, IEnumerable<int>)>>(CacheKeys.RolesRights);
+      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
 
       if (rights == null)
       {
         List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
 
-        rights = roles.Select(x => (x.Id, x.RoleRights.Select(x => x.RightId))).ToList();
+        rights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
         _cache.Set(CacheKeys.RolesRights, rights);
       }
 
@@ -50,11 +50,11 @@ namespace LT.DigitalOffice.RightsService.Validation
     {
       HashSet<int> addedRights = new(rightsIds);
 
-      IEnumerable<(Guid roleId, IEnumerable<int> rights)> rolesRights = await GetRightsListAsync();
+      IEnumerable<(Guid roleId, bool isActive, IEnumerable<int> rights)> roles = await GetRoleRightsListAsync();
 
-      foreach ((Guid roleId, IEnumerable<int> rights) roleRights in rolesRights)
+      foreach ((Guid roleId, bool isActive, IEnumerable<int> rights) role in roles)
       {
-        if (addedRights.SetEquals(roleRights.rights))
+        if (role.isActive && addedRights.SetEquals(role.rights))
         {
           return false;
         }
@@ -73,8 +73,7 @@ namespace LT.DigitalOffice.RightsService.Validation
       _roleRepository = roleRepository;
 
       RuleFor(rightsIds => rightsIds)
-        .NotEmpty()
-        .WithMessage("Rights list can not be empty")
+        .NotEmpty().WithMessage("Rights list can not be empty.")
         .MustAsync(async (rightIds, _) => await CheckRightsUniquenessAsync(rightIds))
         .WithMessage("Set of rights must be unique.");
 

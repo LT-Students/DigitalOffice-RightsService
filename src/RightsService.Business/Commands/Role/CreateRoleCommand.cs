@@ -30,19 +30,19 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     private readonly IMemoryCache _cache;
     private readonly IResponseCreater _responseCreator;
 
-    private async Task UpdateCache(IEnumerable<int> addedRights, Guid roleId)
+    private async Task UpdateCacheAsync(IEnumerable<int> addedRights, Guid roleId)
     {
-      List<(Guid roleId, IEnumerable<int> rights)> rolesRights = _cache.Get<List<(Guid, IEnumerable<int>)>>(CacheKeys.RolesRights);
+      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rolesRights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
 
       if (rolesRights == null)
       {
         List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
 
-        rolesRights = roles.Select(x => (x.Id, x.RoleRights.Select(x => x.RightId))).ToList();
+        rolesRights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
       }
       else
       {
-        rolesRights.Add((roleId, addedRights));
+        rolesRights.Add((roleId, true, addedRights));
       }
 
       _cache.Set(CacheKeys.RolesRights, rolesRights);
@@ -55,7 +55,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       IDbRoleMapper mapper,
       IAccessValidator accessValidator,
       IMemoryCache cache,
-      IResponseCreater responseCreater)
+      IResponseCreater responseCreator)
     {
       _validator = validator;
       _httpContextAccessor = httpContextAccessor;
@@ -63,25 +63,20 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _mapper = mapper;
       _accessValidator = accessValidator;
       _cache = cache;
-      _responseCreator = responseCreater;
+      _responseCreator = responseCreator;
     }
 
     public async Task<OperationResultResponse<Guid>> ExecuteAsync(CreateRoleRequest request)
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-
         return _responseCreator.CreateFailureResponse<Guid>(
-          HttpStatusCode.Forbidden,
-          new List<string> { "Not enough rights" });
+          HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(request);
       if (!validationResult.IsValid)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
         return _responseCreator.CreateFailureResponse<Guid>(
           HttpStatusCode.BadRequest,
           validationResult.Errors.Select(validationFailure => validationFailure.ErrorMessage).ToList());
@@ -92,7 +87,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       response.Body = await _roleRepository.CreateAsync(_mapper.Map(request));
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
-      await UpdateCache(request.Rights, response.Body);
+      await UpdateCacheAsync(request.Rights, response.Body);
 
       return response;
     }

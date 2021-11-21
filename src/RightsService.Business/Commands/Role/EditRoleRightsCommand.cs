@@ -29,20 +29,21 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     private readonly IMemoryCache _cache;
     private readonly IResponseCreater _responseCreator;
 
-    private async Task UpdateCache(IEnumerable<int> addedRights, Guid roleId)
+    private async Task UpdateCacheAsync(IEnumerable<int> addedRights, Guid roleId)
     {
-      List<(Guid roleId, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, IEnumerable<int>)>>(CacheKeys.RolesRights);
+      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
 
       if (rights == null)
       {
         List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
 
-        rights = roles.Select(x => (x.Id, x.RoleRights.Select(x => x.RightId))).ToList();
+        rights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
       }
       else
       {
-        rights.Remove(rights.Where(x => x.roleId == roleId).FirstOrDefault());
-        rights.Add((roleId, addedRights));
+        (Guid roleId, bool isActive, IEnumerable<int> rights) oldRole = rights.FirstOrDefault(x => x.roleId == roleId);
+        rights.Remove(oldRole);
+        rights.Add((roleId, oldRole.isActive, addedRights));
       }
 
       _cache.Set(CacheKeys.RolesRights, rights);
@@ -70,8 +71,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-
         return _responseCreator.CreateFailureResponse<bool>(
           HttpStatusCode.Forbidden);
       }
@@ -90,7 +89,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
         request.RoleId,
         _dbRoleRightMapper.Map(request.RoleId, request.Rights));
 
-      await UpdateCache(request.Rights, request.RoleId);
+      await UpdateCacheAsync(request.Rights, request.RoleId);
 
       return response;
     }
