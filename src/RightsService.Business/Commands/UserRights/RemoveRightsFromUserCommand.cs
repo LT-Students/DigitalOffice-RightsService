@@ -10,7 +10,10 @@ using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.UserRights.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
 {
@@ -21,17 +24,44 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IRightsIdsValidator _validator;
     private readonly IAccessValidator _accessValidator;
     private readonly IResponseCreater _responseCreater;
+    private readonly IMemoryCache _cache;
+
+    private async Task UpdateCacheAsync(Guid userId, IEnumerable<int> rights)
+    {
+      List<(Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights)> users =
+        _cache.Get<List<(Guid, bool, Guid?, IEnumerable<int>)>>(CacheKeys.Users);
+
+      if (users == null)
+      {
+        List<DbUser> dbUsers = await _repository.GetWithRightsAsync();
+
+        users = dbUsers.Select(x => (x.UserId, x.IsActive, x.RoleId, x.Rights.Select(x => x.RightId))).ToList();
+      }
+      else
+      {
+        (Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights) user = users.FirstOrDefault(x => x.userId == userId);
+        users.Remove(user);
+
+        IEnumerable<int> newRights = from right in user.userRights.Except(rights) select right;
+
+        users.Add((userId, user.isActive, user.roleId, newRights));
+      }
+
+      _cache.Set(CacheKeys.Users, users);
+    }
 
     public RemoveRightsFromUserCommand(
       IUserRepository repository,
       IRightsIdsValidator validator,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater)
+      IResponseCreater responseCreater,
+      IMemoryCache cache)
     {
       _repository = repository;
       _validator = validator;
       _accessValidator = accessValidator;
       _responseCreater = responseCreater;
+      _cache = cache;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid userId, IEnumerable<int> rightsIds)
@@ -49,6 +79,11 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       }
 
       bool result = await _repository.RemoveUserRightsAsync(userId, rightsIds);
+
+      if (result)
+      {
+        await UpdateCacheAsync(userId, rightsIds);
+      }
 
       return new()
       {

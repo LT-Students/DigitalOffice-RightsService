@@ -83,6 +83,16 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
+    public async Task<DbUser> GetAsync(Guid userId)
+    {
+      return await _provider.Users.Include(x => x.Rights).FirstOrDefaultAsync(x => x.UserId == userId);
+    }
+
+    public async Task<List<DbUser>> GetWithRightsAsync()
+    {
+      return await _provider.Users.Include(x => x.Rights).ToListAsync();
+    }
+
     public async Task RemoveAsync(Guid userId)
     {
       DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
