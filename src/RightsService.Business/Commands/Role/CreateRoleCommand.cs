@@ -70,8 +70,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreator.CreateFailureResponse<Guid>(
-          HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<Guid>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(request);
@@ -85,6 +84,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       OperationResultResponse<Guid> response = new();
 
       response.Body = await _roleRepository.CreateAsync(_mapper.Map(request));
+
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       await UpdateCacheAsync(request.Rights, response.Body);

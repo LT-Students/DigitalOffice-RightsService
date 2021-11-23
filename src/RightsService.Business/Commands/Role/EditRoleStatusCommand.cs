@@ -111,8 +111,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       (bool isSuccess, string error) check = await CheckEnablePossibilityAsync(roleId, isActive);

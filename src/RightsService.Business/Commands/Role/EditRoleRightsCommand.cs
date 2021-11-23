@@ -71,8 +71,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _requestValidator.ValidateAsync(request);
