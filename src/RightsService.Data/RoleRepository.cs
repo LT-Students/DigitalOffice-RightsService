@@ -90,7 +90,7 @@ namespace LT.DigitalOffice.RightsService.Data
             role.RoleLocalizations = x.Select(x => x.RoleLocalization).Where(x => x != null).GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
             return (role, x.Select(x => x.RightLocalization).ToList());
-          }).ToList(),
+          }).Skip(filter.SkipCount).Take(filter.TakeCount).ToList(),
         totalCount);
     }
 
