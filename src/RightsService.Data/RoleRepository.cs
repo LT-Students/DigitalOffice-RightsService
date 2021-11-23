@@ -56,6 +56,16 @@ namespace LT.DigitalOffice.RightsService.Data
          }).FirstOrDefault();
     }
 
+    public async Task<DbRole> GetAsync(Guid roleId)
+    {
+      return await _provider.Roles.Include(role => role.RoleRights).FirstOrDefaultAsync(x => x.Id == roleId);
+    }
+
+    public async Task<List<DbRole>> GetAllWithRightsAsync()
+    {
+      return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
+    }
+
     public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
@@ -80,13 +90,47 @@ namespace LT.DigitalOffice.RightsService.Data
             role.RoleLocalizations = x.Select(x => x.RoleLocalization).Where(x => x != null).GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
             return (role, x.Select(x => x.RightLocalization).ToList());
-          }).ToList(),
+          }).Skip(filter.SkipCount).Take(filter.TakeCount).ToList(),
         totalCount);
     }
 
     public async Task<bool> DoesRoleExistAsync(Guid roleId)
     {
       return await _provider.Roles.AnyAsync(r => r.Id == roleId);
+    }
+
+    public async Task<bool> EditStatusAsync(Guid roleId, bool isActive)
+    {
+      DbRole role = _provider.Roles.FirstOrDefault(x => x.Id == roleId);
+
+      if (role == null)
+      {
+        return false;
+      }
+
+      role.IsActive = isActive;
+
+      _provider.Roles.Update(role);
+      await _provider.SaveAsync();
+
+      return true;
+    }
+
+    public async Task<bool> EditRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights)
+    {
+      List<DbRoleRight> roleRights = await _provider.RoleRights.Where(x => x.RoleId == roleId).ToListAsync();
+
+      List<int> oldRightsIds =
+        (from oldRightIds in roleRights.Select(x => x.RightId).Intersect(newRights.Select(x => x.RightId))
+          select oldRightIds)
+          .ToList();
+
+      _provider.RoleRights.RemoveRange(roleRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+      _provider.RoleRights.AddRange(newRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+
+      await _provider.SaveAsync();
+
+      return true;
     }
   }
 }

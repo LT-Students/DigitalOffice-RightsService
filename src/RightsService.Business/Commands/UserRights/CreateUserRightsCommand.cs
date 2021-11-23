@@ -12,9 +12,12 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.Models.Broker.Common;
 using LT.DigitalOffice.RightsService.Business.Commands.UserRights.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
@@ -29,6 +32,37 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IRequestClient<ICheckUsersExistence> _rcCheckUser;
     private readonly ILogger<CreateUserRightsCommand> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMemoryCache _cache;
+
+    private async Task UpdateCacheAsync(Guid userId, IEnumerable<int> rights)
+    {
+      List<(Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights)> users =
+        _cache.Get<List<(Guid, bool, Guid?, IEnumerable<int>)>>(CacheKeys.Users);
+
+      if (users == null)
+      {
+        List<DbUser> dbUsers = await _repository.GetWithRightsAsync();
+
+        users = dbUsers.Select(x => (x.UserId, x.IsActive, x.RoleId, x.Rights.Select(x => x.RightId))).ToList();
+      }
+      else
+      {
+        (Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights) user = users.FirstOrDefault(x => x.userId == userId);
+        users.Remove(user);
+
+        if (user == default)
+        {
+          DbUser dbUser = await _repository.GetAsync(userId);
+          user = (dbUser.UserId, dbUser.IsActive, dbUser.RoleId, dbUser.Rights.Select(x => x.RightId));
+        }
+
+        var newRights = from right in user.userRights.Union(rights) select right;
+
+        users.Add((userId, user.isActive, user.roleId, newRights));
+      }
+
+      _cache.Set(CacheKeys.Users, users);
+    }
 
     private async Task<bool> CheckUserExistenceAsync(Guid userId, List<string> erros)
     {
@@ -63,7 +97,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IResponseCreater responseCreater,
       IRequestClient<ICheckUsersExistence> rcCheckUser,
       ILogger<CreateUserRightsCommand> logger,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IMemoryCache cache)
     {
       _repository = repository;
       _validator = validator;
@@ -72,6 +107,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       _rcCheckUser = rcCheckUser;
       _logger = logger;
       _httpContextAccessor = httpContextAccessor;
+      _cache = cache;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid userId, IEnumerable<int> rightsIds)
@@ -93,6 +129,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       await _repository.AddUserRightsAsync(userId, rightsIds);
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+      await UpdateCacheAsync(userId, rightsIds);
 
       return new OperationResultResponse<bool>
       {

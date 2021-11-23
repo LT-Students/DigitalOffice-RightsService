@@ -15,6 +15,10 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<List<DbUser>> GetAsync(List<Guid> userId, string locale);
 
+    Task<DbUser> GetAsync(Guid userId);
+
+    Task<List<DbUser>> GetWithRightsAsync();
+
     Task RemoveAsync(Guid userId);
 
     Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightIds);

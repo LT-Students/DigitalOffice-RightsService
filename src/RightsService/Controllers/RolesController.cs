@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.RightsService.Business.Commands.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests;
@@ -36,6 +37,23 @@ namespace LT.DigitalOffice.RightsService.Controllers
       [FromQuery] GetRoleFilter filter)
     {
       return await command.ExecuteAsync(filter);
+    }
+
+    [HttpPut("editstatus")]
+    public async Task<OperationResultResponse<bool>> ChangeRoleStatusAsync(
+      [FromServices] IEditRoleStatusCommand command,
+      [FromQuery] Guid roleId,
+      [FromQuery] bool isActive)
+    {
+      return await command.ExecuteAsync(roleId, isActive);
+    }
+
+    [HttpPost("updaterightsset")]
+    public async Task<OperationResultResponse<bool>> EditRoleRightsAsync(
+      [FromServices] IUpdateRoleRightsCommand command,
+      [FromBody] UpdateRoleRightsRequest request)
+    {
+      return await command.ExecuteAsync(request);
     }
   }
 }
