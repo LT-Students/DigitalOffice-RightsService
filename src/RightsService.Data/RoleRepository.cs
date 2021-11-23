@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.RightsService.Data
     public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
-
+      
       return ((await
         (from role in _provider.Roles
           join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId
@@ -90,7 +90,7 @@ namespace LT.DigitalOffice.RightsService.Data
             role.RoleLocalizations = x.Select(x => x.RoleLocalization).Where(x => x != null).GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
             return (role, x.Select(x => x.RightLocalization).ToList());
-          }).ToList(),
+          }).Skip(filter.SkipCount).Take(filter.TakeCount).ToList(),
         totalCount);
     }
 
