@@ -50,8 +50,8 @@ namespace LT.DigitalOffice.RightsService.Controllers
 
     [HttpPost("updaterightsset")]
     public async Task<OperationResultResponse<bool>> EditRoleRightsAsync(
-      [FromServices] IEditRoleRightsCommand command,
-      [FromBody] EditRoleRightsRequest request)
+      [FromServices] IUpdateRoleRightsCommand command,
+      [FromBody] UpdateRoleRightsRequest request)
     {
       return await command.ExecuteAsync(request);
     }

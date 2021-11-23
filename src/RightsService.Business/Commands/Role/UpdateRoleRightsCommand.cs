@@ -19,13 +19,13 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 {
-  public class EditRoleRightsCommand : IEditRoleRightsCommand
+  public class UpdateRoleRightsCommand : IUpdateRoleRightsCommand
   {
     private readonly IRoleRepository _roleRepository;
     private readonly IDbRoleRightMapper _dbRoleRightMapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAccessValidator _accessValidator;
-    private readonly IChangeRoleRightsRequestValidator _requestValidator;
+    private readonly IUpdateRoleRightsRequestValidator _requestValidator;
     private readonly IMemoryCache _cache;
     private readonly IResponseCreater _responseCreator;
 
@@ -49,12 +49,12 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       _cache.Set(CacheKeys.RolesRights, rights);
     }
 
-    public EditRoleRightsCommand(
+    public UpdateRoleRightsCommand(
       IRoleRepository roleRepository,
       IDbRoleRightMapper dbRoleRightMapper,
       IHttpContextAccessor httpContextAccessor,
       IAccessValidator accessValidator,
-      IChangeRoleRightsRequestValidator requestValidator,
+      IUpdateRoleRightsRequestValidator requestValidator,
       IMemoryCache cache,
       IResponseCreater responseCreator)
     {
@@ -67,7 +67,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       _responseCreator = responseCreator;
     }
 
-    public async Task<OperationResultResponse<bool>> ExecuteAsync(EditRoleRightsRequest request)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(UpdateRoleRightsRequest request)
     {
       if (!await _accessValidator.IsAdminAsync())
       {

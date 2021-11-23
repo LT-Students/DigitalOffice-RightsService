@@ -7,8 +7,8 @@ using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 namespace LT.DigitalOffice.RightsService.Business.Commands.Role.Interfaces
 {
   [AutoInject]
-  public interface IEditRoleRightsCommand
+  public interface IUpdateRoleRightsCommand
   {
-    Task<OperationResultResponse<bool>> ExecuteAsync(EditRoleRightsRequest request);
+    Task<OperationResultResponse<bool>> ExecuteAsync(UpdateRoleRightsRequest request);
   }
 }

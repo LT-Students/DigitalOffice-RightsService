@@ -53,15 +53,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       return true;
     }
 
-    private async Task<(bool isSuccess, string error)> CheckEnablePossibilityAsync(Guid roleId, bool isActive)
+    private async Task<(bool isSuccess, string error)> CheckEnablePossibilityAsync(DbRole role, bool isActive)
     {
-      DbRole role = await _roleRepository.GetAsync(roleId);
-
-      if (role == null)
-      {
-        return (false, "Role doesn't exist.");
-      }
-
       if (role.IsActive == isActive)
       {
         return (false, "Role already has this status.");
@@ -114,7 +107,16 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      (bool isSuccess, string error) check = await CheckEnablePossibilityAsync(roleId, isActive);
+      DbRole role = await _roleRepository.GetAsync(roleId);
+
+      if (role == null)
+      {
+        return _responseCreator.CreateFailureResponse<bool>(
+          HttpStatusCode.NotFound,
+          new List<string> { "Role doesn't exist." });
+      }
+
+      (bool isSuccess, string error) check = await CheckEnablePossibilityAsync(role, isActive);
       if (!check.isSuccess)
       {
         return _responseCreator.CreateFailureResponse<bool>(
