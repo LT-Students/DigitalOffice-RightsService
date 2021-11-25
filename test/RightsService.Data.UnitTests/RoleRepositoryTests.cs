@@ -59,7 +59,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
     public void SetUp()
     {
       _provider = new RightsServiceDbContext(_dbContext);
-      _repository = new RoleRepository(_provider);
+      _repository = new RoleRepository(_provider, null);
 
       _provider.Roles.Add(_dbRole);
       _provider.Save();
