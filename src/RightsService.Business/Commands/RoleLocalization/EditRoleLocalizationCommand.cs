@@ -89,12 +89,10 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization
           new List<string> { "Name already exists." });
       }
 
-      OperationResultResponse<bool> response = new();
-
-      response.Body = await _roleLocalizationRepository
-        .EditRoleLocalizationAsync(roleLocalizationId, _roleLocalizationMapper.Map(request));
-
-      return response;
+      return new OperationResultResponse<bool>()
+      {
+        Body = await _roleLocalizationRepository.EditRoleLocalizationAsync(roleLocalizationId, _roleLocalizationMapper.Map(request))
+      };
     }
   }
 }

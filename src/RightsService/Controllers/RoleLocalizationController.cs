@@ -12,6 +12,14 @@ namespace LT.DigitalOffice.RightsService.Controllers
   [ApiController]
   public class RoleLocalizationController
   {
+    [HttpPost("create")]
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
+      [FromServices] ICreateRoleLocalizationCommand command,
+      [FromBody] CreateRoleLocalizationRequest request)
+    {
+      return await command.ExecuteAsync(request);
+    }
+
     [HttpPatch("edit")]
     public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditRoleLocalizationCommand command,

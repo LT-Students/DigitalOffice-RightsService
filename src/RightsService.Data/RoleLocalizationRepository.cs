@@ -23,6 +23,19 @@ namespace LT.DigitalOffice.RightsService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
+    public async Task<Guid?> CreateAsync(DbRoleLocalization roleLocalization)
+    {
+      if (roleLocalization is null)
+      {
+        return null;
+      }
+
+      _provider.RolesLocalizations.Add(roleLocalization);
+      await _provider.SaveAsync();
+
+      return roleLocalization.Id;
+    }
+
     public async Task<bool> DoesNameExistAsync(string locale, string name)
     {
       return await _provider.RolesLocalizations.AnyAsync(rl => rl.IsActive && rl.Locale == locale && rl.Name == name);

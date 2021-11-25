@@ -9,6 +9,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   [AutoInject]
   public interface IRoleLocalizationRepository
   {
+    Task<Guid?> CreateAsync(DbRoleLocalization roleLocalization);
     Task<DbRoleLocalization> GetAsync(Guid roleLocalizationId);
     Task<bool> DoesLocaleExistAsync(Guid roleId, string locale);
     Task<bool> DoesNameExistAsync(string locale, string name);
