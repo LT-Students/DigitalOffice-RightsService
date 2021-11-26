@@ -1,49 +1,85 @@
-﻿using FluentValidation;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
-    public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>, IRightsIdsValidator
+  public class RightsIdsValidator : AbstractValidator<IEnumerable<int>>, IRightsIdsValidator
+  {
+    private readonly IRightLocalizationRepository _repository;
+    private readonly IMemoryCache _cache;
+    private readonly IRoleRepository _roleRepository;
+
+    // todo rework
+    private async Task<List<int>> GetRightIdsAsync()
     {
-        private List<int> GetRightIds(
-            IRightRepository repository,
-            IMemoryCache cache)
-        {
-            if (repository is null)
-            {
-                throw new ArgumentNullException(nameof(repository));
-            }
+      List<int> rights = _cache.Get<List<int>>(CacheKeys.RightsIds);
 
-            List<int> rights = cache.Get<List<int>>(CacheKeys.RightsIds);
+      if (rights == null)
+      {
+        rights = (await _repository.GetRightsListAsync()).Select(r => r.RightId).ToList();
+        _cache.Set(CacheKeys.RightsIds, rights);
+      }
 
-            if (rights == null)
-            {
-                rights = repository.GetRightsList().Select(r => r.Id).ToList();
-                cache.Set(CacheKeys.RightsIds, rights);
-            }
-
-            return rights;
-        }
-
-        public RightsIdsValidator(
-            IRightRepository repository,
-            IMemoryCache cache)
-        {
-            List<int> rights = GetRightIds(repository, cache);
-
-            RuleFor(rightsIds => rightsIds)
-                .NotEmpty()
-                .WithMessage("Rights list can not be empty");
-
-            RuleForEach(rightsIds => rightsIds)
-                .Must(id => rights.Contains(id))
-                .WithMessage("Element: {CollectionIndex} of rights list is not correct.");
-        }
+      return rights;
     }
+
+    private async Task<List<(Guid, bool, IEnumerable<int>)>> GetRoleRightsListAsync()
+    {
+      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
+
+      if (rights == null)
+      {
+        List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
+
+        rights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
+        _cache.Set(CacheKeys.RolesRights, rights);
+      }
+
+      return rights;
+    }
+
+    private async Task<bool> CheckRightsUniquenessAsync(IEnumerable<int> rightsIds)
+    {
+      HashSet<int> addedRights = new(rightsIds);
+
+      IEnumerable<(Guid roleId, bool isActive, IEnumerable<int> rights)> roles = await GetRoleRightsListAsync();
+
+      foreach ((Guid roleId, bool isActive, IEnumerable<int> rights) role in roles)
+      {
+        if (role.isActive && addedRights.SetEquals(role.rights))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    public RightsIdsValidator(
+      IRightLocalizationRepository repository,
+      IMemoryCache cache,
+      IRoleRepository roleRepository)
+    {
+      _repository = repository;
+      _cache = cache;
+      _roleRepository = roleRepository;
+
+      RuleFor(rightsIds => rightsIds)
+        .NotEmpty().WithMessage("Rights list can not be empty.")
+        .MustAsync(async (rightIds, _) => await CheckRightsUniquenessAsync(rightIds))
+        .WithMessage("Set of rights must be unique.");
+
+      RuleForEach(rightsIds => rightsIds)
+        .MustAsync(async (id, _) => (await GetRightIdsAsync()).Contains(id))
+        .WithMessage("Element: {CollectionIndex} of rights list is not correct.");
+    }
+  }
 }

@@ -3,7 +3,9 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
+    <ProjectReference Include="..\RightsService.Data.Provider.MsSql.Ef\RightsService.Data.Provider.MsSql.Ef.csproj" />
     <ProjectReference Include="..\RightsService.Data.Provider\RightsService.Data.Provider.csproj" />
+    <ProjectReference Include="..\RightsService.Mappers\RightsService.Mappers.csproj" />
     <ProjectReference Include="..\RightsService.Models.Db\RightsService.Models.Db.csproj" />
     <ProjectReference Include="..\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
   </ItemGroup>

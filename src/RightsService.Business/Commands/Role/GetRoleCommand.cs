@@ -1,93 +1,104 @@
-﻿using LT.DigitalOffice.Kernel.Broker;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
 using LT.DigitalOffice.RightsService.Business.Role.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
-using LT.DigitalOffice.RightsService.Mappers.Interfaces;
+using LT.DigitalOffice.RightsService.Mappers.Responses.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto.Models;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
-    /// <inheritdoc/>
-    public class GetRoleCommand : IGetRoleCommand
+  /// <inheritdoc/>
+  public class GetRoleCommand : IGetRoleCommand
+  {
+    private readonly ILogger<GetRoleCommand> _logger;
+    private readonly IRoleRepository _roleRepository;
+    private readonly IRoleResponseMapper _roleResponseMapper;
+    private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
-        private readonly ILogger<GetRoleCommand> _logger;
-        private readonly IRoleRepository _roleRepository;
-        private readonly IRightRepository _rightRepository;
-        private readonly IRoleInfoMapper _roleInfomapper;
-        private readonly IUserInfoMapper _userInfoMapper;
-        private readonly IRightResponseMapper _rightMapper;
-        private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
+      if (usersIds == null || !usersIds.Any())
+      {
+        return null;
+      }
 
-        private List<UserInfo> GetUsers(List<Guid> userIds, List<string> errors)
+      try
+      {
+        var usersDataResponse = await _usersDataRequestClient.GetResponse<IOperationResult<IGetUsersDataResponse>>(
+          IGetUsersDataRequest.CreateObj(usersIds));
+
+        if (usersDataResponse.Message.IsSuccess)
         {
-            List<UserInfo> usersInfo = new();
-
-            try
-            {
-                var usersDataResponse = _usersDataRequestClient.GetResponse<IOperationResult<IGetUsersDataResponse>>(
-                    IGetUsersDataRequest.CreateObj(userIds)).Result;
-
-                if (usersDataResponse.Message.IsSuccess)
-                {
-                    var usersData = usersDataResponse.Message.Body.UsersData;
-
-                    usersInfo = userIds
-                        .Select(x => _userInfoMapper.Map(usersData.First(ud => ud.Id == x)))
-                        .ToList();
-                }
-                else
-                {
-                    _logger.LogWarning(
-                        $"Can not get users. Reason:{Environment.NewLine}{string.Join('\n', usersDataResponse.Message.Errors)}.");
-
-                    errors.AddRange(usersDataResponse.Message.Errors);
-                }
-            }
-            catch (Exception exc)
-            {
-                errors.Add($"Can not get users info for UserIds {string.Join('\n', userIds)}. Please try again later.");
-                _logger.LogError(exc, "Exception on get user information.");
-            }
-
-            return usersInfo;
+          return usersDataResponse.Message.Body.UsersData;
         }
 
-        public GetRoleCommand(
-            ILogger<GetRoleCommand> logger,
-            IRoleRepository roleRepository,
-            IRightRepository rightRepository,
-            IRoleInfoMapper roleInfoMapper,
-            IUserInfoMapper userInfoMapper,
-            IRightResponseMapper rightMapper,
-            IRequestClient<IGetUsersDataRequest> usersDataRequestClient)
-        {
-            _logger = logger;
-            _roleRepository = roleRepository;
-            _rightRepository = rightRepository;
-            _roleInfomapper = roleInfoMapper;
-            _userInfoMapper = userInfoMapper;
-            _rightMapper = rightMapper;
-            _usersDataRequestClient = usersDataRequestClient;
-        }
+        _logger.LogWarning(
+            $"Can not get users. Reason:{Environment.NewLine}{string.Join('\n', usersDataResponse.Message.Errors)}.");
+      }
+      catch (Exception exc)
+      {
+        _logger.LogError(exc, "Exception on get users information.");
+      }
+      errors.Add("Can not get users info. Please try again later.");
 
-        public RoleResponse Execute(Guid roleId)
-        {
-            RoleResponse result = new();
-
-            DbRole dbRole = _roleRepository.Get(roleId);
-            List<RightResponse> rights = dbRole.Rights.Select(r => r.Right).Select(_rightMapper.Map).ToList();
-            List<UserInfo> users = GetUsers(dbRole.Users.Select(x => x.UserId).ToList(), result.Errors);
-            result.Role = _roleInfomapper.Map(dbRole, rights, users);
-
-            return result;
-        }
+      return null;
     }
+
+    public GetRoleCommand(
+      ILogger<GetRoleCommand> logger,
+      IRoleRepository roleRepository,
+      IRoleResponseMapper roleResponseMapper,
+      IRequestClient<IGetUsersDataRequest> usersDataRequestClient,
+      IHttpContextAccessor httpContextAccessor)
+    {
+      _logger = logger;
+      _roleRepository = roleRepository;
+      _roleResponseMapper = roleResponseMapper;
+      _usersDataRequestClient = usersDataRequestClient;
+      _httpContextAccessor = httpContextAccessor;
+    }
+
+    public async Task<OperationResultResponse<RoleResponse>> ExecuteAsync(GetRoleFilter filter)
+    {
+      OperationResultResponse<RoleResponse> result = new();
+
+      (DbRole role, List<DbUser> users, List<DbRightsLocalization> rights) = await _roleRepository.GetAsync(filter);
+
+      if (role == null)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+        return result;
+      }
+
+      List<Guid> usersIds = users?.Select(u => u.UserId).ToList();
+
+      usersIds.Add(role.CreatedBy);
+
+      if (role.ModifiedBy.HasValue)
+      {
+        usersIds.Add(role.ModifiedBy.Value);
+      }
+
+      List<UserData> usersDatas = await GetUsersAsync(usersIds, result.Errors);
+
+      result.Body = _roleResponseMapper.Map(role, rights, usersDatas);
+
+      return result;
+    }
+  }
 }

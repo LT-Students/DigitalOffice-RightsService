@@ -12,12 +12,12 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                table: DbRole.TableName,
+                table: "Roles",
                 maxLength: 100);
 
             migrationBuilder.AddUniqueConstraint(
                 name: "UC_Roles_Name",
-                table: DbRole.TableName,
+                table: "Roles",
                 column: "Name");
         }
 
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
             migrationBuilder.DropUniqueConstraint(
                 name: "UC_Roles_Name",
-                table: DbRole.TableName);
+                table: "Roles");
         }
     }
 }

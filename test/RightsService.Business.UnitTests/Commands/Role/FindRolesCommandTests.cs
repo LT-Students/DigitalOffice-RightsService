@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 {
     class FindRolesCommandTests
     {
-        private IEnumerable<DbRole> _dbRoles;
+        private IEnumerable<DbRoleLocalization> _dbRoles;
         private IEnumerable<UserInfo> _rolesInfo;
 
         private AutoMocker _mocker;

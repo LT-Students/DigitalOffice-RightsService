@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: DbRole.TableName,
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -56,7 +56,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: nameof(DbUser.CreatedAt),
+                name: "CreatedAt",
                 table: DbUser.TableName,
                 nullable: false,
                 defaultValue: DateTime.MinValue);
@@ -81,7 +81,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: DbRole.TableName);
+            migrationBuilder.DropTable(name: "Roles");
             migrationBuilder.DropTable(name: DbRoleRight.TableName);
 
             migrationBuilder.DropColumn(
@@ -93,7 +93,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(
-                name: nameof(DbUser.CreatedAt),
+                name: "CreatedAt",
                 table: DbUser.TableName);
 
             migrationBuilder.DropColumn(

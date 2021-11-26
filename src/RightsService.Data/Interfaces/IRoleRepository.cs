@@ -1,34 +1,29 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Db;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
-    /// <summary>
-    /// Represents interface of repository in repository pattern.
-    /// Provides methods for working with the database of RightsService.
-    /// </summary>
-    [AutoInject]
-    public interface IRoleRepository
-    {
-        /// <summary>
-        /// Adds new role to the database. Returns whether it was successful to add.
-        /// </summary>
-        Guid Create(DbRole dbRole);
+  [AutoInject]
+  public interface IRoleRepository
+  {
+    Task<Guid> CreateAsync(DbRole dbRole);
 
-        /// <summary>
-        /// Returns role by id or throws not found exception.
-        /// </summary>
-        /// <returns>List of all added roles.</returns>
-        DbRole Get(Guid roleId);
+    Task<(DbRole role, List<DbUser> users, List<DbRightsLocalization> rights)> GetAsync(GetRoleFilter filter);
 
-        /// <summary>
-        /// Returns a list of all added roles to the database.
-        /// </summary>
-        /// <returns>List of all added roles.</returns>
-        IEnumerable<DbRole> Find(int skipCount, int takeCount, out int totalCount);
+    Task<DbRole> GetAsync(Guid roleId);
 
-        bool DoesNameExist(string name);
-    }
+    Task<List<DbRole>> GetAllWithRightsAsync();
+
+    Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter);
+
+    Task<bool> DoesRoleExistAsync(Guid roleId);
+
+    Task<bool> EditStatusAsync(Guid roleId, bool isActive);
+
+    Task<bool> EditRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights);
+  }
 }

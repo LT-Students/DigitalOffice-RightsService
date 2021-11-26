@@ -1,23 +1,28 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
-using LT.DigitalOffice.RightsService.Models.Db;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.RightsService.Models.Db;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
-    [AutoInject]
-    public interface IUserRepository
-    {
-        void Add(DbUser user);
+  [AutoInject]
+  public interface IUserRepository
+  {
+    Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy);
 
-        DbUser Get(Guid userId);
+    Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
-        void AssignRole(Guid userId, Guid roleId, Guid assignedBy);
+    Task<List<DbUser>> GetAsync(List<Guid> userId, string locale);
 
-        bool CheckRights(Guid userId, params int[] rightIds);
+    Task<DbUser> GetAsync(Guid userId);
 
-        List<DbUser> Get(List<Guid> userId);
+    Task<List<DbUser>> GetWithRightsAsync();
 
-        void Remove(Guid userId);
-    }
+    Task RemoveAsync(Guid userId);
+
+    Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
+
+    Task<bool> RemoveUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
+  }
 }

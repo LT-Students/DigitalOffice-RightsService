@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.Models.Broker.Models;
-using LT.DigitalOffice.RightsService.Mappers.Interfaces;
+using LT.DigitalOffice.RightsService.Mappers.Models;
+using LT.DigitalOffice.RightsService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Dto.Models;
 using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
@@ -7,7 +8,7 @@ using System;
 
 namespace LT.DigitalOffice.RightsService.Mappers.UnitTests.Models
 {
-    class UserInfoMapperTests
+  class UserInfoMapperTests
     {
         public UserData _userData;
         public UserInfo _expectedUserInfo;
@@ -39,9 +40,9 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests.Models
         }
 
         [Test]
-        public void ShouldThrowExceptionWhenUserDataIsNull()
+        public void ShouldReturnNullWhenUserDataIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => _mapper.Map(null));
+            Assert.IsNull(_mapper.Map(null));
         }
 
         [Test]
