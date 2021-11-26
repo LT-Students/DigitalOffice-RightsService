@@ -52,8 +52,7 @@ namespace LT.DigitalOffice.RightsService.Validation
           {
             x => bool.TryParse(x.value?.ToString(), out _), "Incorrect isActive format."
           }
-        },
-        CascadeMode.Stop);
+        });
     }
 
     public EditRoleLocalizationRequestValidator()
