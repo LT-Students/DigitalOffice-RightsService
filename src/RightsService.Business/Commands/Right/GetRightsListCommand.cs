@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.Right.Interfaces;
@@ -18,13 +18,13 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     private readonly IRightLocalizationRepository _repository;
     private readonly IRightInfoMapper _mapper;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     public GetRightsListCommand(
       IRightLocalizationRepository repository,
       IRightInfoMapper mapper,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _repository = repository;
       _mapper = mapper;

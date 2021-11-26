@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization
   public class CreateRoleLocalizationCommand : ICreateRoleLocalizationCommand
   {
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IRoleLocalizationRepository _roleLocalizationRepository;
     private readonly IDbRoleLocalizationMapper _roleLocalizationMapper;
     private readonly ICreateRoleLocalizationRequestValidator _requestValidator;
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization
 
     public CreateRoleLocalizationCommand(
       IAccessValidator accessValidator,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IRoleLocalizationRepository roleLocalizationRepository,
       IDbRoleLocalizationMapper roleLocalizationMapper,
       ICreateRoleLocalizationRequestValidator requestValidator,

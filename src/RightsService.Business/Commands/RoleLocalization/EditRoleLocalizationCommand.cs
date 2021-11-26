@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -21,14 +21,14 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization
   public class EditRoleLocalizationCommand : IEditRoleLocalizationCommand
   {
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IRoleLocalizationRepository _roleLocalizationRepository;
     private readonly IPatchDbRoleLocalizationMapper _roleLocalizationMapper;
     private readonly IEditRoleLocalizationRequestValidator _validator;
 
     public EditRoleLocalizationCommand(
       IAccessValidator accessValidator,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IRoleLocalizationRepository roleLocalizationRepository,
       IPatchDbRoleLocalizationMapper roleLocalizationMapper,
       IEditRoleLocalizationRequestValidator validator)

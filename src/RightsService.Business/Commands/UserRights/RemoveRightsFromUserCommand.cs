@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IUserRepository _repository;
     private readonly IRightsIdsValidator _validator;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreater;
+    private readonly IResponseCreator _responseCreater;
     private readonly IMemoryCache _cache;
 
     private async Task UpdateCacheAsync(Guid userId, IEnumerable<int> rights)
@@ -54,7 +54,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IUserRepository repository,
       IRightsIdsValidator validator,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater,
+      IResponseCreator responseCreater,
       IMemoryCache cache)
     {
       _repository = repository;

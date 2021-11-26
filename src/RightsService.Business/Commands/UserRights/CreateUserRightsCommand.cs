@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IUserRepository _repository;
     private readonly IRightsIdsValidator _validator;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreater;
+    private readonly IResponseCreator _responseCreater;
     private readonly IRequestClient<ICheckUsersExistence> _rcCheckUser;
     private readonly ILogger<CreateUserRightsCommand> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IUserRepository repository,
       IRightsIdsValidator validator,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater,
+      IResponseCreator responseCreater,
       IRequestClient<ICheckUsersExistence> rcCheckUser,
       ILogger<CreateUserRightsCommand> logger,
       IHttpContextAccessor httpContextAccessor,
