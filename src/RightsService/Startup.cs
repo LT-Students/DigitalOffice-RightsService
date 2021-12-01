@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.BrokerSupport.Configurations;
 using LT.DigitalOffice.Kernel.BrokerSupport.Extensions;
@@ -89,6 +88,12 @@ namespace LT.DigitalOffice.RightsService
       if (string.IsNullOrEmpty(connStr))
       {
         connStr = Configuration.GetConnectionString("SQLConnectionString");
+
+        Log.Information($"SQL connection string from appsettings.json was used. Value '{HidePasswordHelper.HidePassword(connStr)}'.");
+      }
+      else
+      {
+        Log.Information($"SQL connection string from environment was used. Value '{HidePasswordHelper.HidePassword(connStr)}'.");
       }
 
       services.AddDbContext<RightsServiceDbContext>(options =>
