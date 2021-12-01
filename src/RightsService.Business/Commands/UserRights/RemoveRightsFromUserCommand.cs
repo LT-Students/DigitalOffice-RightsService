@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IUserRepository _repository;
     private readonly IRightsIdsValidator _validator;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreater;
+    private readonly IResponseCreator _responseCreator;
     private readonly IMemoryCache _cache;
 
     private async Task UpdateCacheAsync(Guid userId, IEnumerable<int> rights)
@@ -54,13 +54,13 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IUserRepository repository,
       IRightsIdsValidator validator,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater,
+      IResponseCreator responseCreator,
       IMemoryCache cache)
     {
       _repository = repository;
       _validator = validator;
       _accessValidator = accessValidator;
-      _responseCreater = responseCreater;
+      _responseCreator = responseCreator;
       _cache = cache;
     }
 
@@ -68,14 +68,14 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(rightsIds);
 
       if (!validationResult.IsValid)
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
       }
 
       bool result = await _repository.RemoveUserRightsAsync(userId, rightsIds);
