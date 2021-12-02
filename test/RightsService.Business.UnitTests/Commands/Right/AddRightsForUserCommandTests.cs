@@ -1,11 +1,11 @@
-﻿using FluentValidation.Results;
+﻿using System;
+using System.Collections.Generic;
+using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.RightsService.Business.Commands.UserRights.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
 
 namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
 {

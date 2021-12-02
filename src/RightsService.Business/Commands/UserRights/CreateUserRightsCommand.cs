@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     private readonly IUserRepository _repository;
     private readonly IRightsIdsValidator _validator;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreator _responseCreater;
+    private readonly IResponseCreator _responseCreator;
     private readonly IRequestClient<ICheckUsersExistence> _rcCheckUser;
     private readonly ILogger<CreateUserRightsCommand> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       IUserRepository repository,
       IRightsIdsValidator validator,
       IAccessValidator accessValidator,
-      IResponseCreator responseCreater,
+      IResponseCreator responseCreator,
       IRequestClient<ICheckUsersExistence> rcCheckUser,
       ILogger<CreateUserRightsCommand> logger,
       IHttpContextAccessor httpContextAccessor,
@@ -103,7 +103,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
       _repository = repository;
       _validator = validator;
       _accessValidator = accessValidator;
-      _responseCreater = responseCreater;
+      _responseCreator = responseCreator;
       _rcCheckUser = rcCheckUser;
       _logger = logger;
       _httpContextAccessor = httpContextAccessor;
@@ -114,7 +114,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
     {
       if (!await _accessValidator.IsAdminAsync())
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(rightsIds);
@@ -123,7 +123,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
 
       if (!validationResult.IsValid && !await CheckUserExistenceAsync(userId, errors))
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
       await _repository.AddUserRightsAsync(userId, rightsIds);
