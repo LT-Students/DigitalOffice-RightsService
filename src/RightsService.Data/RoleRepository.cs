@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Data
@@ -13,11 +15,14 @@ namespace LT.DigitalOffice.RightsService.Data
   public class RoleRepository : IRoleRepository
   {
     private readonly IDataProvider _provider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public RoleRepository(
-      IDataProvider provider)
+      IDataProvider provider,
+      IHttpContextAccessor httpContextAccessor)
     {
       _provider = provider;
+      _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Guid> CreateAsync(DbRole dbRole)
@@ -69,7 +74,7 @@ namespace LT.DigitalOffice.RightsService.Data
     public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
-
+      
       return ((await
         (from role in _provider.Roles
           join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId
@@ -108,9 +113,12 @@ namespace LT.DigitalOffice.RightsService.Data
         return false;
       }
 
-      role.IsActive = isActive;
-
       _provider.Roles.Update(role);
+
+      role.IsActive = isActive;
+      role.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      role.ModifiedAtUtc = DateTime.UtcNow;
+      
       await _provider.SaveAsync();
 
       return true;
