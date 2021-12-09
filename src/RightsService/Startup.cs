@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using HealthChecks.UI.Client;
+using LT.DigitalOffice.Kernel.BrokerSupport.Configurations;
+using LT.DigitalOffice.Kernel.BrokerSupport.Extensions;
+using LT.DigitalOffice.Kernel.BrokerSupport.Middlewares.Token;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Helpers;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
-using LT.DigitalOffice.Kernel.Middlewares.Token;
+using LT.DigitalOffice.Kernel.RedisSupport.Configurations;
+using LT.DigitalOffice.Kernel.RedisSupport.Helpers;
+using LT.DigitalOffice.Kernel.RedisSupport.Helpers.Interfaces;
 using LT.DigitalOffice.RightsService.Broker.Consumers;
 using LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.RightsService.Models.Dto.Configurations;
@@ -18,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using StackExchange.Redis;
 
 namespace LT.DigitalOffice.RightsService
 {
@@ -81,6 +88,12 @@ namespace LT.DigitalOffice.RightsService
       if (string.IsNullOrEmpty(connStr))
       {
         connStr = Configuration.GetConnectionString("SQLConnectionString");
+
+        Log.Information($"SQL connection string from appsettings.json was used. Value '{HidePasswordHelper.HidePassword(connStr)}'.");
+      }
+      else
+      {
+        Log.Information($"SQL connection string from environment was used. Value '{HidePasswordHelper.HidePassword(connStr)}'.");
       }
 
       services.AddDbContext<RightsServiceDbContext>(options =>
@@ -88,7 +101,47 @@ namespace LT.DigitalOffice.RightsService
         options.UseSqlServer(connStr);
       });
 
+      if (int.TryParse(Environment.GetEnvironmentVariable("MemoryCacheLiveInMinutes"), out int memoryCacheLifetime))
+      {
+        services.Configure<MemoryCacheConfig>(options =>
+        {
+          options.CacheLiveInMinutes = memoryCacheLifetime;
+        });
+      }
+      else
+      {
+        services.Configure<MemoryCacheConfig>(Configuration.GetSection(MemoryCacheConfig.SectionName));
+      }
+
+      if (int.TryParse(Environment.GetEnvironmentVariable("RedisCacheLiveInMinutes"), out int redisCacheLifeTime))
+      {
+        services.Configure<RedisConfig>(options =>
+        {
+          options.CacheLiveInMinutes = redisCacheLifeTime;
+        });
+      }
+      else
+      {
+        services.Configure<RedisConfig>(Configuration.GetSection(RedisConfig.SectionName));
+      }
+
       services.AddBusinessObjects();
+      services.AddTransient<IRedisHelper, RedisHelper>();
+      services.AddTransient<ICacheNotebook, CacheNotebook>();
+
+      string redisConnStr = Environment.GetEnvironmentVariable("RedisConnectionString");
+      if (string.IsNullOrEmpty(redisConnStr))
+      {
+        redisConnStr = Configuration.GetConnectionString("Redis");
+
+        Log.Information($"Redis connection string from appsettings.json was used. Value '{HidePasswordHelper.HidePassword(redisConnStr)}'.");
+      }
+      else
+      {
+        Log.Information($"Redis connection string from environment was used. Value '{HidePasswordHelper.HidePassword(redisConnStr)}'.");
+      }
+
+      services.AddSingleton<IConnectionMultiplexer>(x => ConnectionMultiplexer.Connect(redisConnStr));
 
       ConfigureMassTransit(services);
 

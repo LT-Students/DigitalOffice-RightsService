@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.Role.Interfaces;
@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
   {
     private readonly IRoleRepository _roleRepository;
     private readonly IAccessValidator _accessValidator;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IMemoryCache _cache;
 
     private async Task<List<(Guid, bool, IEnumerable<int>)>> GetRoleRightsListAsync()
@@ -91,7 +91,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     public EditRoleStatusCommand(
       IRoleRepository roleRepository,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IMemoryCache cache)
     {
       _roleRepository = roleRepository;

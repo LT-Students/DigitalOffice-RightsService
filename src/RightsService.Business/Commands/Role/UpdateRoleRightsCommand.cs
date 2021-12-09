@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.Role.Interfaces;
@@ -27,7 +27,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     private readonly IAccessValidator _accessValidator;
     private readonly IUpdateRoleRightsRequestValidator _requestValidator;
     private readonly IMemoryCache _cache;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     private async Task UpdateCacheAsync(IEnumerable<int> addedRights, Guid roleId)
     {
@@ -56,7 +56,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       IAccessValidator accessValidator,
       IUpdateRoleRightsRequestValidator requestValidator,
       IMemoryCache cache,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _roleRepository = roleRepository;
       _dbRoleRightMapper = dbRoleRightMapper;
