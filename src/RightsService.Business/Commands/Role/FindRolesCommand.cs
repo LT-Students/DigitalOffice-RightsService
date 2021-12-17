@@ -99,7 +99,9 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       FindResultResponse<RoleInfo> result = new();
 
-      (List<(DbRole role, List<DbRightsLocalization> rights)> roles, int totalCount) = await _roleRepository.FindAsync(filter);
+      (List<(DbRole role, List<DbRightsLocalization> rights)> roles, int totalCount) = filter.IncludeDeactivated
+        ? await _roleRepository.FindAllAsync(filter)
+        : await _roleRepository.FindActiveAsync(filter);
 
       result.TotalCount = totalCount;
 
@@ -121,6 +123,8 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       result.Body = roles.Select(
         pair => _roleInfoMapper.Map(pair.role, pair.rights.Select(_rightMapper.Map).ToList(), usersInfos)).ToList();
+
+      result.Errors = errors;
 
       result.Status = errors.Any() ?
         OperationResultStatusType.PartialSuccess :

@@ -6,6 +6,7 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Models
   public record RoleInfo
   {
     public Guid Id { get; set; }
+    public bool IsActive { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public UserInfo CreatedBy { get; set; }
     public DateTime? ModifiedAtUtc { get; set; }
