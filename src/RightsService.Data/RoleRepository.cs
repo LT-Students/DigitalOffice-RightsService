@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.RightsService.Data
     {
       int totalCount = await _provider.Roles.CountAsync();
 
-      return  ((await
+      return ((await
         (from role in _provider.Roles
           join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId where roleLocalization.IsActive
           join right in _provider.RoleRights on role.Id equals right.RoleId
