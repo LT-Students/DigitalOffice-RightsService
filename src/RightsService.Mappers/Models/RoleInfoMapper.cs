@@ -15,22 +15,23 @@ namespace LT.DigitalOffice.RightsService.Mappers.Models
       _roleLocalizationInfoMapper = roleLocalizationInfoMapper;
     }
 
-    public RoleInfo Map(DbRole value, List<RightInfo> rights, List<UserInfo> userInfos)
+    public RoleInfo Map(DbRole dbRole, List<RightInfo> rights, List<UserInfo> userInfos)
     {
-      if (value == null)
+      if (dbRole == null)
       {
         return null;
       }
 
       return new RoleInfo
       {
-        Id = value.Id,
-        CreatedAtUtc = value.CreatedAtUtc,
-        CreatedBy = userInfos?.FirstOrDefault(x => x.Id == value.CreatedBy),
-        ModifiedAtUtc = value.ModifiedAtUtc,
-        ModifiedBy = userInfos?.FirstOrDefault(x => x.Id == value.ModifiedBy),
+        Id = dbRole.Id,
+        IsActive = dbRole.IsActive,
+        CreatedAtUtc = dbRole.CreatedAtUtc,
+        CreatedBy = userInfos?.FirstOrDefault(x => x.Id == dbRole.CreatedBy),
+        ModifiedAtUtc = dbRole.ModifiedAtUtc,
+        ModifiedBy = userInfos?.FirstOrDefault(x => x.Id == dbRole.ModifiedBy),
         Rights = rights,
-        Localizations = value.RoleLocalizations.Select(_roleLocalizationInfoMapper.Map).ToList()
+        Localizations = dbRole.RoleLocalizations.Select(_roleLocalizationInfoMapper.Map).ToList()
       };
     }
   }
