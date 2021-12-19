@@ -71,13 +71,13 @@ namespace LT.DigitalOffice.RightsService.Data
       return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
     }
 
-    public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAsync(FindRolesFilter filter)
+    public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
       
       return ((await
         (from role in _provider.Roles
-          join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId
+          join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId where roleLocalization.IsActive
           join right in _provider.RoleRights on role.Id equals right.RoleId
           join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
           where (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
@@ -89,6 +89,34 @@ namespace LT.DigitalOffice.RightsService.Data
             RoleLocalization = roleLocalization,
             RightLocalization = rightLocalization
           }).ToListAsync()).AsEnumerable().GroupBy(r => r.Role.Id)
+          .Select(x =>
+          {
+            DbRole role = x.Select(x => x.Role).FirstOrDefault();
+            role.RoleLocalizations = x.Select(x => x.RoleLocalization).Where(x => x != null).GroupBy(x => x.Id).Select(x => x.First()).ToList();
+
+            return (role, x.Select(x => x.RightLocalization).ToList());
+          }).Skip(filter.SkipCount).Take(filter.TakeCount).ToList(),
+        totalCount);
+    }
+
+    public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindActiveAsync(FindRolesFilter filter)
+    {
+      int totalCount = await _provider.Roles.CountAsync(x => x.IsActive);
+
+      return ((await
+        (from role in _provider.Roles where role.IsActive
+         join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId where roleLocalization.IsActive
+         join right in _provider.RoleRights on role.Id equals right.RoleId
+         join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
+         where (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
+           && (rightLocalization.Locale == filter.Locale || rightLocalization.Locale == null)
+         orderby role.Id
+         select new
+         {
+           Role = role,
+           RoleLocalization = roleLocalization,
+           RightLocalization = rightLocalization
+         }).ToListAsync()).AsEnumerable().GroupBy(r => r.Role.Id)
           .Select(x =>
           {
             DbRole role = x.Select(x => x.Role).FirstOrDefault();

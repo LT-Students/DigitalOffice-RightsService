@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Models.Interfaces
   public interface IRoleInfoMapper
   {
     RoleInfo Map(
-      DbRole value,
+      DbRole dbRole,
       List<RightInfo> rights,
       List<UserInfo> userInfos);
   }
