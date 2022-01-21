@@ -65,7 +65,7 @@ namespace LT.DigitalOffice.RightsService.Validation
         new Dictionary<Func<Operation<EditRoleLocalizationRequest>, Task<bool>>, string>
         {
           {
-            x => Task.FromResult(!string.IsNullOrEmpty(x.value?.ToString().Trim())), "Name can't be empty."
+            x => Task.FromResult(!string.IsNullOrEmpty(x.value?.ToString())), "Name can't be empty."
           },
           {
             x => Task.FromResult(x.value.ToString().Trim().Length < 101), "Name is too long."
@@ -86,7 +86,8 @@ namespace LT.DigitalOffice.RightsService.Validation
             x => Task.FromResult(bool.TryParse(x.value?.ToString(), out _)), "Incorrect isActive format."
           },
           {
-            async x => !bool.Parse(x.value.ToString())
+            async x => roleLocalization.IsActive
+            || !bool.Parse(x.value.ToString())
             || !await _roleLocalizationRepository.DoesLocaleExistAsync(roleLocalization.RoleId, roleLocalization.Locale),
             "Role must have only one localization per locale."
           }
