@@ -68,7 +68,7 @@ namespace LT.DigitalOffice.RightsService.Validation
             x => Task.FromResult(!string.IsNullOrEmpty(x.value?.ToString().Trim())), "Name can't be empty."
           },
           {
-            x => Task.FromResult(x.value.ToString().Trim().Length <= 100), "Name is too long."
+            x => Task.FromResult(x.value.ToString().Trim().Length < 101), "Name is too long."
           },
           {
             async x => !await _roleLocalizationRepository.DoesNameExistAsync(roleLocalization.Locale, x.value.ToString().Trim(), roleLocalization.Id),
@@ -84,10 +84,6 @@ namespace LT.DigitalOffice.RightsService.Validation
         {
           {
             x => Task.FromResult(bool.TryParse(x.value?.ToString(), out _)), "Incorrect isActive format."
-          },
-          {
-            //idk do we need this
-            x => Task.FromResult(roleLocalization.IsActive != bool.Parse(x.value.ToString())), "Role localization already has this status."
           },
           {
             async x => !bool.Parse(x.value.ToString())
