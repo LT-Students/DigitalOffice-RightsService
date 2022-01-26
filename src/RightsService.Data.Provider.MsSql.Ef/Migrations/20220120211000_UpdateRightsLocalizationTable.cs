@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         columns: new[] { "Name", "Description" },
         columnTypes: new[] { "string", "string" },
         values: new[] { "Управление данными департамента", @"Право позволяет добавлять, изменять 
-          и удалять сотрудника департамента в системе, добавлять/удалять проекты и новости в департаменте" });
+        и удалять сотрудника департамента в системе, добавлять/удалять проекты и новости в департаменте" });
 
       migrationBuilder
         .UpdateData(
