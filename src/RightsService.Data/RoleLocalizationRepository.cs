@@ -36,9 +36,9 @@ namespace LT.DigitalOffice.RightsService.Data
       return roleLocalization.Id;
     }
 
-    public async Task<bool> DoesNameExistAsync(string locale, string name)
+    public async Task<bool> DoesNameExistAsync(string locale, string name, Guid id = default)
     {
-      return await _provider.RolesLocalizations.AnyAsync(rl => rl.IsActive && rl.Locale == locale && rl.Name == name);
+      return await _provider.RolesLocalizations.AnyAsync(rl => rl.Id != id && rl.IsActive && rl.Locale == locale && rl.Name == name);
     }
 
     public async Task<bool> DoesLocaleExistAsync(Guid roleId, string locale)
