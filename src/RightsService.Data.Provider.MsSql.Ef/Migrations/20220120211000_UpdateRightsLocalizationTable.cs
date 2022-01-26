@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
 {
-  [Migration("20220120211000_UpdateRightsLocalizationTable")]
+  [Migration("20220126211000_UpdateRightsLocalizationTable")]
   [DbContext(typeof(RightsServiceDbContext))]
   public class UpdateRightsLocalizationTable : Migration
   {
@@ -22,8 +22,8 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         keyValues: new object[] { 10, "ru" },
         columns: new[] { "Name", "Description" },
         columnTypes: new[] { "string", "string" },
-        values: new[] { "Управление данными департамента", @"Право позволяет добавлять, изменять 
-        и удалять сотрудника департамента в системе, добавлять/удалять проекты и новости в департаменте" });
+        values: new[] { "Управление данными департамента", "Право позволяет добавлять, изменять " +
+        "и удалять сотрудника департамента в системе, добавлять/удалять проекты и новости в департаменте" });
 
       migrationBuilder
         .UpdateData(
@@ -37,9 +37,9 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         keyValues: new object[] { 10, "en" },
         columns: new[] { "Name", "Description" },
         columnTypes: new[] { "string", "string" },
-        values: new[] { "Department data management", @"This right allows you to add, modify 
-        and remove department user in the time system; to add, modify 
-        and remove projects and news in the department this right is attached to" });
+        values: new[] { "Department data management", "This right allows you to add, modify " +
+        "and remove department user in the time system; to add, modify " +
+        "and remove projects and news in the department this right is attached to" });
     }
   }
 }
