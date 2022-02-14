@@ -234,6 +234,7 @@ namespace LT.DigitalOffice.RightsService
         busConfigurator.AddConsumer<ChangeUserRoleConsumer>();
         busConfigurator.AddConsumer<GetUserRolesConsumer>();
         busConfigurator.AddConsumer<DisactivateUserConsumer>();
+        busConfigurator.AddConsumer<FilterRolesUsersConsumer>();
 
         busConfigurator.UsingRabbitMq((context, cfg) =>
         {
@@ -261,6 +262,11 @@ namespace LT.DigitalOffice.RightsService
           cfg.ReceiveEndpoint(_rabbitMqConfig.DisactivateUserEndpoint, ep =>
           {
             ep.ConfigureConsumer<DisactivateUserConsumer>(context);
+          });
+
+          cfg.ReceiveEndpoint(_rabbitMqConfig.FilterRolesEndpoint, ep =>
+          {
+            ep.ConfigureConsumer<FilterRolesUsersConsumer>(context);
           });
         });
 
