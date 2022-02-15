@@ -17,17 +17,18 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     private async Task<List<RoleFilteredData>> GetRolesDataAsync(IFilterRolesRequest request)
     {
-      List<DbUser> users = await _repository.GetUsersAsync(request.RolesIds);
+      List<DbUser> users = await _repository.GetAsync(request.RolesIds);
 
-      List<DbRole> roles = users.Select(u => u.Role).Distinct().ToList();
+      List<DbRole> roles = users.Select(u => u.Role).ToList();
 
       return roles.Select(r =>
           new RoleFilteredData(
             r.Id,
-            r.RoleLocalizations.FirstOrDefault()?.Name,
-            users.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
+            r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).ToString(),
+            users.Select(u => u.UserId).ToList()))
         .ToList();
     }
+
     public FilterRolesUsersConsumer(
       IUserRepository repository)
     { 
@@ -40,7 +41,6 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
       await context.RespondAsync<IOperationResult<IFilterRolesResponse>>(
         OperationResultWrapper.CreateResponse((_) => IFilterRolesResponse.CreateObj(rolesFilteredData), context));
-
     }
   }
 }
