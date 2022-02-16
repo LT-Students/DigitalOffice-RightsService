@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       return roles.Select(r =>
           new RoleFilteredData(
             r.Id,
-            r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).ToString(),
+            r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).FirstOrDefault(),
             r.Users.Select(u => u.UserId).ToList()))
         .ToList();
     }
