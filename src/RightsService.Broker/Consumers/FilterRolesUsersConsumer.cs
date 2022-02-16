@@ -13,24 +13,22 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
   public class FilterRolesUsersConsumer : IConsumer<IFilterRolesRequest>
   {
-    private readonly IUserRepository _repository;
+    private readonly IRoleRepository _repository;
 
     private async Task<List<RoleFilteredData>> GetRolesDataAsync(IFilterRolesRequest request)
     {
-      List<DbUser> users = await _repository.GetAsync(request.RolesIds);
-
-      List<DbRole> roles = users.Select(u => u.Role).ToList();
+      List<DbRole> roles = await _repository.GetAsync(request.RolesIds);
 
       return roles.Select(r =>
           new RoleFilteredData(
             r.Id,
             r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).ToString(),
-            users.Select(u => u.UserId).ToList()))
+            r.Users.Select(u => u.UserId).ToList()))
         .ToList();
     }
 
     public FilterRolesUsersConsumer(
-      IUserRepository repository)
+      IRoleRepository repository)
     { 
       _repository = repository;
     }

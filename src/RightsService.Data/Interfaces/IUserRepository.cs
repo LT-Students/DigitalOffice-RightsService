@@ -17,8 +17,6 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<DbUser> GetAsync(Guid userId);
 
-    Task<List<DbUser>> GetAsync(List<Guid> rolesIds);
-
     Task<List<DbUser>> GetWithRightsAsync();
 
     Task RemoveAsync(Guid userId);
