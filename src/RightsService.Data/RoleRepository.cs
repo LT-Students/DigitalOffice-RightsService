@@ -66,6 +66,13 @@ namespace LT.DigitalOffice.RightsService.Data
       return await _provider.Roles.Include(role => role.RoleRights).FirstOrDefaultAsync(x => x.Id == roleId);
     }
 
+    public async Task<List<DbRole>> GetAsync(List<Guid> rolesIds)
+    {
+      return await _provider.Roles.Where(r => rolesIds.Contains(r.Id))
+        .Include(r => r.Users.Where(u => u.IsActive))
+        .ToListAsync();
+    }
+
     public async Task<List<DbRole>> GetAllWithRightsAsync()
     {
       return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();

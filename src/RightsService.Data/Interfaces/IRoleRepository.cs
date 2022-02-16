@@ -16,6 +16,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<DbRole> GetAsync(Guid roleId);
 
+    Task<List<DbRole>> GetAsync(List<Guid> rolesIds);
+
     Task<List<DbRole>> GetAllWithRightsAsync();
 
     Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter);

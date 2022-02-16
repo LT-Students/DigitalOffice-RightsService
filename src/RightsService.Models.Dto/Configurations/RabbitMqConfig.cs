@@ -10,6 +10,7 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Configurations
     public string GetUserRolesEndpoint { get; set; }
     public string ChangeUserRoleEndpoint { get; set; }
     public string DisactivateUserEndpoint { get; set; }
+    public string FilterRolesEndpoint { get; set; }
 
     // users
 
