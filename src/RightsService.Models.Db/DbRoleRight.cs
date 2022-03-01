@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 {
   public class DbRoleRight
   {
-    public const string TableName = "RoleRights";
+    public const string TableName = "RolesRights";
 
     public Guid Id { get; set; }
     public Guid RoleId { get; set; }
