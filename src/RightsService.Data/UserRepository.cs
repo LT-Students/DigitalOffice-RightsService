@@ -50,7 +50,7 @@ namespace LT.DigitalOffice.RightsService.Data
         return false;
       }
 
-      DbUser user = await _provider.Users
+      DbUserRole user = await _provider.Users
         .Include(u => u.Role)
           .ThenInclude(r => r.RoleRights)
         .Include(u => u.Rights)
@@ -74,7 +74,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public async Task<List<DbUser>> GetAsync(List<Guid> userId, string locale)
+    public async Task<List<DbUserRole>> GetAsync(List<Guid> userId, string locale)
     {
       return await _provider.Users
         .Where(u => userId.Contains(u.UserId))
@@ -83,19 +83,19 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
-    public async Task<DbUser> GetAsync(Guid userId)
+    public async Task<DbUserRole> GetAsync(Guid userId)
     {
       return await _provider.Users.Include(x => x.Rights).FirstOrDefaultAsync(x => x.UserId == userId);
     }
 
-    public async Task<List<DbUser>> GetWithRightsAsync()
+    public async Task<List<DbUserRole>> GetWithRightsAsync()
     {
       return await _provider.Users.Include(x => x.Rights).ToListAsync();
     }
 
     public async Task RemoveAsync(Guid userId)
     {
-      DbUser user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
+      DbUserRole user = _provider.Users.FirstOrDefault(u => u.UserId == userId);
 
       if (user == null)
       {

@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
 
       if (users == null)
       {
-        List<DbUser> dbUsers = await _repository.GetWithRightsAsync();
+        List<DbUserRole> dbUsers = await _repository.GetWithRightsAsync();
 
         users = dbUsers.Select(x => (x.UserId, x.IsActive, x.RoleId, x.Rights.Select(x => x.RightId))).ToList();
       }
@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.UserRights
 
         if (user == default)
         {
-          DbUser dbUser = await _repository.GetAsync(userId);
+          DbUserRole dbUser = await _repository.GetAsync(userId);
           user = (dbUser.UserId, dbUser.IsActive, dbUser.RoleId, dbUser.Rights.Select(x => x.RightId));
         }
 

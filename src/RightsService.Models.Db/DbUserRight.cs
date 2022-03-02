@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
 
-    public DbUser User { get; set; }
+    public DbUserRole User { get; set; }
   }
 
   public class DbRightUserConfiguration : IEntityTypeConfiguration<DbUserRight>

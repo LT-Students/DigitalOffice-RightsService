@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
       if (users == null)
       {
-        List<DbUser> dbUsers = await _repository.GetWithRightsAsync();
+        List<DbUserRole> dbUsers = await _repository.GetWithRightsAsync();
 
         users = dbUsers.Select(x => (x.UserId, x.IsActive, x.RoleId, x.Rights.Select(x => x.RightId))).ToList();
       }

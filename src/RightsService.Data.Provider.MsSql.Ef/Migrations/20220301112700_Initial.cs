@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
 {
   [DbContext(typeof(RightsServiceDbContext))]
-  [Migration("20200726205008_Initial")]
+  [Migration("20220301112700_Initial")]
   public class Initial : Migration
   {
     #region private methods
     private void CreateUsersTable(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.CreateTable(
-        name: DbUser.TableName,
+        name: DbUserRole.TableName,
         columns: table => new
         {
           Id = table.Column<Guid>(nullable: false),
@@ -89,7 +89,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
     private void CreateRightsLocalizationsTable(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.CreateTable(
-        name: DbRightsLocalization.TableName,
+        name: DbRightLocalization.TableName,
         columns: table => new
         {
           Id = table.Column<Guid>(nullable: false),
@@ -130,14 +130,14 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
     private void AddDataToDbRightsLocalization(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.InsertData(
-        table: DbRightsLocalization.TableName,
+        table: DbRightLocalization.TableName,
         columns: new[]
         {
-          nameof(DbRightsLocalization.Id),
-          nameof(DbRightsLocalization.RightId),
-          nameof(DbRightsLocalization.Locale),
-          nameof(DbRightsLocalization.Name),
-          nameof(DbRightsLocalization.Description)
+          nameof(DbRightLocalization.Id),
+          nameof(DbRightLocalization.RightId),
+          nameof(DbRightLocalization.Locale),
+          nameof(DbRightLocalization.Name),
+          nameof(DbRightLocalization.Description)
         },
         columnTypes: new string[]
         {
@@ -219,12 +219,12 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           },
           {
             Guid.NewGuid(), 10, "ru", "Управление данными департамента",
-            "Право позволяет добавлять, изменять и удалять сотрудника департамента в системе, добавлять/удалять проекты и новости в департаменте"
+            "Право позволяет добавлять, изменять и удалять сотрудника департамента в системе, добавлять/удалять проекты в департаменте"
           },
           {
             Guid.NewGuid(), 10, "en", "Department data management",
             "This right allows you to add, modify and remove department user in the time system;" +
-            "to add, modify and remove projects and news in the department this right is attached to"
+            "to add, modify and remove projects in the department this right is attached to"
           }
         });
     }
@@ -249,10 +249,10 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.DropTable(name: DbRoleRight.TableName);
-      migrationBuilder.DropTable(name: DbRightsLocalization.TableName);
+      migrationBuilder.DropTable(name: DbRightLocalization.TableName);
       migrationBuilder.DropTable(name: DbRoleLocalization.TableName);
       migrationBuilder.DropTable(name: DbUserRight.TableName);
-      migrationBuilder.DropTable(name: DbUser.TableName);
+      migrationBuilder.DropTable(name: DbUserRole.TableName);
       migrationBuilder.DropTable(name: DbRole.TableName);
     }  
   }

@@ -99,7 +99,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       FindResultResponse<RoleInfo> result = new();
 
-      (List<(DbRole role, List<DbRightsLocalization> rights)> roles, int totalCount) = filter.IncludeDeactivated
+      (List<(DbRole role, List<DbRightLocalization> rights)> roles, int totalCount) = filter.IncludeDeactivated
         ? await _roleRepository.FindAllAsync(filter)
         : await _roleRepository.FindActiveAsync(filter);
 
@@ -107,7 +107,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       List<Guid> usersIds = new();
 
-      foreach((DbRole role, List<DbRightsLocalization> rights) in roles)
+      foreach((DbRole role, List<DbRightLocalization> rights) in roles)
       {
         usersIds.Add(role.CreatedBy);
 

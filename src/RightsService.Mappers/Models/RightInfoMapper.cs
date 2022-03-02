@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Models
 {
   public class RightInfoMapper : IRightInfoMapper
   {
-    public RightInfo Map(DbRightsLocalization value)
+    public RightInfo Map(DbRightLocalization value)
     {
       if (value == null)
       {

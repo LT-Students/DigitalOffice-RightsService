@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Responses.Interfaces
   [AutoInject]
   public interface IRoleResponseMapper
   {
-    RoleResponse Map(DbRole role, List<DbRightsLocalization> rights, List<UserData> users);
+    RoleResponse Map(DbRole role, List<DbRightLocalization> rights, List<UserData> users);
   }
 }

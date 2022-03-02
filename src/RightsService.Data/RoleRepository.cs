@@ -33,7 +33,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return dbRole.Id;
     }
 
-    public async Task<(DbRole role, List<DbUser> users, List<DbRightsLocalization> rights)> GetAsync(GetRoleFilter filter)
+    public async Task<(DbRole role, List<DbUserRole> users, List<DbRightLocalization> rights)> GetAsync(GetRoleFilter filter)
     {
       return (await
         (from role in _provider.Roles
@@ -78,7 +78,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
     }
 
-    public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter)
+    public async Task<(List<(DbRole role, List<DbRightLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync();
 
@@ -106,7 +106,7 @@ namespace LT.DigitalOffice.RightsService.Data
         totalCount);
     }
 
-    public async Task<(List<(DbRole role, List<DbRightsLocalization> rights)>, int totalCount)> FindActiveAsync(FindRolesFilter filter)
+    public async Task<(List<(DbRole role, List<DbRightLocalization> rights)>, int totalCount)> FindActiveAsync(FindRolesFilter filter)
     {
       int totalCount = await _provider.Roles.CountAsync(x => x.IsActive);
 

@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     private async Task<object> GetRolesAsync(IGetUserRolesRequest request)
     {
-      List<DbUser> users = await _repository.GetAsync(request.UserIds, request.Locale);
+      List<DbUserRole> users = await _repository.GetAsync(request.UserIds, request.Locale);
 
       List<DbRole> roles = users.Select(u => u.Role).Distinct().ToList();
 

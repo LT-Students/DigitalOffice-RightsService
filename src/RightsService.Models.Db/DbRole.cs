@@ -17,13 +17,13 @@ namespace LT.DigitalOffice.RightsService.Models.Db
 
     public ICollection<DbRoleLocalization> RoleLocalizations { get; set; }
     public ICollection<DbRoleRight> RoleRights { get; set; }
-    public ICollection<DbUser> Users { get; set; }
+    public ICollection<DbUserRole> Users { get; set; }
 
     public DbRole()
     {
       RoleLocalizations = new HashSet<DbRoleLocalization>();
       RoleRights = new HashSet<DbRoleRight>();
-      Users = new HashSet<DbUser>();
+      Users = new HashSet<DbUserRole>();
     }
   }
 

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LT.DigitalOffice.RightsService.Models.Db
 {
-  public class DbUser
+  public class DbUserRole
   {
-    public const string TableName = "Users";
+    public const string TableName = "UsersRoles";
 
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
@@ -21,18 +21,18 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public ICollection<DbUserRight> Rights { get; set; }
     public DbRole Role { get; set; }
 
-    public DbUser()
+    public DbUserRole()
     {
       Rights = new HashSet<DbUserRight>();
     }
   }
 
-  public class DbUserConfiguration : IEntityTypeConfiguration<DbUser>
+  public class DbUserConfiguration : IEntityTypeConfiguration<DbUserRole>
   {
-    public void Configure(EntityTypeBuilder<DbUser> builder)
+    public void Configure(EntityTypeBuilder<DbUserRole> builder)
     {
       builder
-        .ToTable(DbUser.TableName);
+        .ToTable(DbUserRole.TableName);
 
       builder
         .HasKey(u => u.Id);

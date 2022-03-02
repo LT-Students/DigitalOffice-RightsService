@@ -15,9 +15,9 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public DbUser Map(Guid userId, Guid? roleId, Guid createdBy)
+    public DbUserRole Map(Guid userId, Guid? roleId, Guid createdBy)
     {
-      return new DbUser
+      return new DbUserRole
       {
         Id = Guid.NewGuid(),
         UserId = userId,
@@ -28,9 +28,9 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
       };
     }
 
-    public DbUser Map(Guid userId, Guid? roleId)
+    public DbUserRole Map(Guid userId, Guid? roleId)
     {
-      return new DbUser
+      return new DbUserRole
       {
         Id = Guid.NewGuid(),
         UserId = userId,

@@ -10,12 +10,12 @@ namespace LT.DigitalOffice.RightsService.Validation.UnitTests
   public class RightsIdsValidatorTests
     {
         private IValidator<IEnumerable<int>> validator;
-        private List<DbRightsLocalization> existingRightsList;
+        private List<DbRightLocalization> existingRightsList;
         private Mock<IRightLocalizationRepository> repositoryMock;
         private Mock<IMemoryCache> cacheMock;
 
         private int rightId;
-        private DbRightsLocalization dbRight;
+        private DbRightLocalization dbRight;
         private object right;
 
         //[SetUp]
