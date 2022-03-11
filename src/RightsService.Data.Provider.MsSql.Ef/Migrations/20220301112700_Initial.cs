@@ -27,7 +27,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         },
         constraints: table =>
         {
-          table.PrimaryKey("PR_Users", x => x.Id);
+          table.PrimaryKey("PR_UsersRoles", x => x.Id);
         });
     }
 
@@ -100,7 +100,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         },
         constraints: table =>
         {
-          table.PrimaryKey("PK_RightsLocalization", x => x.Id);
+          table.PrimaryKey("PK_RightsLocalizations", x => x.Id);
         });
     }
 
