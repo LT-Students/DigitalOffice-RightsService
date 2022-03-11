@@ -163,11 +163,13 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           },
           {
             Guid.NewGuid(), 3, "ru", "Управление шаблонами сообщений электронной почты",
-            "Право позволяет добавлять, изменять и удалять шаблоны сообщений электронной почты из системы"
+            "Право позволяет добавлять, изменять и удалять шаблоны сообщений электронной почты " +
+            "и оповещений внутри портала из системы"
           },
           {
             Guid.NewGuid(), 3, "en", "Email templates management",
-            "This right allows you to add, modify and remove Email templates from the system"
+            "This right allows you to add, modify and remove Email templates " +
+            "and notification templates from the system"
           },
           {
             Guid.NewGuid(), 4, "ru", "Управление департаментами",
@@ -202,7 +204,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
             "This right allows you to add, modify and remove worked hours in the time tracking system"
           },
           {
-            Guid.NewGuid(), 8, "ru", "Управление чейнджлогами спецификаций к API ",
+            Guid.NewGuid(), 8, "ru", "Управление чейнджлогами спецификаций к API",
             "Право позволяет добавлять, изменять и удалять чейнджлог спецификации к API в системе"
           },
           {
@@ -210,21 +212,36 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
             "This right allows you to add, modify and remove API specification changelog the time system"
           },
           {
-            Guid.NewGuid(), 9, "ru", "Управление структурой компании",
-            "Право позволяет изменять структуру компании в системе"
+            Guid.NewGuid(), 9, "ru", "Управление компаниями",
+            "Право позволяет создавать, редактировать, удалять компании в системе"
           },
           {
-            Guid.NewGuid(), 9, "en", "Company restructuring management",
-            "This right allows you to modify company structure in the system"
+            Guid.NewGuid(), 9, "en", "company management",
+            "This right allows you to add, modify and remove companies  in the system"
           },
           {
             Guid.NewGuid(), 10, "ru", "Управление данными департамента",
-            "Право позволяет добавлять, изменять и удалять сотрудника департамента в системе, добавлять/удалять проекты в департаменте"
+            "Право позволяет добавлять и удалять данные департамента к которому привязан правообладатель"
           },
           {
             Guid.NewGuid(), 10, "en", "Department data management",
-            "This right allows you to add, modify and remove department user in the time system;" +
-            "to add, modify and remove projects in the department this right is attached to"
+            "This right allows you to add and remove department data in the department this right holder is attached to"
+          },
+          {
+            Guid.NewGuid(), 11, "ru", "Управление данными компании",
+            "Право позволяет создавать, редактировать, изменять данные в компании к которой привязан правообладатель"
+          },
+          {
+            Guid.NewGuid(), 11, "en", "Company data management",
+            "This right allows you to add, modify and remove company data in the company this right holder is attached to"
+          },
+          {
+            Guid.NewGuid(), 12, "ru", "Управление ролями пользователей",
+            "Право позволяет назначать, изменять и удалять роль пользователя в системе"
+          },
+          {
+            Guid.NewGuid(), 12, "en", "Users role management",
+            "This right allows you to add, modify and remove users role"
           }
         });
     }
