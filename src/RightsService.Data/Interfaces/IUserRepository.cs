@@ -20,9 +20,5 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     Task<List<DbUserRole>> GetWithRightsAsync();
 
     Task RemoveAsync(Guid userId);
-
-    Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
-
-    Task<bool> RemoveUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
   }
 }

@@ -38,9 +38,9 @@ namespace LT.DigitalOffice.RightsService.Data
       return (await
         (from role in _provider.Roles
          join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId
-         join right in _provider.RoleRights on role.Id equals right.RoleId
+         join right in _provider.RolesRights on role.Id equals right.RoleId
          join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
-         join user in _provider.Users on role.Id equals user.RoleId into Users
+         join user in _provider.UsersRoles on role.Id equals user.RoleId into Users
          from user in Users.DefaultIfEmpty()
          where role.Id == filter.RoleId
            && (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<DbRole> GetAsync(Guid roleId)
     {
-      return await _provider.Roles.Include(role => role.RoleRights).FirstOrDefaultAsync(x => x.Id == roleId);
+      return await _provider.Roles.Include(role => role.RolesRights).FirstOrDefaultAsync(x => x.Id == roleId);
     }
 
     public async Task<List<DbRole>> GetAsync(List<Guid> rolesIds)
@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<List<DbRole>> GetAllWithRightsAsync()
     {
-      return await _provider.Roles.Include(role => role.RoleRights).ToListAsync();
+      return await _provider.Roles.Include(role => role.RolesRights).ToListAsync();
     }
 
     public async Task<(List<(DbRole role, List<DbRightLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter)
@@ -85,7 +85,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return ((await
         (from role in _provider.Roles
           join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId where roleLocalization.IsActive
-          join right in _provider.RoleRights on role.Id equals right.RoleId
+          join right in _provider.RolesRights on role.Id equals right.RoleId
           join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
           where (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
             && (rightLocalization.Locale == filter.Locale || rightLocalization.Locale == null)
@@ -113,7 +113,7 @@ namespace LT.DigitalOffice.RightsService.Data
       return ((await
         (from role in _provider.Roles where role.IsActive
          join roleLocalization in _provider.RolesLocalizations on role.Id equals roleLocalization.RoleId where roleLocalization.IsActive
-         join right in _provider.RoleRights on role.Id equals right.RoleId
+         join right in _provider.RolesRights on role.Id equals right.RoleId
          join rightLocalization in _provider.RightsLocalizations on right.RightId equals rightLocalization.RightId
          where (roleLocalization.Locale == filter.Locale || roleLocalization.Locale == null)
            && (rightLocalization.Locale == filter.Locale || rightLocalization.Locale == null)
@@ -161,15 +161,15 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<bool> EditRoleRightsAsync(Guid roleId, List<DbRoleRight> newRights)
     {
-      List<DbRoleRight> roleRights = await _provider.RoleRights.Where(x => x.RoleId == roleId).ToListAsync();
+      List<DbRoleRight> roleRights = await _provider.RolesRights.Where(x => x.RoleId == roleId).ToListAsync();
 
       List<int> oldRightsIds =
         (from oldRightIds in roleRights.Select(x => x.RightId).Intersect(newRights.Select(x => x.RightId))
           select oldRightIds)
           .ToList();
 
-      _provider.RoleRights.RemoveRange(roleRights.Where(x => !oldRightsIds.Contains(x.RightId)));
-      _provider.RoleRights.AddRange(newRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+      _provider.RolesRights.RemoveRange(roleRights.Where(x => !oldRightsIds.Contains(x.RightId)));
+      _provider.RolesRights.AddRange(newRights.Where(x => !oldRightsIds.Contains(x.RightId)));
 
       await _provider.SaveAsync();
 
