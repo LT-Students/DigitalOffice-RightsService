@@ -76,27 +76,27 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     {
       OperationResultResponse<RoleResponse> result = new();
 
-      (DbRole role, List<DbUserRole> users, List<DbRightLocalization> rights) = await _roleRepository.GetAsync(filter);
+      (DbRole dbRole, List<DbUserRole> dbUsersRoles, List<DbRightLocalization> dbRights) = await _roleRepository.GetAsync(filter);
 
-      if (role == null)
+      if (dbRole is null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
         return result;
       }
 
-      List<Guid> usersIds = users?.Select(u => u.UserId).ToList();
+      List<Guid> usersIds = dbUsersRoles?.Select(u => u.UserId).ToList();
 
-      usersIds.Add(role.CreatedBy);
+      usersIds.Add(dbRole.CreatedBy);
 
-      if (role.ModifiedBy.HasValue)
+      if (dbRole.ModifiedBy.HasValue)
       {
-        usersIds.Add(role.ModifiedBy.Value);
+        usersIds.Add(dbRole.ModifiedBy.Value);
       }
 
       List<UserData> usersDatas = await GetUsersAsync(usersIds, result.Errors);
 
-      result.Body = _roleResponseMapper.Map(role, rights, usersDatas);
+      result.Body = _roleResponseMapper.Map(dbRole, dbRights, usersDatas);
 
       return result;
     }

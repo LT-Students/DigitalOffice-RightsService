@@ -17,17 +17,17 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     private async Task<object> GetRolesAsync(IGetUserRolesRequest request)
     {
-      List<DbUserRole> users = await _repository.GetAsync(request.UserIds, request.Locale);
+      List<DbUserRole> dbUsersRoles = await _repository.GetAsync(request.UserIds, request.Locale);
 
-      List<DbRole> roles = users.Select(u => u.Role).Distinct().ToList();
+      List<DbRole> dbRoles = dbUsersRoles.Select(u => u.Role).Distinct().ToList();
 
       return IGetUserRolesResponse.CreateObj(
-        roles.Select(r =>
+        dbRoles.Select(r =>
           new RoleData(
             r.Id,
             r.RoleLocalizations.FirstOrDefault()?.Name,
             r.RoleLocalizations.FirstOrDefault()?.Description,
-            users.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
+            dbUsersRoles.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
         .ToList());
     }
 
