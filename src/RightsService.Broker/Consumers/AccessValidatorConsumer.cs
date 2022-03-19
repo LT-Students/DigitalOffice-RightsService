@@ -21,28 +21,29 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     private async Task<object> HasRightAsync(ICheckUserRightsRequest request)
     {
-      var users = _cache.Get<List<(Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights)>>(CacheKeys.Users);
-      var roles = _cache.Get<List<(Guid roleId, bool isActive, IEnumerable<int> rights)>>(CacheKeys.RolesRights);
+      var users = _cache.Get<List<(Guid userId, Guid roleId)>>(CacheKeys.Users);
+      var rolesRights = _cache.Get<List<(Guid roleId, bool isActive, IEnumerable<int> rights)>>(CacheKeys.RolesRights);
 
       if (users == null)
       {
-        List<DbUser> dbUsers = await _repository.GetWithRightsAsync();
-        users = dbUsers.Select(x => (x.UserId, x.IsActive, x.RoleId, x.Rights.Select(x => x.RightId))).ToList();
+        List<DbUserRole> dbUsers = await _repository.GetWithRightsAsync();
+        users = dbUsers.Select(x => (x.UserId, x.RoleId)).ToList();
         _cache.Set(CacheKeys.Users, users);
       }
-      if (roles == null)
+      
+      if (rolesRights is null)
       {
         List<DbRole> dbRoles = await _roleRepository.GetAllWithRightsAsync();
-        roles = dbRoles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
-        _cache.Set(CacheKeys.RolesRights, roles);
+        rolesRights = dbRoles.Select(x => (x.Id, x.IsActive, x.RolesRights.Select(x => x.RightId))).ToList();
+        _cache.Set(CacheKeys.RolesRights, rolesRights);
       }
 
-      (Guid userId, bool isActive, Guid? roleId, IEnumerable<int> userRights) user = users.FirstOrDefault(x => x.userId == request.UserId);
-      (Guid roleId, bool isActive, IEnumerable<int> rights) role = roles.FirstOrDefault(x => x.roleId == user.roleId && x.isActive);
+      (Guid userId, Guid roleId) user = users.FirstOrDefault(x => x.userId == request.UserId);
+      (Guid roleId, bool isActive, IEnumerable<int> rights) role = rolesRights.FirstOrDefault(x => x.roleId == user.roleId && x.isActive);
 
       foreach (int rightId in request.RightIds)
       {
-        if (user.userRights.Contains(rightId) || role.rights?.Contains(rightId) == true)
+        if (role.rights?.Contains(rightId) == true)
         {
           continue;
         }

@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       {
         List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
 
-        rolesRights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
+        rolesRights = roles.Select(x => (x.Id, x.IsActive, x.RolesRights.Select(x => x.RightId))).ToList();
       }
       else
       {

@@ -13,8 +13,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   [AutoInject]
   public interface IRightLocalizationRepository
   {
-    Task<List<DbRightsLocalization>> GetRightsListAsync();
+    Task<List<DbRightLocalization>> GetRightsListAsync();
 
-    Task<List<DbRightsLocalization>> GetRightsListAsync(string locale);
+    Task<List<DbRightLocalization>> GetRightsListAsync(string locale);
   }
 }

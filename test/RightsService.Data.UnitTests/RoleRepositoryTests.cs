@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
     private IRoleRepository _repository;
 
     private DbRole _dbRole;
-    private DbRightsLocalization _dbRight;
+    private DbRightLocalization _dbRight;
 
     private const string Locale = "en";
 

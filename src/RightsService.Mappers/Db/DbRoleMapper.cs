@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         CreatedAtUtc = createdAtUtc,
         IsActive = true,
         RoleLocalizations = request.Localizations.Select(rl => _localizationMapper.Map(rl, roleId)).ToList(),
-        RoleRights = request.Rights?.Select(x => new DbRoleRight
+        RolesRights = request.Rights?.Select(x => new DbRoleRight
         {
           Id = Guid.NewGuid(),
           RoleId = roleId,

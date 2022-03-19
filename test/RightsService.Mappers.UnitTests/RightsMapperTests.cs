@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests
         private const string Name = "Right";
         private const string Description = "Allows you everything";
 
-        private DbRightsLocalization dbRight;
+        private DbRightLocalization dbRight;
 
         //[SetUp]
         //public void SetUp()
