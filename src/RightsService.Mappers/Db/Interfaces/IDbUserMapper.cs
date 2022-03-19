@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db.Interfaces
   [AutoInject]
   public interface IDbUserMapper
   {
-    DbUserRole Map(Guid userId, Guid? roleId, Guid createdBy);
-    DbUserRole Map(Guid userId, Guid? roleId);
+    DbUserRole Map(Guid userId, Guid roleId, Guid createdBy);
+    DbUserRole Map(Guid userId, Guid roleId);
   }
 }

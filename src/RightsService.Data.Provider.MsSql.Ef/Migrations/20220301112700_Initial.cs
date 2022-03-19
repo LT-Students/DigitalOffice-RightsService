@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           UserId = table.Column<Guid>(nullable: false),
           CreatedBy = table.Column<Guid>(nullable: false),
           CreatedAtUtc = table.Column<DateTime>(nullable: false),
-          RoleId = table.Column<Guid>(nullable: true),
+          RoleId = table.Column<Guid>(nullable: false),
           IsActive = table.Column<bool>(nullable: false),
           ModifiedBy = table.Column<Guid>(nullable: true),
           ModifiedAtUtc = table.Column<DateTime>(nullable: true)

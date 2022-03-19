@@ -17,25 +17,25 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     private readonly IUserRepository _userRepository;
     private readonly IMemoryCache _cache;
 
-    private async Task UpdateCacheAsync(Guid userId, Guid? roleId)
+    private async Task UpdateCacheAsync(Guid userId, Guid roleId)
     {
-      List<(Guid userId, bool isActive, Guid? roleId)> users =
-        _cache.Get<List<(Guid, bool, Guid?)>>(CacheKeys.Users);
+      List<(Guid userId, Guid roleId)> users =
+        _cache.Get<List<(Guid, Guid)>>(CacheKeys.Users);
 
       if (users == null)
       {
         List<DbUserRole> dbUsersRoles = await _userRepository.GetWithRightsAsync();
 
-        users = dbUsersRoles.Select(x => (x.UserId, x.IsActive, x.RoleId)).ToList();
+        users = dbUsersRoles.Select(x => (x.UserId, x.RoleId)).ToList();
       }
       else
       {
-        (Guid userId, bool isActive, Guid? roleId) user = users.FirstOrDefault(x => x.userId == userId);
+        (Guid userId, Guid roleId) user = users.FirstOrDefault(x => x.userId == userId);
         
         if (user != default)
         {
           users.Remove(user);
-          users.Add((userId, user.isActive, roleId));
+          users.Add((userId, roleId));
         }        
       }
 

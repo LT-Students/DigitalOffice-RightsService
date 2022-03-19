@@ -25,14 +25,11 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy)
     {
-      var editedUser = _provider.UsersRoles.FirstOrDefault(x => x.UserId == userId);
+      var editedUser = _provider.UsersRoles.FirstOrDefault(x => x.UserId == userId && x.IsActive);
 
-      if (editedUser != null)
+      if (editedUser is not null)
       {
-        editedUser.RoleId = roleId;
-        _provider.Save();
-
-        return;
+        editedUser.IsActive = false;
       }
 
       _provider.UsersRoles.Add(_dbUserMapper.Map(userId, roleId, assignedBy));
@@ -77,7 +74,7 @@ namespace LT.DigitalOffice.RightsService.Data
     public async Task<List<DbUserRole>> GetAsync(List<Guid> userId, string locale)
     {
       return await _provider.UsersRoles
-        .Where(u => userId.Contains(u.UserId))
+        .Where(u => userId.Contains(u.UserId) && u.IsActive)
         .Include(u => u.Role)
         .ThenInclude(r => r.RoleLocalizations.Where(rl => rl.Locale == locale))
         .ToListAsync();
@@ -85,19 +82,20 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<DbUserRole> GetAsync(Guid userId)
     {
-      return await _provider.UsersRoles.FirstOrDefaultAsync(x => x.UserId == userId);
+      return await _provider.UsersRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.IsActive);
     }
 
     public async Task<List<DbUserRole>> GetWithRightsAsync()
     {
       return await _provider.UsersRoles
+        .Where(user => user.IsActive)
         .Include(x => x.Role).ThenInclude(x => x.RolesRights)
         .ToListAsync();
     }
 
     public async Task RemoveAsync(Guid userId)
     {
-      DbUserRole user = _provider.UsersRoles.FirstOrDefault(u => u.UserId == userId);
+      DbUserRole user = _provider.UsersRoles.FirstOrDefault(u => u.UserId == userId && u.IsActive);
 
       if (user is null)
       {

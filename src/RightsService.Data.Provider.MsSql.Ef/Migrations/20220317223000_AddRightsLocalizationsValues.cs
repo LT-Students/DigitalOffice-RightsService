@@ -99,7 +99,7 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           },
           {
             Guid.NewGuid(), 9, "ru", "Управление компаниями",
-            "Право позволяет создавать, редактировать, удалять компании в системе"
+            "Право позволяет создавать, изменять, удалять компании в системе"
           },
           {
             Guid.NewGuid(), 9, "en", "company management",
@@ -123,11 +123,11 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           },
           {
             Guid.NewGuid(), 12, "ru", "Управление ролями пользователей",
-            "Право позволяет назначать, изменять и удалять роль пользователя в системе"
+            "Право позволяет назначать, удалять роль пользователя в системе"
           },
           {
             Guid.NewGuid(), 12, "en", "Users role management",
-            "This right allows you to add, modify and remove users role"
+            "This right allows you to add and remove users role"
           }
         });
     }
