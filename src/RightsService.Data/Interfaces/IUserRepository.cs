@@ -13,16 +13,12 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
-    Task<List<DbUser>> GetAsync(List<Guid> userId, string locale);
+    Task<List<DbUserRole>> GetAsync(List<Guid> userId, string locale);
 
-    Task<DbUser> GetAsync(Guid userId);
+    Task<DbUserRole> GetAsync(Guid userId);
 
-    Task<List<DbUser>> GetWithRightsAsync();
+    Task<List<DbUserRole>> GetWithRightsAsync();
 
     Task RemoveAsync(Guid userId);
-
-    Task AddUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
-
-    Task<bool> RemoveUserRightsAsync(Guid userId, IEnumerable<int> rightIds);
   }
 }

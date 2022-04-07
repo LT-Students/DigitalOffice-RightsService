@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.RightsService.Validation
         return;
       }
 
-      if (tuple.isActive && !await _checkRightsUniquenessHelper.IsRightsSetUniqueAsync(role.RoleRights.Select(x => x.RightId)))
+      if (tuple.isActive && !await _checkRightsUniquenessHelper.IsRightsSetUniqueAsync(role.RolesRights.Select(x => x.RightId)))
       {
         context.AddFailure("Role's set of rights are not unique.");
         return;

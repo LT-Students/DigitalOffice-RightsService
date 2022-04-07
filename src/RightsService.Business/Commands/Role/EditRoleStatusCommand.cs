@@ -26,22 +26,22 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
 
     private async Task UpdateCacheAsync(Guid roleId, bool isActive)
     {
-      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
+      List<(Guid roleId, bool isActive, IEnumerable<int> rights)> rolesRights = _cache.Get<List<(Guid, bool, IEnumerable<int>)>>(CacheKeys.RolesRights);
 
-      if (rights == null)
+      if (rolesRights == null)
       {
         List<DbRole> roles = await _roleRepository.GetAllWithRightsAsync();
 
-        rights = roles.Select(x => (x.Id, x.IsActive, x.RoleRights.Select(x => x.RightId))).ToList();
+        rolesRights = roles.Select(x => (x.Id, x.IsActive, x.RolesRights.Select(x => x.RightId))).ToList();
       }
       else
       {
-        (Guid roleId, bool isActive, IEnumerable<int> rights) oldRole = rights.FirstOrDefault(x => x.roleId == roleId);
-        rights.Remove(oldRole);
-        rights.Add((roleId, isActive, oldRole.rights));
+        (Guid roleId, bool isActive, IEnumerable<int> rights) oldRole = rolesRights.FirstOrDefault(x => x.roleId == roleId);
+        rolesRights.Remove(oldRole);
+        rolesRights.Add((roleId, isActive, oldRole.rights));
       }
 
-      _cache.Set(CacheKeys.RolesRights, rights);
+      _cache.Set(CacheKeys.RolesRights, rolesRights);
     }
 
     public EditRoleStatusCommand(

@@ -8,12 +8,11 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef
 {
   public class RightsServiceDbContext : DbContext, IDataProvider
   {
-    public DbSet<DbRightsLocalization> RightsLocalizations { get; set; }
+    public DbSet<DbRightLocalization> RightsLocalizations { get; set; }
     public DbSet<DbRole> Roles { get; set; }
     public DbSet<DbRoleLocalization> RolesLocalizations { get; set; }
-    public DbSet<DbRoleRight> RoleRights { get; set; }
-    public DbSet<DbUser> Users { get; set; }
-    public DbSet<DbUserRight> UsersRights { get; set; }
+    public DbSet<DbRoleRight> RolesRights { get; set; }
+    public DbSet<DbUserRole> UsersRoles { get; set; }
 
     public RightsServiceDbContext(DbContextOptions<RightsServiceDbContext> options) : base(options) { }
 

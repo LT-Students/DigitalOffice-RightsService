@@ -19,12 +19,12 @@ namespace LT.DigitalOffice.RightsService.Data
       _provider = provider;
     }
 
-    public async Task<List<DbRightsLocalization>> GetRightsListAsync()
+    public async Task<List<DbRightLocalization>> GetRightsListAsync()
     {
       return await _provider.RightsLocalizations.ToListAsync();
     }
 
-    public async Task<List<DbRightsLocalization>> GetRightsListAsync(string locale)
+    public async Task<List<DbRightLocalization>> GetRightsListAsync(string locale)
     {
       return await _provider.RightsLocalizations.Where(r => r.Locale == locale).OrderBy(r => r.RightId).ToListAsync();
     }

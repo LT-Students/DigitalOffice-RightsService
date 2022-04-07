@@ -7,6 +7,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Models.Interfaces
   [AutoInject]
   public interface IRightInfoMapper
   {
-    RightInfo Map(DbRightsLocalization value);
+    RightInfo Map(DbRightLocalization value);
   }
 }

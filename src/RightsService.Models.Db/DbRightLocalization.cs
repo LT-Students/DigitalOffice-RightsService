@@ -4,9 +4,9 @@ using System;
 
 namespace LT.DigitalOffice.RightsService.Models.Db
 {
-    public class DbRightsLocalization
+    public class DbRightLocalization
     {
-        public const string TableName = "RightsLocalization";
+        public const string TableName = "RightsLocalizations";
 
         public Guid Id { get; set; }
         public int RightId { get; set; }
@@ -15,12 +15,12 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         public string Description { get; set; }
     }
 
-    public class DbRightLocalizationConfiguration : IEntityTypeConfiguration<DbRightsLocalization>
+    public class DbRightLocalizationConfiguration : IEntityTypeConfiguration<DbRightLocalization>
     {
-        public void Configure(EntityTypeBuilder<DbRightsLocalization> builder)
+        public void Configure(EntityTypeBuilder<DbRightLocalization> builder)
         {
             builder
-                .ToTable(DbRightsLocalization.TableName);
+                .ToTable(DbRightLocalization.TableName);
 
             builder
                 .HasKey(r => r.Id);
