@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
-    Task<List<DbUserRole>> GetAsync(List<Guid> userId, string locale);
+    Task<List<DbUserRole>> GetAsync(List<Guid> usersIds, string locale);
 
     Task<DbUserRole> GetAsync(Guid userId);
 
