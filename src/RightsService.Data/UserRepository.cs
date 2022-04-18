@@ -71,13 +71,19 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public async Task<List<DbUserRole>> GetAsync(List<Guid> userId, string locale)
+    public async Task<List<DbUserRole>> GetAsync(List<Guid> usersIds, string locale)
     {
-      return await _provider.UsersRoles
-        .Where(u => userId.Contains(u.UserId) && u.IsActive)
+      IQueryable<DbUserRole> dbUsersRoles = _provider.UsersRoles.AsQueryable();
+
+      dbUsersRoles = dbUsersRoles
         .Include(u => u.Role)
-        .ThenInclude(r => r.RoleLocalizations.Where(rl => rl.Locale == locale))
-        .ToListAsync();
+        .ThenInclude(r => r.RoleLocalizations.Where(rl => rl.Locale == locale));
+
+      dbUsersRoles = dbUsersRoles
+        .Include(u => u.Role)
+        .ThenInclude(r => r.RolesRights);
+
+      return await dbUsersRoles.ToListAsync();
     }
 
     public async Task<DbUserRole> GetAsync(Guid userId)

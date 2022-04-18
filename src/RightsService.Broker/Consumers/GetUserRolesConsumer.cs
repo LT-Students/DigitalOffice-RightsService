@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Models.Broker.Models;
+using LT.DigitalOffice.Models.Broker.Models.Right;
 using LT.DigitalOffice.Models.Broker.Requests.Rights;
 using LT.DigitalOffice.Models.Broker.Responses.Rights;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
@@ -26,7 +27,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
           new RoleData(
             r.Id,
             r.RoleLocalizations.FirstOrDefault()?.Name,
-            r.RoleLocalizations.FirstOrDefault()?.Description,
+            r.RolesRights.Select(rr => rr.RightId).ToList(),
             dbUsersRoles.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
         .ToList());
     }
