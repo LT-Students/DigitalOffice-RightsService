@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<(List<(DbRole role, List<DbRightLocalization> rights)>, int totalCount)> FindActiveAsync(FindRolesFilter filter);
 
-    Task<bool> DoesRoleExistAsync(Guid roleId);
+    Task<bool> DoesExistAsync(Guid roleId);
 
     Task<bool> EditStatusAsync(Guid roleId, bool isActive);
 
