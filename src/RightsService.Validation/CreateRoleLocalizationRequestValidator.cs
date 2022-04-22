@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.RightsService.Validation
       When(x => x.RoleId.HasValue, () =>
       {
         RuleFor(x => x)
-          .MustAsync(async (x, _) => await roleRepository.DoesRoleExistAsync(x.RoleId.Value))
+          .MustAsync(async (x, _) => await roleRepository.DoesExistAsync(x.RoleId.Value))
           .WithMessage("Role must exist.")
           .MustAsync(async (x, _) => !await localizationRepository.DoesLocaleExistAsync(x.RoleId.Value, x.Locale))
           .WithMessage("Role must have only one localization per locale.");

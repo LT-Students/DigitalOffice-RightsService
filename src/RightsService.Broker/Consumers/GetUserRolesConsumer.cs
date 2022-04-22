@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
   public class GetUserRolesConsumer : IConsumer<IGetUserRolesRequest>
   {
-    private readonly IUserRepository _repository;
+    private readonly IUserRoleRepository _repository;
 
     private async Task<object> GetRolesAsync(IGetUserRolesRequest request)
     {
@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
         .ToList());
     }
 
-    public GetUserRolesConsumer(IUserRepository userRepository)
+    public GetUserRolesConsumer(IUserRoleRepository userRepository)
     {
       _repository = userRepository;
     }

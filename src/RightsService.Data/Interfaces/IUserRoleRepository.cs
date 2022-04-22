@@ -7,9 +7,9 @@ using LT.DigitalOffice.RightsService.Models.Db;
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
   [AutoInject]
-  public interface IUserRepository
+  public interface IUserRoleRepository
   {
-    Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy);
+    Task<Guid?> CreateAsync(DbUserRole dbUserRole);
 
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 

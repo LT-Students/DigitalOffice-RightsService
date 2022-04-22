@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
   public class AccessValidatorConsumer : IConsumer<ICheckUserRightsRequest>
   {
-    private readonly IUserRepository _repository;
+    private readonly IUserRoleRepository _repository;
     private readonly IRoleRepository _roleRepository;
     private readonly IMemoryCache _cache;
 
@@ -55,7 +55,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     }
 
     public AccessValidatorConsumer(
-      [FromServices] IUserRepository repository,
+      [FromServices] IUserRoleRepository repository,
       [FromServices] IRoleRepository roleRepository,
       [FromServices] IMemoryCache cache)
     {

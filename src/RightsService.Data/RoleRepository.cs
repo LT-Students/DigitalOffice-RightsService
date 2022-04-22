@@ -134,7 +134,7 @@ namespace LT.DigitalOffice.RightsService.Data
         totalCount);
     }
 
-    public async Task<bool> DoesRoleExistAsync(Guid roleId)
+    public async Task<bool> DoesExistAsync(Guid roleId)
     {
       return await _provider.Roles.AnyAsync(r => r.Id == roleId);
     }
