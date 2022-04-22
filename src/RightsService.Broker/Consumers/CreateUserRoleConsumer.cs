@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
-using LT.DigitalOffice.Models.Broker.Requests.Rights;
+using LT.DigitalOffice.Models.Broker.Publishing.Subscriber.Right;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using MassTransit;
@@ -12,9 +12,10 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
-  public class ChangeUserRoleConsumer : IConsumer<IChangeUserRoleRequest>
+  public class CreateUserRoleConsumer : IConsumer<ICreateUserRolePublish>
   {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserRoleRepository _userRepository;
+    private readonly IDbUserRoleMapper _mapper;
     private readonly IMemoryCache _cache;
 
     private async Task UpdateCacheAsync(Guid userId, Guid roleId)
@@ -22,7 +23,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       List<(Guid userId, Guid roleId)> users =
         _cache.Get<List<(Guid, Guid)>>(CacheKeys.Users);
 
-      if (users == null)
+      if (users is null)
       {
         List<DbUserRole> dbUsersRoles = await _userRepository.GetWithRightsAsync();
 
@@ -31,39 +32,33 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       else
       {
         (Guid userId, Guid roleId) user = users.FirstOrDefault(x => x.userId == userId);
-        
+
         if (user != default)
         {
           users.Remove(user);
           users.Add((userId, roleId));
-        }        
+        }
       }
 
       _cache.Set(CacheKeys.Users, users);
     }
 
-    private async Task<bool> ChangeRoleAsync(IChangeUserRoleRequest request)
-    {
-      await _userRepository.AssignRoleAsync(request.UserId, request.RoleId, request.ChangedBy);
-
-      await UpdateCacheAsync(request.UserId, request.RoleId);
-
-      return true;
-    }
-
-    public ChangeUserRoleConsumer(
-      IUserRepository userRepository,
-      IMemoryCache cache)
+    public CreateUserRoleConsumer(
+      IUserRoleRepository userRepository,
+      IMemoryCache cache,
+      IDbUserRoleMapper mapper)
     {
       _userRepository = userRepository;
       _cache = cache;
+      _mapper = mapper;
     }
 
-    public async Task Consume(ConsumeContext<IChangeUserRoleRequest> context)
+    public async Task Consume(ConsumeContext<ICreateUserRolePublish> context)
     {
-      var result = OperationResultWrapper.CreateResponse(ChangeRoleAsync, context.Message);
-
-      await context.RespondAsync<IOperationResult<bool>>(result);
+      if ((await _userRepository.CreateAsync(_mapper.Map(context.Message))).HasValue)
+      {
+        await UpdateCacheAsync(context.Message.UserId, context.Message.RoleId);
+      }
     }
   }
 }

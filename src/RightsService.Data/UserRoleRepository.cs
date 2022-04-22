@@ -4,37 +4,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
-using LT.DigitalOffice.RightsService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Data
 {
-  public class UserRepository : IUserRepository
+  public class UserRoleRepository : IUserRoleRepository
   {
     private readonly IDataProvider _provider;
-    private readonly IDbUserMapper _dbUserMapper;
 
-    public UserRepository(
-      IDataProvider provider,
-      IDbUserMapper dbUserMapper)
+    public UserRoleRepository(
+      IDataProvider provider)
     {
       _provider = provider;
-      _dbUserMapper = dbUserMapper;
     }
 
-    public async Task AssignRoleAsync(Guid userId, Guid roleId, Guid assignedBy)
+    public async Task<Guid?> CreateAsync(DbUserRole dbUserRole)
     {
-      var editedUser = _provider.UsersRoles.FirstOrDefault(x => x.UserId == userId && x.IsActive);
-
-      if (editedUser is not null)
+      if (dbUserRole is null)
       {
-        editedUser.IsActive = false;
+        return default;
       }
 
-      _provider.UsersRoles.Add(_dbUserMapper.Map(userId, roleId, assignedBy));
-
+      _provider.UsersRoles.Add(dbUserRole);
       await _provider.SaveAsync();
+
+      return dbUserRole.Id;
     }
 
     public async Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds)
@@ -47,7 +42,8 @@ namespace LT.DigitalOffice.RightsService.Data
       List<int> rights = (await
         (from user in _provider.UsersRoles
          where user.UserId == userId && user.IsActive
-         join role in _provider.Roles on user.RoleId equals role.Id where role.IsActive
+         join role in _provider.Roles on user.RoleId equals role.Id
+         where role.IsActive
          join roleRight in _provider.RolesRights on role.Id equals roleRight.RoleId
          select new
          {
