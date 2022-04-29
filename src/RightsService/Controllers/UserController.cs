@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Controllers
   public class UserController : ControllerBase
   {
     [HttpPut("edit")]
-    public async Task<OperationResultResponse<Guid?>> EditAsync(
+    public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditUserRoleCommand command,
       [FromBody] EditUserRoleRequest request)
     {

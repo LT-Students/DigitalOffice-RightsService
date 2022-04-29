@@ -95,17 +95,18 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
-    public async Task RemoveAsync(Guid userId)
+    public async Task<bool> RemoveAsync(Guid userId)
     {
       DbUserRole user = _provider.UsersRoles.FirstOrDefault(u => u.UserId == userId && u.IsActive);
 
       if (user is null)
       {
-        return;
+        return false;
       }
 
       user.IsActive = false;
       await _provider.SaveAsync();
+      return true;
     }
   }
 }

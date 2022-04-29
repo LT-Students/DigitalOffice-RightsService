@@ -11,6 +11,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db.Interfaces
   {
     DbUserRole Map(ICreateUserRolePublish request);
 
-    DbUserRole Map(EditUserRoleRequest request, Guid changedBy);
+    DbUserRole Map(EditUserRoleRequest request);
   }
 }
