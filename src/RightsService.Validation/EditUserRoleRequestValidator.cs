@@ -15,6 +15,10 @@ namespace LT.DigitalOffice.RightsService.Validation
       IUserService userService)
     {
       RuleFor(x => x.UserId)
+        .Must(x => x != Guid.Empty)
+        .WithMessage("No user id provided.");
+
+      RuleFor(x => x.UserId)
         .MustAsync(async (request, _) => (await userService.CheckUsersExistence(new List<Guid> { request }, new List<string>())).Count == 1)
         .WithMessage("User does not exist.");
 

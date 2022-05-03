@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
@@ -54,12 +55,20 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
       }
 
       OperationResultResponse<bool> response = new();
+
+      if (!(await _repository.RemoveAsync(request.UserId)) && !request.RoleId.HasValue)
+      {
+        return _responseCreator.CreateFailureResponse<bool>(
+          HttpStatusCode.BadRequest,
+          new List<string> { "Removal failed" });
+      }
+
       bool removalResult = await _repository.RemoveAsync(request.UserId);
       response.Body = request.RoleId.HasValue
         ? (await _repository.CreateAsync(_mapper.Map(
           request))).HasValue
-        : false;
-      response.Status = removalResult
+        : true;
+      response.Status = response.Body
         ? OperationResultStatusType.FullSuccess
         : OperationResultStatusType.Failed;
 
