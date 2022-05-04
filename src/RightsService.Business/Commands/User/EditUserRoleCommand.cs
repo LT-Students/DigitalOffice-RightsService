@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
           new List<string> { "Removal failed" });
       }
 
-      bool removalResult = await _repository.RemoveAsync(request.UserId);
+      await _repository.RemoveAsync(request.UserId);
       response.Body = request.RoleId.HasValue
         ? (await _repository.CreateAsync(_mapper.Map(
           request))).HasValue
