@@ -3,6 +3,7 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
+    <ProjectReference Include="..\RightsService.Broker\RightsService.Broker.csproj" />
     <ProjectReference Include="..\RightsService.Data\RightsService.Data.csproj" />
     <ProjectReference Include="..\RightsService.Models.Dto\RightsService.Models.Dto.csproj" />
   </ItemGroup>

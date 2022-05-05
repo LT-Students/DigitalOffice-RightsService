@@ -19,6 +19,6 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<List<DbUserRole>> GetWithRightsAsync();
 
-    Task RemoveAsync(Guid userId);
+    Task<bool> RemoveAsync(Guid userId);
   }
 }

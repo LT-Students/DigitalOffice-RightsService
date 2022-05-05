@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Data
@@ -12,11 +14,14 @@ namespace LT.DigitalOffice.RightsService.Data
   public class UserRoleRepository : IUserRoleRepository
   {
     private readonly IDataProvider _provider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public UserRoleRepository(
-      IDataProvider provider)
+      IDataProvider provider,
+      IHttpContextAccessor httpContextAccessor)
     {
       _provider = provider;
+      _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Guid?> CreateAsync(DbUserRole dbUserRole)
@@ -95,17 +100,21 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
-    public async Task RemoveAsync(Guid userId)
+    public async Task<bool> RemoveAsync(Guid userId)
     {
-      DbUserRole user = _provider.UsersRoles.FirstOrDefault(u => u.UserId == userId && u.IsActive);
+      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
 
       if (user is null)
       {
-        return;
+        return false;
       }
 
       user.IsActive = false;
+      user.ModifiedAtUtc = DateTime.Now;
+      user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+
       await _provider.SaveAsync();
+      return true;
     }
   }
 }
