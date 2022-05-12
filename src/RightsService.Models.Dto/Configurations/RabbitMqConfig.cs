@@ -16,6 +16,7 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Configurations
 
     [AutoInjectRequest(typeof(IGetUsersDataRequest))]
     public string GetUsersDataEndpoint { get; set; }
+
     [AutoInjectRequest(typeof(ICheckUsersExistence))]
     public string CheckUsersExistenceEndpoint { get; set; }
   }
