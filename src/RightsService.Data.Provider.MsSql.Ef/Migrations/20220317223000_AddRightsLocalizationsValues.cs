@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
 {
   [DbContext(typeof(RightsServiceDbContext))]
-  [Migration("20220317223000_AddRightsLocalizationsValues")]
+  [Migration("20220515223000_AddRightsLocalizationsValues")]
   public class AddRightsLocalizationsValues : Migration
   {
     private void AddDataToDbRightsLocalization(MigrationBuilder migrationBuilder)
@@ -128,7 +128,15 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           {
             Guid.NewGuid(), 12, "en", "Users role management",
             "This right allows you to add and remove users role"
-          }
+          },
+          {
+            Guid.NewGuid(), 13, "ru", "Управление Вики",
+            "Право позволяет создавать, редактировать и удалять статьи, разделы и подразделы в Вики"
+          },
+          {
+            Guid.NewGuid(), 13, "en", "Wiki management",
+            "This right allows to create, edit and delete articles, sections in the Wiki"
+          },
         });
     }
     protected override void Up(MigrationBuilder migrationBuilder)
