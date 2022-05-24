@@ -110,8 +110,7 @@ namespace LT.DigitalOffice.RightsService.Data
       }
 
       user.IsActive = false;
-      user.ModifiedAtUtc = DateTime.Now;
-      user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      user.CreatedBy = _httpContextAccessor.HttpContext.GetUserId();
 
       await _provider.SaveAsync();
       return true;

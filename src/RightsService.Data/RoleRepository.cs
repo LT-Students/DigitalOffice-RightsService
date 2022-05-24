@@ -151,8 +151,7 @@ namespace LT.DigitalOffice.RightsService.Data
       _provider.Roles.Update(role);
 
       role.IsActive = isActive;
-      role.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
-      role.ModifiedAtUtc = DateTime.UtcNow;
+      role.CreatedBy = _httpContextAccessor.HttpContext.GetUserId();
       
       await _provider.SaveAsync();
 

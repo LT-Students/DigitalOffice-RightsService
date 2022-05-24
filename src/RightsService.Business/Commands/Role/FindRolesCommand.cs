@@ -99,6 +99,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       FindResultResponse<RoleInfo> result = new();
 
+      //TODO - find using one method
       (List<(DbRole role, List<DbRightLocalization> rights)> roles, int totalCount) = filter.IncludeDeactivated
         ? await _roleRepository.FindAllAsync(filter)
         : await _roleRepository.FindActiveAsync(filter);
@@ -110,11 +111,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       foreach((DbRole role, List<DbRightLocalization> rights) in roles)
       {
         usersIds.Add(role.CreatedBy);
-
-        if (role.ModifiedBy.HasValue)
-        {
-          usersIds.Add(role.ModifiedBy.Value);
-        }
       }
 
       List<UserInfo> usersInfos = (await GetUsersAsync(usersIds.Distinct().ToList(), errors))?

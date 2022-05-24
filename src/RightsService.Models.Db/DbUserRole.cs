@@ -7,14 +7,12 @@ namespace LT.DigitalOffice.RightsService.Models.Db
   public class DbUserRole
   {
     public const string TableName = "UsersRoles";
+    public const string HistoryTableName = "UsersRolesHistory";
 
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public Guid RoleId { get; set; }
     public Guid CreatedBy { get; set; }
-    public DateTime CreatedAtUtc { get; set; }
-    public Guid? ModifiedBy { get; set; }
-    public DateTime? ModifiedAtUtc { get; set; }
     public bool IsActive { get; set; }
 
     public DbRole Role { get; set; }
@@ -25,7 +23,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public void Configure(EntityTypeBuilder<DbUserRole> builder)
     {
       builder
-        .ToTable(DbUserRole.TableName);
+        .ToTable(
+          DbUserRole.TableName,
+          ur => ur.IsTemporal(builder =>
+            builder.UseHistoryTable(DbUserRole.HistoryTableName)));
 
       builder
         .HasKey(u => u.Id);
