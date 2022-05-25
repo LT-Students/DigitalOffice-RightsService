@@ -56,17 +56,15 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
 
       OperationResultResponse<bool> response = new();
 
-      if (!(await _repository.RemoveAsync(request.UserId)) && !request.RoleId.HasValue)
+      if (!request.RoleId.HasValue)
       {
-        return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.BadRequest,
-          new List<string> { "Removal failed" });
+        response.Body = await _repository.RemoveAsync(request.UserId);
+      }
+      else
+      {
+        response.Body = (await _repository.CreateAsync(_mapper.Map(request))).HasValue;
       }
 
-      response.Body = request.RoleId.HasValue
-        ? (await _repository.CreateAsync(_mapper.Map(
-          request))).HasValue
-        : true;
       response.Status = response.Body
         ? OperationResultStatusType.FullSuccess
         : OperationResultStatusType.Failed;

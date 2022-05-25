@@ -58,9 +58,11 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     public async Task Consume(ConsumeContext<ICreateUserRolePublish> context)
     {
-      if (await _roleRepository.DoesExistAsync(context.Message.RoleId))
+      if (await _roleRepository.DoesExistAsync(context.Message.RoleId)
+        && !await _userRoleRepository.DoesExistAsync(context.Message.UserId))
       {
         await _userRoleRepository.CreateAsync(_mapper.Map(context.Message));
+
         await UpdateCacheAsync(context.Message.UserId, context.Message.RoleId);
       }
     }

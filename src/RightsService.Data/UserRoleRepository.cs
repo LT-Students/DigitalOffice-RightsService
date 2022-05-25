@@ -31,7 +31,19 @@ namespace LT.DigitalOffice.RightsService.Data
         return default;
       }
 
-      _provider.UsersRoles.Add(dbUserRole);
+      DbUserRole oldUser = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == dbUserRole.UserId);
+
+      if (oldUser is not null)
+      {
+        oldUser.RoleId = dbUserRole.RoleId;
+        oldUser.CreatedBy = _httpContextAccessor.HttpContext.GetUserId();
+        oldUser.IsActive = true;
+      }
+      else
+      {
+        _provider.UsersRoles.Add(dbUserRole);
+      }
+
       await _provider.SaveAsync();
 
       return dbUserRole.Id;
@@ -102,7 +114,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<bool> RemoveAsync(Guid userId)
     {
-      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
+      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId);
 
       if (user is null)
       {
@@ -114,6 +126,11 @@ namespace LT.DigitalOffice.RightsService.Data
 
       await _provider.SaveAsync();
       return true;
+    }
+
+    public async Task<bool> DoesExistAsync(Guid userId)
+    {
+      return await _provider.UsersRoles.AnyAsync(x => x.UserId == userId && x.IsActive);
     }
   }
 }

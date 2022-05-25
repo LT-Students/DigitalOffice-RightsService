@@ -20,5 +20,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     Task<List<DbUserRole>> GetWithRightsAsync();
 
     Task<bool> RemoveAsync(Guid userId);
+
+    Task<bool> DoesExistAsync(Guid userId);
   }
 }
