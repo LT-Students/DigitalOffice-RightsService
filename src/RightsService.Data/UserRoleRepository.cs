@@ -31,22 +31,26 @@ namespace LT.DigitalOffice.RightsService.Data
         return default;
       }
 
-      DbUserRole oldUser = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == dbUserRole.UserId);
-
-      if (oldUser is not null)
-      {
-        oldUser.RoleId = dbUserRole.RoleId;
-        oldUser.CreatedBy = _httpContextAccessor.HttpContext.GetUserId();
-        oldUser.IsActive = true;
-      }
-      else
-      {
-        _provider.UsersRoles.Add(dbUserRole);
-      }
+      _provider.UsersRoles.Add(dbUserRole);
 
       await _provider.SaveAsync();
 
       return dbUserRole.Id;
+    }
+
+    public async Task<bool> EditAsync(DbUserRole oldUser, DbUserRole newUser)
+    {
+      if (oldUser is null || newUser is null)
+      {
+        return false;
+      }
+
+      oldUser.RoleId = newUser.RoleId;
+      oldUser.IsActive = true;
+
+      await _provider.SaveAsync();
+
+      return true;
     }
 
     public async Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds)

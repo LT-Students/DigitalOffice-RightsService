@@ -11,6 +11,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbUserRole dbUserRole);
 
+    Task<bool> EditAsync(DbUserRole oldUser, DbUserRole newUser);
+
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
     Task<List<DbUserRole>> GetAsync(List<Guid> usersIds, string locale);
