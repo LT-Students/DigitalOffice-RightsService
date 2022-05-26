@@ -65,12 +65,12 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
 
       if (!request.RoleId.HasValue)
       {
-        response.Body = await _repository.RemoveAsync(request.UserId);
+        response.Body = await _repository.RemoveAsync(request.UserId, oldUser);
       }
       else
       {
         response.Body = oldUser is not null
-          ? await _repository.EditAsync(oldUser, _mapper.Map(request))
+          ? await _repository.EditAsync(oldUser, request)
           : (await _repository.CreateAsync(_mapper.Map(request))).HasValue;
       }
 

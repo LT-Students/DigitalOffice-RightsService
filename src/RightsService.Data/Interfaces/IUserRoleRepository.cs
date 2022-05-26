@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
@@ -11,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbUserRole dbUserRole);
 
-    Task<bool> EditAsync(DbUserRole oldUser, DbUserRole newUser);
+    Task<bool> EditAsync(DbUserRole oldUser, EditUserRoleRequest request);
 
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
@@ -21,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<List<DbUserRole>> GetWithRightsAsync();
 
-    Task<bool> RemoveAsync(Guid userId);
+    Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? modifiedBy = null);
 
     Task<bool> DoesExistAsync(Guid userId);
   }

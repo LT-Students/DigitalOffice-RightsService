@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,14 +39,14 @@ namespace LT.DigitalOffice.RightsService.Data
       return dbUserRole.Id;
     }
 
-    public async Task<bool> EditAsync(DbUserRole oldUser, DbUserRole newUser)
+    public async Task<bool> EditAsync(DbUserRole oldUser, EditUserRoleRequest request)
     {
-      if (oldUser is null || newUser is null)
+      if (oldUser is null || !request.RoleId.HasValue)
       {
         return false;
       }
 
-      oldUser.RoleId = newUser.RoleId;
+      oldUser.RoleId = request.RoleId.Value;
       oldUser.IsActive = true;
 
       await _provider.SaveAsync();
@@ -116,9 +117,10 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
-    public async Task<bool> RemoveAsync(Guid userId)
+    public async Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? modifiedBy = null)
     {
-      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId);
+      DbUserRole user = removedUser
+        ?? await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
 
       if (user is null)
       {
@@ -126,7 +128,9 @@ namespace LT.DigitalOffice.RightsService.Data
       }
 
       user.IsActive = false;
-      user.CreatedBy = _httpContextAccessor.HttpContext.GetUserId();
+      user.CreatedBy = modifiedBy.HasValue
+        ? modifiedBy.Value
+        : _httpContextAccessor.HttpContext.GetUserId();
 
       await _provider.SaveAsync();
       return true;
