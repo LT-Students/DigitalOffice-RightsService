@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbUserRole dbUserRole);
 
-    Task<bool> EditAsync(DbUserRole oldUser, EditUserRoleRequest request);
+    Task<bool> EditAsync(DbUserRole oldUser, Guid roleId);
 
     Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds);
 
@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<List<DbUserRole>> GetWithRightsAsync();
 
-    Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? modifiedBy = null);
+    Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? removedBy = null);
 
     Task<bool> DoesExistAsync(Guid userId);
   }

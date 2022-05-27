@@ -49,7 +49,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     public async Task Consume(ConsumeContext<IDisactivateUserPublish> context)
     {
-      if (await _repository.RemoveAsync(context.Message.UserId, modifiedBy: context.Message.ModifiedBy))
+      if (await _repository.RemoveAsync(context.Message.UserId, removedBy: context.Message.ModifiedBy))
       {
         await UpdateCacheAsync(context.Message.UserId);
       }

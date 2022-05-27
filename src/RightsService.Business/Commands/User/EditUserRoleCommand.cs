@@ -70,7 +70,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
       else
       {
         response.Body = oldUser is not null
-          ? await _repository.EditAsync(oldUser, request)
+          ? await _repository.EditAsync(oldUser, request.RoleId.Value)
           : (await _repository.CreateAsync(_mapper.Map(request))).HasValue;
       }
 
