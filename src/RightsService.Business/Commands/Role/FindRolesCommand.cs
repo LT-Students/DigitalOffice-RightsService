@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.Models.Broker.Models;
@@ -34,6 +35,7 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     private readonly IRequestClient<IGetUsersDataRequest> _usersDataRequestClient;
     private readonly IBaseFindFilterValidator _findFilterValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IResponseCreator _responseCreator;
 
     private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
@@ -72,7 +74,8 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       IRightInfoMapper rightMapper,
       IRequestClient<IGetUsersDataRequest> usersDataRequestClient,
       IBaseFindFilterValidator findFilterValidator,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IResponseCreator responseCreator)
     {
       _logger = logger;
       _roleRepository = roleRepository;
@@ -82,24 +85,20 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _usersDataRequestClient = usersDataRequestClient;
       _findFilterValidator = findFilterValidator;
       _httpContextAccessor = httpContextAccessor;
+      _responseCreator = responseCreator;
     }
 
     public async Task<FindResultResponse<RoleInfo>> ExecuteAsync(FindRolesFilter filter)
     {
       if (!_findFilterValidator.ValidateCustom(filter, out List<string> errors))
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-        return new FindResultResponse<RoleInfo>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = errors
-        };
+        return _responseCreator.CreateFailureFindResponse<RoleInfo>(
+          HttpStatusCode.BadRequest,
+          errors);
       }
 
       FindResultResponse<RoleInfo> result = new();
 
-      //TODO - find using one method
       (List<(DbRole role, List<DbRightLocalization> rights)> roles, int totalCount) = filter.IncludeDeactivated
         ? await _roleRepository.FindAllAsync(filter)
         : await _roleRepository.FindActiveAsync(filter);
