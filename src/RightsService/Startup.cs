@@ -85,11 +85,11 @@ namespace LT.DigitalOffice.RightsService
         })
         .AddNewtonsoftJson();
 
-      string connStr = ConnectionStringHandler.Get(Configuration);
+      string dbConnectionString = ConnectionStringHandler.Get(Configuration);
 
       services.AddDbContext<RightsServiceDbContext>(options =>
       {
-        options.UseSqlServer(connStr);
+        options.UseSqlServer(dbConnectionString);
       });
 
       if (int.TryParse(Environment.GetEnvironmentVariable("MemoryCacheLiveInMinutes"), out int memoryCacheLifetime))
@@ -138,7 +138,7 @@ namespace LT.DigitalOffice.RightsService
 
       services
         .AddHealthChecks()
-        .AddSqlServer(connStr)
+        .AddSqlServer(dbConnectionString)
         .AddRabbitMqCheck();
     }
 
