@@ -1,12 +1,12 @@
-﻿using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.Kernel.Database;
-using Microsoft.EntityFrameworkCore;
-using LT.DigitalOffice.Kernel.Attributes;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.Kernel.EFSupport.Provider;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.RightsService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Data.Provider
 {
-    [AutoInject(InjectType.Scoped)]
+  [AutoInject(InjectType.Scoped)]
     public interface IDataProvider : IBaseDataProvider
     {
         DbSet<DbRightLocalization> RightsLocalizations { get; set; }

@@ -24,7 +24,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         Id = Guid.NewGuid(),
         UserId = request.UserId,
         RoleId = request.RoleId,
-        CreatedAtUtc = DateTime.UtcNow,
         CreatedBy = request.ChangedBy,
         IsActive = true
       };
@@ -37,7 +36,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         Id = Guid.NewGuid(),
         UserId = request.UserId,
         RoleId = request.RoleId.Value,
-        CreatedAtUtc = DateTime.UtcNow,
         CreatedBy = _httpContextAccessor.HttpContext.GetUserId(),
         IsActive = true
       };

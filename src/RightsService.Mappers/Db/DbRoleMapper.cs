@@ -29,14 +29,12 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
       }
 
       var roleId = Guid.NewGuid();
-      var createdAtUtc = DateTime.UtcNow;
       var creatorId = _httpContextAccessor.HttpContext.GetUserId();
 
       return new DbRole
       {
         Id = roleId,
         CreatedBy = creatorId,
-        CreatedAtUtc = createdAtUtc,
         IsActive = true,
         RoleLocalizations = request.Localizations.Select(rl => _localizationMapper.Map(rl, roleId)).ToList(),
         RolesRights = request.Rights?.Select(x => new DbRoleRight
@@ -44,7 +42,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
           Id = Guid.NewGuid(),
           RoleId = roleId,
           CreatedBy = creatorId,
-          CreatedAtUtc = createdAtUtc,
           RightId = x,
         }).ToList()
       };

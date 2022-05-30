@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
@@ -11,6 +10,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.User.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
 
@@ -56,17 +56,24 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
 
       OperationResultResponse<bool> response = new();
 
-      if (!(await _repository.RemoveAsync(request.UserId)) && !request.RoleId.HasValue)
+      DbUserRole oldUser = await _repository.GetAsync(request.UserId);
+
+      if (oldUser is null && !request.RoleId.HasValue)
       {
-        return _responseCreator.CreateFailureResponse<bool>(
-          HttpStatusCode.BadRequest,
-          new List<string> { "Removal failed" });
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
       }
 
-      response.Body = request.RoleId.HasValue
-        ? (await _repository.CreateAsync(_mapper.Map(
-          request))).HasValue
-        : true;
+      if (!request.RoleId.HasValue)
+      {
+        response.Body = await _repository.RemoveAsync(request.UserId, oldUser);
+      }
+      else
+      {
+        response.Body = oldUser is not null
+          ? await _repository.EditAsync(oldUser, request.RoleId.Value)
+          : (await _repository.CreateAsync(_mapper.Map(request))).HasValue;
+      }
+
       response.Status = response.Body
         ? OperationResultStatusType.FullSuccess
         : OperationResultStatusType.Failed;

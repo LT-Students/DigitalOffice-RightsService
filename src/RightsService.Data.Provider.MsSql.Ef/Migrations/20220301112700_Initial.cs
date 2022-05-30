@@ -19,16 +19,25 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           Id = table.Column<Guid>(nullable: false),
           UserId = table.Column<Guid>(nullable: false),
           CreatedBy = table.Column<Guid>(nullable: false),
-          CreatedAtUtc = table.Column<DateTime>(nullable: false),
           RoleId = table.Column<Guid>(nullable: false),
           IsActive = table.Column<bool>(nullable: false),
-          ModifiedBy = table.Column<Guid>(nullable: true),
-          ModifiedAtUtc = table.Column<DateTime>(nullable: true)
+          PeriodEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart"),
+          PeriodStart = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart")
         },
         constraints: table =>
         {
           table.PrimaryKey("PR_UsersRoles", x => x.Id);
-        });
+        })
+        .Annotation("SqlServer:IsTemporal", true)
+        .Annotation("SqlServer:TemporalHistoryTableName", DbUserRole.HistoryTableName)
+        .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+        .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
     }
 
     private void CreateRolesTable(MigrationBuilder migrationBuilder)
@@ -39,15 +48,24 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
           Id = table.Column<Guid>(nullable: false),
           CreatedBy = table.Column<Guid>(nullable: false),
-          CreatedAtUtc = table.Column<DateTime>(nullable: false),
           IsActive = table.Column<bool>(nullable: false),
-          ModifiedBy = table.Column<Guid>(nullable: true),
-          ModifiedAtUtc = table.Column<DateTime>(nullable: true)
+          PeriodEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart"),
+          PeriodStart = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart")
         },
         constraints: table =>
         {
           table.PrimaryKey("PK_Roles", x => x.Id);
-        });
+        })
+        .Annotation("SqlServer:IsTemporal", true)
+        .Annotation("SqlServer:TemporalHistoryTableName", DbRole.HistoryTableName)
+        .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+        .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
     }
 
     private void CreateRolesRightsTable(MigrationBuilder migrationBuilder)
@@ -58,14 +76,25 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
         {
           Id = table.Column<Guid>(nullable: false),
           RoleId = table.Column<Guid>(nullable: false),
-          CreatedBy = table.Column<Guid>(nullable: false),
-          CreatedAtUtc = table.Column<DateTime>(nullable: false),
           RightId = table.Column<int>(nullable: false),
+          CreatedBy = table.Column<Guid>(nullable: false),
+          PeriodEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart"),
+          PeriodStart = table.Column<DateTime>(type: "datetime2", nullable: false)
+            .Annotation("SqlServer:IsTemporal", true)
+            .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+            .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart")
         },
         constraints: table =>
         {
           table.PrimaryKey("PK_RolesRights", x => x.Id);
-        });
+        })
+        .Annotation("SqlServer:IsTemporal", true)
+        .Annotation("SqlServer:TemporalHistoryTableName", DbRoleRight.HistoryTableName)
+        .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
+        .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
     }
 
     private void CreateRightsLocalizationsTable(MigrationBuilder migrationBuilder)

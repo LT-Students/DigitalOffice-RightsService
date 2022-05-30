@@ -89,11 +89,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
 
       usersIds.Add(dbRole.CreatedBy);
 
-      if (dbRole.ModifiedBy.HasValue)
-      {
-        usersIds.Add(dbRole.ModifiedBy.Value);
-      }
-
       List<UserData> usersDatas = await GetUsersAsync(usersIds, result.Errors);
 
       result.Body = _roleResponseMapper.Map(dbRole, dbRights, usersDatas);

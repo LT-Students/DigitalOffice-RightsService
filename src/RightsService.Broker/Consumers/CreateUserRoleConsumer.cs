@@ -9,6 +9,7 @@ using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using MassTransit;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
@@ -18,6 +19,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     private readonly IRoleRepository _roleRepository;
     private readonly IDbUserRoleMapper _mapper;
     private readonly IMemoryCache _cache;
+    private readonly ILogger<CreateUserRoleConsumer> _logger;
 
     private async Task UpdateCacheAsync(Guid userId, Guid roleId)
     {
@@ -48,20 +50,28 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       IUserRoleRepository userRoleRepository,
       IRoleRepository roleRepository,
       IMemoryCache cache,
-      IDbUserRoleMapper mapper)
+      IDbUserRoleMapper mapper,
+      ILogger<CreateUserRoleConsumer> logger)
     {
       _userRoleRepository = userRoleRepository;
       _roleRepository = roleRepository;
       _cache = cache;
       _mapper = mapper;
+      _logger = logger;
     }
 
     public async Task Consume(ConsumeContext<ICreateUserRolePublish> context)
     {
-      if (await _roleRepository.DoesExistAsync(context.Message.RoleId))
+      if (await _roleRepository.DoesExistAsync(context.Message.RoleId)
+        && !await _userRoleRepository.DoesExistAsync(context.Message.UserId))
       {
         await _userRoleRepository.CreateAsync(_mapper.Map(context.Message));
+
         await UpdateCacheAsync(context.Message.UserId, context.Message.RoleId);
+      }
+      else
+      {
+        _logger.LogError($"Can't create UserRole with Role {context.Message.RoleId} for User {context.Message.UserId}");
       }
     }
   }

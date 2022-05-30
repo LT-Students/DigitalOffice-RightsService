@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
+using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +33,25 @@ namespace LT.DigitalOffice.RightsService.Data
       }
 
       _provider.UsersRoles.Add(dbUserRole);
+
       await _provider.SaveAsync();
 
       return dbUserRole.Id;
+    }
+
+    public async Task<bool> EditAsync(DbUserRole oldUser, Guid roleId)
+    {
+      if (oldUser is null)
+      {
+        return false;
+      }
+
+      oldUser.RoleId = roleId;
+      oldUser.IsActive = true;
+
+      await _provider.SaveAsync();
+
+      return true;
     }
 
     public async Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds)
@@ -100,9 +117,10 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
-    public async Task<bool> RemoveAsync(Guid userId)
+    public async Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? removedBy = null)
     {
-      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
+      DbUserRole user = removedUser
+        ?? await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
 
       if (user is null)
       {
@@ -110,11 +128,17 @@ namespace LT.DigitalOffice.RightsService.Data
       }
 
       user.IsActive = false;
-      user.ModifiedAtUtc = DateTime.Now;
-      user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      user.CreatedBy = removedBy.HasValue
+        ? removedBy.Value
+        : _httpContextAccessor.HttpContext.GetUserId();
 
       await _provider.SaveAsync();
       return true;
+    }
+
+    public async Task<bool> DoesExistAsync(Guid userId)
+    {
+      return await _provider.UsersRoles.AnyAsync(x => x.UserId == userId && x.IsActive);
     }
   }
 }

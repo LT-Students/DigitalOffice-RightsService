@@ -29,7 +29,6 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
           Id = Guid.NewGuid(),
           RoleId = roleId,
           CreatedBy = senderId,
-          CreatedAtUtc = createdAtUtc,
           RightId = x
         }).ToList();
     }
