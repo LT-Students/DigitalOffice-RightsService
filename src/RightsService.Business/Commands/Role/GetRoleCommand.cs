@@ -13,27 +13,23 @@ using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.RightsService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.RightsService.Business.Role
 {
   /// <inheritdoc/>
   public class GetRoleCommand : IGetRoleCommand
   {
-    private readonly ILogger<GetRoleCommand> _logger;
     private readonly IRoleRepository _roleRepository;
     private readonly IRoleResponseMapper _roleResponseMapper;
     private readonly IUserService _userService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public GetRoleCommand(
-      ILogger<GetRoleCommand> logger,
       IRoleRepository roleRepository,
       IRoleResponseMapper roleResponseMapper,
       IUserService userService,
       IHttpContextAccessor httpContextAccessor)
     {
-      _logger = logger;
       _roleRepository = roleRepository;
       _roleResponseMapper = roleResponseMapper;
       _userService = userService;
