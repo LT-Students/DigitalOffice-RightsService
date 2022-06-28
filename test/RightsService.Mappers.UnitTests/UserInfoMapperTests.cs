@@ -26,8 +26,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.UnitTests.Models
                 lastName: "test lastname",
                 middleName: "test middlename",
                 isActive: true,
-                imageId: null,
-                status: "status");
+                imageId: null);
 
             _expectedUserInfo = new UserInfo
             {
