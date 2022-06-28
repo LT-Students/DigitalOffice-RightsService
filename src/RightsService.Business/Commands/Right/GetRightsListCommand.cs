@@ -34,16 +34,10 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
 
     public async Task<OperationResultResponse<List<RightInfo>>> ExecuteAsync(string locale)
     {
-      if (!await _accessValidator.IsAdminAsync())
-      {
-        return _responseCreator.CreateFailureResponse<List<RightInfo>>(HttpStatusCode.Forbidden);
-      }
-
-      return new()
-      {
-        Status = Kernel.Enums.OperationResultStatusType.FullSuccess,
-        Body = (await _repository.GetRightsListAsync(locale))?.Select(right => _mapper.Map(right)).ToList()
-      };
+      return await _accessValidator.IsAdminAsync()
+        ? new OperationResultResponse<List<RightInfo>>(
+          body: (await _repository.GetRightsListAsync(locale))?.Select(right => _mapper.Map(right)).ToList())
+        : _responseCreator.CreateFailureResponse<List<RightInfo>>(HttpStatusCode.Forbidden);
     }
   }
 }

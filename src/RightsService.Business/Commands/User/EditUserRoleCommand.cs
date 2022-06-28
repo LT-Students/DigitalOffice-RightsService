@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.User.Interfaces;
@@ -73,10 +72,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
           ? await _repository.EditAsync(oldUser, request.RoleId.Value)
           : (await _repository.CreateAsync(_mapper.Map(request))).HasValue;
       }
-
-      response.Status = response.Body
-        ? OperationResultStatusType.FullSuccess
-        : OperationResultStatusType.Failed;
 
       return response;
     }
