@@ -68,7 +68,6 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.RoleLocaliz
       _autoMocker = new AutoMocker();
       _command = _autoMocker.CreateInstance<EditRoleLocalizationCommand>();
 
-      //TODO: Not sure there is a point to fill it with data. We mock it anyway
       _request = new JsonPatchDocument<EditRoleLocalizationRequest>(
         new List<Operation<EditRoleLocalizationRequest>>(),
         new CamelCasePropertyNamesContractResolver());
