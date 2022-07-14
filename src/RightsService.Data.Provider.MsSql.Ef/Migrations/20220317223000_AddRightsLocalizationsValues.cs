@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LT.DigitalOffice.RightsService.Models.Db;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -136,6 +132,14 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
           {
             Guid.NewGuid(), 13, "en", "Wiki management",
             "This right allows to create, edit and delete articles, sections in the Wiki"
+          },
+          {
+            Guid.NewGuid(), 14, "ru", "Управление бронированиями",
+            "Право создавать, редактировать и удалять бронь, привязанную к пользователю"
+          },
+          {
+            Guid.NewGuid(), 14, "en", "Booking Management",
+            "This right allows to create, edit and remove bookings related to user"
           },
         });
     }
