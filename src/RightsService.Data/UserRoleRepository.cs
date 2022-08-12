@@ -6,7 +6,6 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,7 +55,7 @@ namespace LT.DigitalOffice.RightsService.Data
 
     public async Task<bool> CheckRightsAsync(Guid userId, params int[] rightIds)
     {
-      if (rightIds == null)
+      if (rightIds is null)
       {
         return false;
       }
@@ -89,8 +88,13 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public async Task<List<DbUserRole>> GetAsync(List<Guid> usersIds, string locale)
+    public Task<List<DbUserRole>> GetAsync(List<Guid> usersIds, string locale)
     {
+      if (usersIds is null || !usersIds.Any())
+      {
+        return null;
+      }
+
       IQueryable<DbUserRole> dbUsersRoles = _provider.UsersRoles.AsQueryable();
 
       dbUsersRoles = dbUsersRoles
@@ -101,17 +105,17 @@ namespace LT.DigitalOffice.RightsService.Data
         .Include(u => u.Role)
         .ThenInclude(r => r.RolesRights);
 
-      return await dbUsersRoles.ToListAsync();
+      return dbUsersRoles.Where(ur => usersIds.Contains(ur.UserId) && ur.IsActive).ToListAsync();
     }
 
-    public async Task<DbUserRole> GetAsync(Guid userId)
+    public Task<DbUserRole> GetAsync(Guid userId)
     {
-      return await _provider.UsersRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.IsActive);
+      return _provider.UsersRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.IsActive);
     }
 
-    public async Task<List<DbUserRole>> GetWithRightsAsync()
+    public Task<List<DbUserRole>> GetWithRightsAsync()
     {
-      return await _provider.UsersRoles
+      return _provider.UsersRoles
         .Where(user => user.IsActive)
         .Include(x => x.Role).ThenInclude(x => x.RolesRights)
         .ToListAsync();
