@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
     private IRoleRepository _repository;
 
     private DbRole _dbRole;
-    private DbRightsLocalization _dbRight;
+    private DbRightLocalization _dbRight;
 
     private const string Locale = "en";
 
@@ -32,7 +32,6 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
       _dbRole = new DbRole
       {
         Id = roleId,
-        CreatedAtUtc = DateTime.Now,
         CreatedBy = createdBy,
         RoleLocalizations = new List<DbRoleLocalization>()
           {
@@ -111,7 +110,6 @@ namespace LT.DigitalOffice.RightsService.Data.UnitTests
       var newDbRole = new DbRole
       {
         Id = Guid.NewGuid(),
-        CreatedAtUtc = DateTime.Now,
         CreatedBy = Guid.NewGuid()
       };
 

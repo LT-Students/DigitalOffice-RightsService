@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
     Task<Guid?> CreateAsync(DbRoleLocalization roleLocalization);
     Task<DbRoleLocalization> GetAsync(Guid roleLocalizationId);
     Task<bool> DoesLocaleExistAsync(Guid roleId, string locale);
-    Task<bool> DoesNameExistAsync(string locale, string name);
+    Task<bool> DoesNameExistAsync(string locale, string name, Guid id = default);
     Task<bool> EditRoleLocalizationAsync(Guid roleLocalizationId, JsonPatchDocument<DbRoleLocalization> patch);
   }
 }

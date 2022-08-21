@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Models.Broker.Models;
+using LT.DigitalOffice.Models.Broker.Models.Right;
 using LT.DigitalOffice.Models.Broker.Requests.Rights;
 using LT.DigitalOffice.Models.Broker.Responses.Rights;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
@@ -13,25 +14,25 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
   public class GetUserRolesConsumer : IConsumer<IGetUserRolesRequest>
   {
-    private readonly IUserRepository _repository;
+    private readonly IUserRoleRepository _repository;
 
     private async Task<object> GetRolesAsync(IGetUserRolesRequest request)
     {
-      List<DbUser> users = await _repository.GetAsync(request.UserIds, request.Locale);
+      List<DbUserRole> dbUsersRoles = await _repository.GetAsync(request.UserIds, request.Locale);
 
-      List<DbRole> roles = users.Select(u => u.Role).Distinct().ToList();
+      List<DbRole> dbRoles = dbUsersRoles.Select(u => u.Role).Distinct().ToList();
 
       return IGetUserRolesResponse.CreateObj(
-        roles.Select(r =>
+        dbRoles.Select(r =>
           new RoleData(
             r.Id,
             r.RoleLocalizations.FirstOrDefault()?.Name,
-            r.RoleLocalizations.FirstOrDefault()?.Description,
-            users.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
+            r.RolesRights.Select(rr => rr.RightId).ToList(),
+            dbUsersRoles.Where(u => u.RoleId == r.Id).Select(u => u.UserId).ToList()))
         .ToList());
     }
 
-    public GetUserRolesConsumer(IUserRepository userRepository)
+    public GetUserRolesConsumer(IUserRoleRepository userRepository)
     {
       _repository = userRepository;
     }

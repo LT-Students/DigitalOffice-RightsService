@@ -8,13 +8,15 @@ namespace LT.DigitalOffice.RightsService.Models.Dto.Configurations
   public class RabbitMqConfig : BaseRabbitMqConfig
   {
     public string GetUserRolesEndpoint { get; set; }
-    public string ChangeUserRoleEndpoint { get; set; }
+    public string CreateUserRoleEndpoint { get; set; }
     public string DisactivateUserEndpoint { get; set; }
+    public string FilterRolesEndpoint { get; set; }
 
     // users
 
     [AutoInjectRequest(typeof(IGetUsersDataRequest))]
     public string GetUsersDataEndpoint { get; set; }
+
     [AutoInjectRequest(typeof(ICheckUsersExistence))]
     public string CheckUsersExistenceEndpoint { get; set; }
   }

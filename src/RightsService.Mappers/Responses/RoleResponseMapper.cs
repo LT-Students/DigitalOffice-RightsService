@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Responses
       _rightMapper = rightMapper;
     }
 
-    public RoleResponse Map(DbRole role, List<DbRightsLocalization> rights, List<UserData> users)
+    public RoleResponse Map(DbRole role, List<DbRightLocalization> rights, List<UserData> users)
     {
       if (role == null)
       {

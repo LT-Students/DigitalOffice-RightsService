@@ -1,17 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Validators;
 using LT.DigitalOffice.Kernel.Validators;
+using LT.DigitalOffice.RightsService.Data.Interfaces;
+using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 using LT.DigitalOffice.RightsService.Validation.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace LT.DigitalOffice.RightsService.Validation
 {
-  public class EditRoleLocalizationRequestValidator : BaseEditRequestValidator<EditRoleLocalizationRequest>, IEditRoleLocalizationRequestValidator
+  public class EditRoleLocalizationRequestValidator : ExtendedEditRequestValidator<Guid, EditRoleLocalizationRequest>, IEditRoleLocalizationRequestValidator
   {
-    private void HandleInternalPropertyValidation(
+    private readonly IRoleLocalizationRepository _roleLocalizationRepository;
+
+    private async Task RequestValidation(
+      (Guid id, JsonPatchDocument<EditRoleLocalizationRequest> patch) tuple,
+      CustomContext context,
+      CancellationToken _)
+    {
+      DbRoleLocalization roleLocalization = await _roleLocalizationRepository.GetAsync(tuple.id);
+
+      if (roleLocalization is null)
+      {
+        context.AddFailure("roleLocalizationId", "Can't find role's localization with this ID.");
+      }
+      else
+      {
+        foreach (var operation in tuple.patch.Operations)
+        {
+          await HandleInternalPropertyValidation(roleLocalization, operation, context);
+        }
+      }
+    }
+
+    private async Task HandleInternalPropertyValidation(
+      DbRoleLocalization roleLocalization,
       Operation<EditRoleLocalizationRequest> operation,
       CustomContext context)
     {
@@ -30,35 +59,49 @@ namespace LT.DigitalOffice.RightsService.Validation
       AddСorrectOperations(nameof(EditRoleLocalizationRequest.Description), new List<OperationType> { OperationType.Replace });
       AddСorrectOperations(nameof(EditRoleLocalizationRequest.IsActive), new List<OperationType> { OperationType.Replace });
 
-      AddFailureForPropertyIf(
+      await AddFailureForPropertyIfAsync(
         nameof(EditRoleLocalizationRequest.Name),
         x => x == OperationType.Replace,
-        new Dictionary<Func<Operation<EditRoleLocalizationRequest>, bool>, string>
+        new Dictionary<Func<Operation<EditRoleLocalizationRequest>, Task<bool>>, string>
         {
           {
-            x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Name can't be empty."
+            x => Task.FromResult(!string.IsNullOrEmpty(x.value?.ToString())), "Name can't be empty."
           },
           {
-            x => x.value.ToString().Trim().Length <= 100, "Name is too long."
+            x => Task.FromResult(x.value.ToString().Trim().Length < 101), "Name is too long."
+          },
+          {
+            async x => !await _roleLocalizationRepository.DoesNameExistAsync(roleLocalization.Locale, x.value.ToString().Trim(), roleLocalization.Id),
+            "Name already exists."
           }
-        }, 
+        },
         CascadeMode.Stop);
 
-      AddFailureForPropertyIf(
+      await AddFailureForPropertyIfAsync(
         nameof(EditRoleLocalizationRequest.IsActive),
         x => x == OperationType.Replace,
-        new Dictionary<Func<Operation<EditRoleLocalizationRequest>, bool>, string>
+        new Dictionary<Func<Operation<EditRoleLocalizationRequest>, Task<bool>>, string>
         {
           {
-            x => bool.TryParse(x.value?.ToString(), out _), "Incorrect isActive format."
+            x => Task.FromResult(bool.TryParse(x.value?.ToString(), out _)), "Incorrect isActive format."
+          },
+          {
+            async x => roleLocalization.IsActive
+            || !bool.Parse(x.value.ToString())
+            || !await _roleLocalizationRepository.DoesLocaleExistAsync(roleLocalization.RoleId, roleLocalization.Locale),
+            "Role must have only one localization per locale."
           }
-        });
+        },
+        CascadeMode.Stop);
     }
 
-    public EditRoleLocalizationRequestValidator()
+    public EditRoleLocalizationRequestValidator(
+      IRoleLocalizationRepository roleLocalizationRepository)
     {
-      RuleForEach(x => x.Operations)
-        .Custom(HandleInternalPropertyValidation);
+      _roleLocalizationRepository = roleLocalizationRepository;
+
+      RuleFor(x => x)
+        .CustomAsync(RequestValidation);
     }
   }
 }

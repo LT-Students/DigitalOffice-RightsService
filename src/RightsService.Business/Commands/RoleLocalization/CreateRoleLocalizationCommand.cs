@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization.Interfaces;
@@ -64,12 +63,8 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.RoleLocalization
           validationResult.Errors.Select(validationFailure => validationFailure.ErrorMessage).ToList());
       }
 
-      OperationResultResponse<Guid?> response = new();
-
-      response.Body = await _roleLocalizationRepository.CreateAsync(_roleLocalizationMapper.Map(request));
-      response.Status = response.Body != null
-        ? OperationResultStatusType.FullSuccess
-        : OperationResultStatusType.Failed;
+      OperationResultResponse<Guid?> response = new(
+        body: await _roleLocalizationRepository.CreateAsync(_roleLocalizationMapper.Map(request)));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = response.Body != null
         ? (int)HttpStatusCode.Created

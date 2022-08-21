@@ -13,8 +13,8 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
     private Mock<IRightLocalizationRepository> repositoryMock;
     private Mock<IRightInfoMapper> mapperMock;
     private IGetRightsListCommand command;
-    private List<DbRightsLocalization> dbRightsList;
-    private DbRightsLocalization dbRight;
+    private List<DbRightLocalization> dbRightsList;
+    private DbRightLocalization dbRight;
     private RightInfo right;
 
     private const string Locale = "en";

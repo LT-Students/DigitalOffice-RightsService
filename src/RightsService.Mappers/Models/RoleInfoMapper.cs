@@ -26,10 +26,7 @@ namespace LT.DigitalOffice.RightsService.Mappers.Models
       {
         Id = dbRole.Id,
         IsActive = dbRole.IsActive,
-        CreatedAtUtc = dbRole.CreatedAtUtc,
         CreatedBy = userInfos?.FirstOrDefault(x => x.Id == dbRole.CreatedBy),
-        ModifiedAtUtc = dbRole.ModifiedAtUtc,
-        ModifiedBy = userInfos?.FirstOrDefault(x => x.Id == dbRole.ModifiedBy),
         Rights = rights,
         Localizations = dbRole.RoleLocalizations.Select(_roleLocalizationInfoMapper.Map).ToList()
       };

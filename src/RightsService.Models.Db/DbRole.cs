@@ -8,22 +8,20 @@ namespace LT.DigitalOffice.RightsService.Models.Db
   public class DbRole
   {
     public const string TableName = "Roles";
+    public const string HistoryTableName = "RolesHistory";
     public Guid Id { get; set; }
     public bool IsActive { get; set; }
-    public DateTime CreatedAtUtc { get; set; }
     public Guid CreatedBy { get; set; }
-    public DateTime? ModifiedAtUtc { get; set; }
-    public Guid? ModifiedBy { get; set; }
 
     public ICollection<DbRoleLocalization> RoleLocalizations { get; set; }
-    public ICollection<DbRoleRight> RoleRights { get; set; }
-    public ICollection<DbUser> Users { get; set; }
+    public ICollection<DbRoleRight> RolesRights { get; set; }
+    public ICollection<DbUserRole> Users { get; set; }
 
     public DbRole()
     {
       RoleLocalizations = new HashSet<DbRoleLocalization>();
-      RoleRights = new HashSet<DbRoleRight>();
-      Users = new HashSet<DbUser>();
+      RolesRights = new HashSet<DbRoleRight>();
+      Users = new HashSet<DbUserRole>();
     }
   }
 
@@ -32,7 +30,10 @@ namespace LT.DigitalOffice.RightsService.Models.Db
     public void Configure(EntityTypeBuilder<DbRole> builder)
     {
       builder
-        .ToTable(DbRole.TableName);
+        .ToTable(
+          DbRole.TableName,
+          r => r.IsTemporal(
+            builder => builder.UseHistoryTable(DbRole.HistoryTableName)));
 
       builder
         .HasKey(x => x.Id);
@@ -42,7 +43,7 @@ namespace LT.DigitalOffice.RightsService.Models.Db
         .WithOne(rl => rl.Role);
 
       builder
-        .HasMany(r => r.RoleRights)
+        .HasMany(r => r.RolesRights)
         .WithOne(rl => rl.Role);
 
       builder

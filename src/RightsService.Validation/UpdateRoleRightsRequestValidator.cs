@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.RightsService.Validation
       IRightsIdsValidator rightsIdsValidator)
     {
       RuleFor(request => request.RoleId)
-        .MustAsync(async (roleId, _) => await roleRepository.DoesRoleExistAsync(roleId))
+        .MustAsync(async (roleId, _) => await roleRepository.DoesExistAsync(roleId))
         .WithMessage("Role doesn't exist.");
 
       RuleFor(request => request.Rights)
