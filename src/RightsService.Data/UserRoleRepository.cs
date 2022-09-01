@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DigitalOffice.Models.Broker.Publishing;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Data.Provider;
@@ -36,6 +37,21 @@ namespace LT.DigitalOffice.RightsService.Data
       await _provider.SaveAsync();
 
       return dbUserRole.Id;
+    }
+
+    public async Task<Guid?> ActivateAsync(IActivateUserPublish request)
+    {
+      DbUserRole user = await _provider.UsersRoles.FirstOrDefaultAsync(u => u.UserId == request.UserId && !u.IsActive);
+
+      if (user is null)
+      {
+        return null;
+      }
+
+      user.IsActive = true;
+      await _provider.SaveAsync();
+
+      return user.RoleId;
     }
 
     public async Task<bool> EditAsync(DbUserRole oldUser, Guid roleId)
@@ -140,9 +156,9 @@ namespace LT.DigitalOffice.RightsService.Data
       return true;
     }
 
-    public async Task<bool> DoesExistAsync(Guid userId)
+    public Task<bool> DoesExistAsync(Guid userId)
     {
-      return await _provider.UsersRoles.AnyAsync(x => x.UserId == userId && x.IsActive);
+      return _provider.UsersRoles.AnyAsync(x => x.UserId == userId && x.IsActive);
     }
   }
 }
