@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       {
         await _globalCache.RemoveAsync(roleId.Value);
 
-        _logger.LogInformation("UserId '{UserId}' activated in positiontId '{PositionId}'", context.Message.UserId, roleId);
+        _logger.LogInformation("UserId '{UserId}' activated in roleId '{RoleId}'", context.Message.UserId, roleId);
       }
     }
   }
