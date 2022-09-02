@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DigitalOffice.Models.Broker.Publishing;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.RightsService.Models.Db;
-using LT.DigitalOffice.RightsService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.RightsService.Data.Interfaces
 {
@@ -11,6 +11,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   public interface IUserRoleRepository
   {
     Task<Guid?> CreateAsync(DbUserRole dbUserRole);
+
+    Task<Guid?> ActivateAsync(IActivateUserPublish request);
 
     Task<bool> EditAsync(DbUserRole oldUser, Guid roleId);
 

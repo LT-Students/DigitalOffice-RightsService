@@ -53,14 +53,14 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.User
           validationResult.Errors.Select(e => e.ErrorMessage).ToList());
       }
 
-      OperationResultResponse<bool> response = new();
-
       DbUserRole oldUser = await _repository.GetAsync(request.UserId);
 
       if (oldUser is null && !request.RoleId.HasValue)
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
       }
+
+      OperationResultResponse<bool> response = new();
 
       if (!request.RoleId.HasValue)
       {

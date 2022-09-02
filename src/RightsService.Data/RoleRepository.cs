@@ -25,12 +25,15 @@ namespace LT.DigitalOffice.RightsService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Guid> CreateAsync(DbRole dbRole)
+    public Task CreateAsync(DbRole dbRole)
     {
-      _provider.Roles.Add(dbRole);
-      await _provider.SaveAsync();
+      if (dbRole is null)
+      {
+        return null;
+      }
 
-      return dbRole.Id;
+      _provider.Roles.Add(dbRole);
+      return _provider.SaveAsync();
     }
 
     public async Task<(DbRole role, List<DbUserRole> users, List<DbRightLocalization> rights)> GetAsync(GetRoleFilter filter)
@@ -61,21 +64,21 @@ namespace LT.DigitalOffice.RightsService.Data
          }).FirstOrDefault();
     }
 
-    public async Task<DbRole> GetAsync(Guid roleId)
+    public Task<DbRole> GetAsync(Guid roleId)
     {
-      return await _provider.Roles.Include(role => role.RolesRights).FirstOrDefaultAsync(x => x.Id == roleId);
+      return _provider.Roles.Include(role => role.RolesRights).FirstOrDefaultAsync(x => x.Id == roleId);
     }
 
-    public async Task<List<DbRole>> GetAsync(List<Guid> rolesIds)
+    public Task<List<DbRole>> GetAsync(List<Guid> rolesIds)
     {
-      return await _provider.Roles.Where(r => rolesIds.Contains(r.Id))
+      return _provider.Roles.Where(r => rolesIds.Contains(r.Id))
         .Include(r => r.Users.Where(u => u.IsActive))
         .ToListAsync();
     }
 
-    public async Task<List<DbRole>> GetAllWithRightsAsync()
+    public Task<List<DbRole>> GetAllWithRightsAsync()
     {
-      return await _provider.Roles.Include(role => role.RolesRights).ToListAsync();
+      return _provider.Roles.Include(role => role.RolesRights).ToListAsync();
     }
 
     public async Task<(List<(DbRole role, List<DbRightLocalization> rights)>, int totalCount)> FindAllAsync(FindRolesFilter filter)
@@ -134,16 +137,16 @@ namespace LT.DigitalOffice.RightsService.Data
         totalCount);
     }
 
-    public async Task<bool> DoesExistAsync(Guid roleId)
+    public Task<bool> DoesExistAsync(Guid roleId)
     {
-      return await _provider.Roles.AnyAsync(r => r.Id == roleId);
+      return _provider.Roles.AnyAsync(r => r.Id == roleId);
     }
 
     public async Task<bool> EditStatusAsync(Guid roleId, bool isActive)
     {
       DbRole role = _provider.Roles.FirstOrDefault(x => x.Id == roleId);
 
-      if (role == null)
+      if (role is null)
       {
         return false;
       }

@@ -24,8 +24,8 @@ namespace LT.DigitalOffice.RightsService.Mappers.Db
         Id = Guid.NewGuid(),
         UserId = request.UserId,
         RoleId = request.RoleId,
-        CreatedBy = request.ChangedBy,
-        IsActive = true
+        CreatedBy = request.CreatedBy,
+        IsActive = request.IsActive
       };
     }
 

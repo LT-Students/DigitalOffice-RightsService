@@ -81,15 +81,14 @@ namespace LT.DigitalOffice.RightsService.Business.Role
           validationResult.Errors.Select(validationFailure => validationFailure.ErrorMessage).ToList());
       }
 
-      OperationResultResponse<Guid> response = new();
-
-      response.Body = await _roleRepository.CreateAsync(_mapper.Map(request));
+      DbRole dbRole = _mapper.Map(request);
+      await _roleRepository.CreateAsync(dbRole);
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
-      await UpdateCacheAsync(request.Rights, response.Body);
+      await UpdateCacheAsync(request.Rights, dbRole.Id);
 
-      return response;
+      return new OperationResultResponse<Guid>(body: dbRole.Id);
     }
   }
 }
