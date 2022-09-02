@@ -12,19 +12,14 @@ namespace LT.DigitalOffice.RightsService.Validation
       IRoleLocalizationRepository localizationRepository)
     {
       RuleFor(x => x.Locale)
-        .NotEmpty()
         .Length(2);
 
       RuleFor(x => x.Name)
-        .NotEmpty()
         .MaximumLength(100);
 
-      When(x => x.Name != null && x.Locale != null, () =>
-      {
-        RuleFor(x => x)
-          .MustAsync(async (x, _) => !await localizationRepository.DoesNameExistAsync(x.Locale, x.Name))
-          .WithMessage("Role name should be unique.");
-      });
+      RuleFor(x => x)
+        .MustAsync(async (x, _) => !await localizationRepository.DoesNameExistAsync(x.Locale, x.Name))
+        .WithMessage("Role name should be unique.");
 
       When(x => x.RoleId.HasValue, () =>
       {
