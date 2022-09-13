@@ -36,7 +36,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Right
     {
       return await _accessValidator.IsAdminAsync()
         ? new OperationResultResponse<List<RightInfo>>(
-          body: (await _repository.GetRightsListAsync(locale))?.Select(right => _mapper.Map(right)).ToList())
+          body: (await _repository.GetRightsListAsync(locale))?.Select(_mapper.Map).ToList())
         : _responseCreator.CreateFailureResponse<List<RightInfo>>(HttpStatusCode.Forbidden);
     }
   }

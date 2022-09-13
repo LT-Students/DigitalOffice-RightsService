@@ -124,7 +124,7 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
     }
 
     [Test]
-    public async Task UserIsAdmin()
+    public async Task SuccessfullyGetRightsList()
     {
       SerializerAssert.AreEqual(_goodResponse, await _command.ExecuteAsync(_locale));
 
