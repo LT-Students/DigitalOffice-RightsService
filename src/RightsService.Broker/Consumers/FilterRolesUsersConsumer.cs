@@ -54,11 +54,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
       if (rolesFilteredData is not null)
       {
-        string key = context.Message.RolesIds.GetRedisCacheHashCode();
-
         await _globalCache.CreateAsync(
           Cache.Rights,
-          key,
+          context.Message.RolesIds.GetRedisCacheKey(context.Message.GetBasicProperties()),
           rolesFilteredData,
           context.Message.RolesIds,
           TimeSpan.FromMinutes(_redisConfig.Value.CacheLiveInMinutes));

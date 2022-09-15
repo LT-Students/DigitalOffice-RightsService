@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using DigitalOffice.Kernel.RedisSupport.Extensions;
 using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.BrokerSupport.Configurations;
 using LT.DigitalOffice.Kernel.BrokerSupport.Extensions;
+using LT.DigitalOffice.Kernel.BrokerSupport.Helpers;
 using LT.DigitalOffice.Kernel.BrokerSupport.Middlewares.Token;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.EFSupport.Extensions;
 using LT.DigitalOffice.Kernel.EFSupport.Helpers;
 using LT.DigitalOffice.Kernel.Extensions;
-using LT.DigitalOffice.Kernel.Helpers;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.RedisSupport.Configurations;
+using LT.DigitalOffice.Kernel.RedisSupport.Constants;
 using LT.DigitalOffice.Kernel.RedisSupport.Helpers;
 using LT.DigitalOffice.Kernel.RedisSupport.Helpers.Interfaces;
 using LT.DigitalOffice.RightsService.Broker.Consumers;
@@ -25,8 +27,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using StackExchange.Redis;
 
 namespace LT.DigitalOffice.RightsService
 {
@@ -36,6 +36,8 @@ namespace LT.DigitalOffice.RightsService
 
     private readonly BaseServiceInfoConfig _serviceInfoConfig;
     private readonly RabbitMqConfig _rabbitMqConfig;
+
+    private string _redisConnStr;
 
     public IConfiguration Configuration { get; }
 
@@ -120,19 +122,7 @@ namespace LT.DigitalOffice.RightsService
       services.AddTransient<IRedisHelper, RedisHelper>();
       services.AddTransient<ICacheNotebook, CacheNotebook>();
 
-      string redisConnStr = Environment.GetEnvironmentVariable("RedisConnectionString");
-      if (string.IsNullOrEmpty(redisConnStr))
-      {
-        redisConnStr = Configuration.GetConnectionString("Redis");
-
-        Log.Information($"Redis connection string from appsettings.json was used. Value '{PasswordHider.Hide(redisConnStr)}'.");
-      }
-      else
-      {
-        Log.Information($"Redis connection string from environment was used. Value '{PasswordHider.Hide(redisConnStr)}'.");
-      }
-
-      services.AddSingleton<IConnectionMultiplexer>(x => ConnectionMultiplexer.Connect(redisConnStr));
+      _redisConnStr = services.AddRedisSingleton(Configuration);
 
       ConfigureMassTransit(services);
 
@@ -145,6 +135,8 @@ namespace LT.DigitalOffice.RightsService
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
       app.UpdateDatabase<RightsServiceDbContext>();
+
+      FlushRedisDbHelper.FlushDatabase(_redisConnStr, Cache.Rights);
 
       app.UseForwardedHeaders();
 
@@ -178,42 +170,18 @@ namespace LT.DigitalOffice.RightsService
 
     #region configure masstransit
 
-    private (string username, string password) GetRabbitMqCredentials()
-    {
-      static string GetString(string envVar, string formAppsettings, string generated, string fieldName)
-      {
-        string str = Environment.GetEnvironmentVariable(envVar);
-        if (string.IsNullOrEmpty(str))
-        {
-          str = formAppsettings ?? generated;
-
-          Log.Information(
-            formAppsettings == null
-              ? $"Default RabbitMq {fieldName} was used."
-              : $"RabbitMq {fieldName} from appsetings.json was used.");
-        }
-        else
-        {
-          Log.Information($"RabbitMq {fieldName} from environment was used.");
-        }
-
-        return str;
-      }
-
-      return (GetString("RabbitMqUsername", _rabbitMqConfig.Username, $"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}", "Username"),
-        GetString("RabbitMqPassword", _rabbitMqConfig.Password, _serviceInfoConfig.Id, "Password"));
-    }
-
     private void ConfigureMassTransit(IServiceCollection services)
     {
-      (string username, string password) = GetRabbitMqCredentials();
+      (string username, string password) = RabbitMqCredentialsHelper
+        .Get(_rabbitMqConfig, _serviceInfoConfig);
 
       services.AddMassTransit(busConfigurator =>
       {
         busConfigurator.AddConsumer<AccessValidatorConsumer>();
         busConfigurator.AddConsumer<CreateUserRoleConsumer>();
         busConfigurator.AddConsumer<GetUserRolesConsumer>();
-        busConfigurator.AddConsumer<DisactivateUserConsumer>();
+        busConfigurator.AddConsumer<DisactivateUserRoleConsumer>();
+        busConfigurator.AddConsumer<ActivateUserRoleConsumer>();
         busConfigurator.AddConsumer<FilterRolesUsersConsumer>();
 
         busConfigurator.UsingRabbitMq((context, cfg) =>
@@ -239,9 +207,14 @@ namespace LT.DigitalOffice.RightsService
             ep.ConfigureConsumer<GetUserRolesConsumer>(context);
           });
 
-          cfg.ReceiveEndpoint(_rabbitMqConfig.DisactivateUserEndpoint, ep =>
+          cfg.ReceiveEndpoint(_rabbitMqConfig.DisactivateUserRoleEndpoint, ep =>
           {
-            ep.ConfigureConsumer<DisactivateUserConsumer>(context);
+            ep.ConfigureConsumer<DisactivateUserRoleConsumer>(context);
+          });
+
+          cfg.ReceiveEndpoint(_rabbitMqConfig.ActivateUserRoleEndpoint, ep =>
+          {
+            ep.ConfigureConsumer<ActivateUserRoleConsumer>(context);
           });
 
           cfg.ReceiveEndpoint(_rabbitMqConfig.FilterRolesEndpoint, ep =>

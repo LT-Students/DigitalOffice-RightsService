@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
   [AutoInject]
   public interface IRoleRepository
   {
-    Task<Guid> CreateAsync(DbRole dbRole);
+    Task CreateAsync(DbRole dbRole);
 
     Task<(DbRole role, List<DbUserRole> users, List<DbRightLocalization> rights)> GetAsync(GetRoleFilter filter);
 

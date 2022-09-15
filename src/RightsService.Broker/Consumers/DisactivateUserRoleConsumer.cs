@@ -11,7 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
-  public class DisactivateUserConsumer : IConsumer<IDisactivateUserPublish>
+  public class DisactivateUserRoleConsumer : IConsumer<IDisactivateUserPublish>
   {
     private readonly IUserRoleRepository _repository;
     private readonly IMemoryCache _cache;
@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       _cache.Set(CacheKeys.Users, users);
     }
 
-    public DisactivateUserConsumer(
+    public DisactivateUserRoleConsumer(
       IUserRoleRepository userRepository,
       IMemoryCache cache)
     {
