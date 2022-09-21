@@ -26,11 +26,11 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.User
     private AutoMocker _mocker;
     private IEditUserRoleCommand _command;
 
-    EditUserRoleRequest _request;
-    EditUserRoleRequest _requestWithNullRoleId;
-    DbUserRole _dbUserRole;
-    DbUserRole _dbUserRoleWithoutChangeRoleId;
-    OperationResultResponse<bool> _goodResponse;
+    private EditUserRoleRequest _request;
+    private EditUserRoleRequest _requestWithNullRoleId;
+    private DbUserRole _dbUserRole;
+    private DbUserRole _dbUserRoleWithoutChangeRoleId;
+    private OperationResultResponse<bool> _goodResponse;
 
     private void Verifiable(
       Times accessValidatorTimes,
