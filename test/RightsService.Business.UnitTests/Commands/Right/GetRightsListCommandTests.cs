@@ -23,13 +23,13 @@ namespace LT.DigitalOffice.RightsService.Business.UnitTests.Commands.Right
     private AutoMocker _mocker;
     private IGetRightsListCommand _command;
 
-    string _locale;
-    List<DbRightLocalization> _dbRightsLocalizations;
-    DbRightLocalization _dbRight;
-    List<RightInfo> _rightInfos;
-    RightInfo _rightInfo;
-    OperationResultResponse<List<RightInfo>> _badResponse;
-    OperationResultResponse<List<RightInfo>> _goodResponse;
+    private string _locale;
+    private List<DbRightLocalization> _dbRightsLocalizations;
+    private DbRightLocalization _dbRight;
+    private List<RightInfo> _rightInfos;
+    private RightInfo _rightInfo;
+    private OperationResultResponse<List<RightInfo>> _badResponse;
+    private OperationResultResponse<List<RightInfo>> _goodResponse;
 
     private void Verifiable(
       Times accessValidatorTimes,
