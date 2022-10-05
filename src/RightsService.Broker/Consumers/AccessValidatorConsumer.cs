@@ -17,11 +17,12 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       return request.RightIds.Intersect(await
           (from user in _provider.UsersRoles
            where user.UserId == request.UserId && user.IsActive
-           join role in _provider.Roles on user.RoleId equals role.Id where role.IsActive
+           join role in _provider.Roles on user.RoleId equals role.Id
+           where role.IsActive
            join rolesRights in _provider.RolesRights on role.Id equals rolesRights.RoleId
            select rolesRights.RightId)
           .ToListAsync())
-        .Any();
+        .Count() == request.RightIds.Count();
     }
 
     public AccessValidatorConsumer(IDataProvider provider)
