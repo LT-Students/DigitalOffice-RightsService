@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.RightsService.Validation
 
     private async Task CheckEnablePossibilityAsync(
       (Guid roleId, bool isActive) tuple,
-      CustomContext context,
+      ValidationContext<(Guid, bool)> context,
       CancellationToken _)
     {
       DbRole role = await _roleRepository.GetAsync(tuple.roleId);

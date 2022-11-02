@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.RightsService.Validation
 
     private async Task RequestValidation(
       (Guid id, JsonPatchDocument<EditRoleLocalizationRequest> patch) tuple,
-      CustomContext context,
+      ValidationContext<(Guid, JsonPatchDocument<EditRoleLocalizationRequest>)> context,
       CancellationToken _)
     {
       DbRoleLocalization roleLocalization = await _roleLocalizationRepository.GetAsync(tuple.id);
@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.RightsService.Validation
     private async Task HandleInternalPropertyValidation(
       DbRoleLocalization roleLocalization,
       Operation<EditRoleLocalizationRequest> operation,
-      CustomContext context)
+      ValidationContext<(Guid, JsonPatchDocument<EditRoleLocalizationRequest>)> context)
     {
       Context = context;
       RequestedOperation = operation;

@@ -54,7 +54,11 @@ namespace LT.DigitalOffice.RightsService.Broker.Requests
 
       object request = IGetUsersDataRequest.CreateObj(usersIds);
 
-      List<UserData> usersData = await _globalCache.GetAsync<List<UserData>>(Cache.Users, usersIds.GetRedisCacheKey(request.GetBasicProperties()));
+      List<UserData> usersData = await _globalCache.GetAsync<List<UserData>>(
+        database: Cache.Users,
+        key: usersIds.GetRedisCacheKey(
+          requestName: nameof(IGetUsersDataRequest),
+          additionalArguments: request.GetBasicProperties()));
 
       if (usersData is not null)
       {
