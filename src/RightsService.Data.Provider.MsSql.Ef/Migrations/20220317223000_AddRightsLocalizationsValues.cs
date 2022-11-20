@@ -86,12 +86,12 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
             "This right allows you to add, modify and remove worked hours in the time tracking system"
           },
           {
-            Guid.NewGuid(), 8, "ru", "Управление офисами",
-            "Право позволяет создавать, изменять и архивировать офисы в системе, а также привязывать и отвязывать сотрудников от офисов"
+            Guid.NewGuid(), 8, "ru", "Управление чейнджлогами спецификаций к API",
+            "Право позволяет добавлять, изменять и удалять чейнджлог спецификации к API в системе"
           },
           {
-            Guid.NewGuid(), 8, "en", "Offices management",
-            "This right allows you to add, edit and remove offices and attach users"
+            Guid.NewGuid(), 8, "en", "Changelog of API specification management",
+            "This right allows you to add, modify and remove API specification changelog the time system"
           },
           {
             Guid.NewGuid(), 9, "ru", "Управление компаниями",
@@ -102,12 +102,12 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
             "This right allows you to add, modify and remove companies  in the system"
           },
           {
-            Guid.NewGuid(), 10, "ru", "управление бронированием",
-            "Право позволяет отменять любые брони, закрывать и открывать помещения для бронирования, настраивать правила бронирования и время работы помещений"
+            Guid.NewGuid(), 10, "ru", "Управление данными департамента",
+            "Право позволяет добавлять и удалять данные департамента к которому привязан правообладатель"
           },
           {
-            Guid.NewGuid(), 10, "en", "Booking management",
-            "The right allows you to cancel any reservations, close and open rooms for booking, set up booking rules and opening hours of the premises"
+            Guid.NewGuid(), 10, "en", "Department data management",
+            "This right allows you to add and remove department data in the department this right holder is attached to"
           },
           {
             Guid.NewGuid(), 11, "ru", "Управление данными компании",
