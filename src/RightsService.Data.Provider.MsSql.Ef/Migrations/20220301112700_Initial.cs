@@ -159,6 +159,6 @@ namespace LT.DigitalOffice.RightsService.Data.Provider.MsSql.Ef.Migrations
       migrationBuilder.DropTable(name: DbRoleLocalization.TableName);
       migrationBuilder.DropTable(name: DbUserRole.TableName);
       migrationBuilder.DropTable(name: DbRole.TableName);
-    }  
+    }
   }
 }

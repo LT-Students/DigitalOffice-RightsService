@@ -4,28 +4,27 @@ using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Requests;
 using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.RightsService.Data.Provider;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.RightsService.Broker.Consumers
 {
-  public class AccessValidatorConsumer : IConsumer<ICheckUserRightsRequest>
+  public class CheckUserRightsConsumer : IConsumer<ICheckUserRightsRequest>
   {
     private readonly IDataProvider _provider;
 
-    private async Task<object> HasRightAsync(ICheckUserRightsRequest request)
+    private object HasRightAsync(ICheckUserRightsRequest request)
     {
-      return request.RightIds.Intersect(await
+      return request.RightIds.Intersect(
           (from user in _provider.UsersRoles
            where user.UserId == request.UserId && user.IsActive
            join role in _provider.Roles on user.RoleId equals role.Id
            where role.IsActive
            join rolesRights in _provider.RolesRights on role.Id equals rolesRights.RoleId
            select rolesRights.RightId)
-          .ToListAsync())
-        .Count() == request.RightIds.Count();
+          .AsEnumerable())
+        .Count() == request.RightIds.Length;
     }
 
-    public AccessValidatorConsumer(IDataProvider provider)
+    public CheckUserRightsConsumer(IDataProvider provider)
     {
       _provider = provider;
     }
