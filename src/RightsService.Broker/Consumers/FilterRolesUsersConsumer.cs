@@ -28,11 +28,11 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       List<DbRole> roles = await _repository.GetAsync(request.RolesIds);
 
       return roles.Select(r =>
-          new RoleFilteredData(
-            r.Id,
-            r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).FirstOrDefault(),
-            r.Users.Select(u => u.UserId).ToList()))
-        .ToList();
+        new RoleFilteredData(
+          r.Id,
+          r.RoleLocalizations.Where(rl => rl.RoleId == r.Id).Select(rl => rl.Name).FirstOrDefault(),
+          r.Users.Select(u => u.UserId).ToList()))
+      .ToList();
     }
 
     public FilterRolesUsersConsumer(
@@ -56,7 +56,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
       {
         await _globalCache.CreateAsync(
           Cache.Rights,
-          context.Message.RolesIds.GetRedisCacheKey(context.Message.GetBasicProperties()),
+          context.Message.RolesIds.GetRedisCacheKey(nameof(IFilterRolesRequest), context.Message.GetBasicProperties()),
           rolesFilteredData,
           context.Message.RolesIds,
           TimeSpan.FromMinutes(_redisConfig.Value.CacheLiveInMinutes));

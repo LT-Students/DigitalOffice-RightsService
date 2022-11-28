@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.RightsService.Broker.UnitTests.Consumers
     {
         private InMemoryTestHarness _harness;
         private Mock<IRightLocalizationRepository> _rigthsRepositoryMock;
-        private ConsumerTestHarness<AccessValidatorConsumer> _consumerTestHarness;
+        private ConsumerTestHarness<CheckUserRightsConsumer> _consumerTestHarness;
         private Guid _userGuidWithRight;
         private Guid _userGuidWithoutRight;
 

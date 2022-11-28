@@ -177,7 +177,8 @@ namespace LT.DigitalOffice.RightsService
 
       services.AddMassTransit(busConfigurator =>
       {
-        busConfigurator.AddConsumer<AccessValidatorConsumer>();
+        busConfigurator.AddConsumer<CheckUserRightsConsumer>();
+        busConfigurator.AddConsumer<CheckUserAnyRightConsumer>();
         busConfigurator.AddConsumer<CreateUserRoleConsumer>();
         busConfigurator.AddConsumer<GetUserRolesConsumer>();
         busConfigurator.AddConsumer<DisactivateUserRoleConsumer>();
@@ -194,7 +195,12 @@ namespace LT.DigitalOffice.RightsService
 
           cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserRightsEndpoint, ep =>
           {
-            ep.ConfigureConsumer<AccessValidatorConsumer>(context);
+            ep.ConfigureConsumer<CheckUserRightsConsumer>(context);
+          });
+
+          cfg.ReceiveEndpoint(_rabbitMqConfig.CheckUserAnyRightEndpoint, ep =>
+          {
+            ep.ConfigureConsumer<CheckUserAnyRightConsumer>(context);
           });
 
           cfg.ReceiveEndpoint(_rabbitMqConfig.CreateUserRoleEndpoint, ep =>
