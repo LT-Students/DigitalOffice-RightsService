@@ -22,7 +22,6 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
     private readonly IAccessValidator _accessValidator;
     private readonly IEditRoleStatusRequestValidator _validator;
     private readonly IResponseCreator _responseCreator;
-    private readonly IMemoryCache _cache;
 
     private async Task UpdateCacheAsync(Guid roleId, bool isActive)
     {
@@ -48,8 +47,7 @@ namespace LT.DigitalOffice.RightsService.Business.Commands.Role
       IRoleRepository roleRepository,
       IAccessValidator accessValidator,
       IEditRoleStatusRequestValidator validator,
-      IResponseCreator responseCreator,
-      IMemoryCache cache)
+      IResponseCreator responseCreator)
     {
       _roleRepository = roleRepository;
       _accessValidator = accessValidator;

@@ -137,6 +137,13 @@ namespace LT.DigitalOffice.RightsService.Data
         .ToListAsync();
     }
 
+    public Task<List<DbUserRole>> GetWithoutRightsAsync()
+    {
+      return _provider.UsersRoles
+        .Where(user => user.IsActive)
+        .ToListAsync();
+    }
+
     public async Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? removedBy = null)
     {
       DbUserRole user = removedUser

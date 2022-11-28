@@ -7,6 +7,7 @@ using LT.DigitalOffice.RightsService.Data.Interfaces;
 using LT.DigitalOffice.RightsService.Models.Db;
 using LT.DigitalOffice.RightsService.Models.Dto.Constants;
 using MassTransit;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace LT.DigitalOffice.RightsService.Broker.Consumers
@@ -14,7 +15,7 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
   public class DisactivateUserRoleConsumer : IConsumer<IDisactivateUserPublish>
   {
     private readonly IUserRoleRepository _repository;
-    private readonly IMemoryCache _cache;
+    private readonly IMemoryCacheHelper
 
     private async Task UpdateCacheAsync(Guid userId)
     {
@@ -41,10 +42,9 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
 
     public DisactivateUserRoleConsumer(
       IUserRoleRepository userRepository,
-      IMemoryCache cache)
+      IMemoryCacheHelper)
     {
       _repository = userRepository;
-      _cache = cache;
     }
 
     public async Task Consume(ConsumeContext<IDisactivateUserPublish> context)

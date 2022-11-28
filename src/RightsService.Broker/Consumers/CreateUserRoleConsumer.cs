@@ -18,7 +18,6 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     private readonly IUserRoleRepository _userRoleRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IDbUserRoleMapper _mapper;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<CreateUserRoleConsumer> _logger;
 
     private async Task UpdateCacheAsync(Guid userId, Guid roleId)
@@ -49,13 +48,11 @@ namespace LT.DigitalOffice.RightsService.Broker.Consumers
     public CreateUserRoleConsumer(
       IUserRoleRepository userRoleRepository,
       IRoleRepository roleRepository,
-      IMemoryCache cache,
       IDbUserRoleMapper mapper,
       ILogger<CreateUserRoleConsumer> logger)
     {
       _userRoleRepository = userRoleRepository;
       _roleRepository = roleRepository;
-      _cache = cache;
       _mapper = mapper;
       _logger = logger;
     }

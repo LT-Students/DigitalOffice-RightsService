@@ -24,6 +24,8 @@ namespace LT.DigitalOffice.RightsService.Data.Interfaces
 
     Task<List<DbUserRole>> GetWithRightsAsync();
 
+    Task<List<DbUserRole>> GetWithoutRightsAsync();
+
     Task<bool> RemoveAsync(Guid userId, DbUserRole removedUser = null, Guid? removedBy = null);
 
     Task<bool> DoesExistAsync(Guid userId);

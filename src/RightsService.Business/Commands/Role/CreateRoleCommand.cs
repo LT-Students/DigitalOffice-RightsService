@@ -27,7 +27,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
     private readonly ICreateRoleRequestValidator _validator;
     private readonly IDbRoleMapper _mapper;
     private readonly IAccessValidator _accessValidator;
-    private readonly IMemoryCache _cache;
     private readonly IResponseCreator _responseCreator;
 
     private async Task UpdateCacheAsync(IEnumerable<int> addedRights, Guid roleId)
@@ -54,7 +53,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       ICreateRoleRequestValidator validator,
       IDbRoleMapper mapper,
       IAccessValidator accessValidator,
-      IMemoryCache cache,
       IResponseCreator responseCreator)
     {
       _validator = validator;
@@ -62,7 +60,6 @@ namespace LT.DigitalOffice.RightsService.Business.Role
       _roleRepository = roleRepository;
       _mapper = mapper;
       _accessValidator = accessValidator;
-      _cache = cache;
       _responseCreator = responseCreator;
     }
 
